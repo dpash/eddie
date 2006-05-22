@@ -1,12 +1,18 @@
 package uk.org.catnip.javarss;
 
 import java.util.Hashtable;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Iterator;
-
+import uk.org.catnip.javarss.Link;
+import org.apache.log4j.Logger;
 public class FeedContext {
+    static Logger log = Logger.getLogger(FeedContext.class);
     protected Hashtable property_map = new Hashtable();
     protected Author author;
+    private Detail title;
+    private List contributors = new LinkedList();
+    protected List links = new LinkedList();
     public String set(String key, String value) {
         property_map.put(key,value);
         return value;
@@ -31,5 +37,24 @@ public class FeedContext {
         this.author = author;
     }
     
+    public void addContributor(Author a) {
+        contributors.add(a);
+    }
+    public void addLink(Link link) {
+        log.debug("adding link: " + link);
+        links.add(link);
+    }
+    public Iterator contributors() {
+        return contributors.iterator();
+    }
+    public Iterator links() {
+        return links.iterator();
+    }
+    public Detail getTitle() {
+        return title;
+    }
 
+    public void setTitle(Detail title_detail) {
+        this.title = title_detail;
+    }
 }
