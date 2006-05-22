@@ -4,14 +4,182 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
 import uk.org.catnip.javarss.Entry;
+import uk.org.catnip.javarss.Generator;
 import uk.org.catnip.javarss.Author;
-import uk.org.catnip.javarss.FeedContext;
-
+import uk.org.catnip.javarss.Link;
 
 public class FeedSAXParser extends BaseSAXParser {
-    private Author author;
-    
     static Logger log = Logger.getLogger(FeedSAXParser.class);
+    private Author author;
+    private Generator generator;
+
+    private Link link;
+
+    public void endElement_author() throws SAXException {
+        in_author = false;
+        pop("author");
+        getCurrentContext().setAuthor(author);
+        getCurrentContext().set("author", author.getName());
+        author = null;
+    }
+
+    public void endElement_content() throws SAXException {
+        pop("content");
+        current_entry.addContent(detail);
+    }
+
+    public void endElement_contributor() throws SAXException {
+        in_author = false;
+        pop("contributor");
+        getCurrentContext().addContributor(author);
+        author = null;
+    }
+    public void endElement_email() throws SAXException {
+        String value = pop("email");
+        if (in_author) {
+            author.setEmail(value);
+        } else if (in_contributor) {
+            save_contributor("email", value);
+        }
+    }
+    public void endElement_entry() throws SAXException {
+        pop("entry");
+        in_entry = false;
+        feed.addEntry(current_entry);
+        current_entry = null;
+    }
+
+    public void endElement_generator() throws SAXException {
+        String content = pop("generator");
+        generator.setDetails(detail);
+        if (generator.getName().equals("") && !content.equals("")) {
+            generator.setName(content);
+        }
+        feed.setGenerator(generator);
+        generator = null;
+    }
+    public void endElement_id() throws SAXException {
+        in_author = false;
+        String id = pop("id");
+        getCurrentContext().set("guid", id);
+        author = null;
+    }
+    public void endElement_link() throws SAXException {
+        pop("link");
+        log.debug("end element link");
+        link.setDetails(detail);
+        getCurrentContext().addLink(link);
+        if ((link.getType().equals("text/html") ||link.getType().equals("application/xhtml+xml")) && link.getRel().equals("alternate")) {
+            getCurrentContext().set("link", link.getHref());
+        }
+        link = null;
+    }
+    public void endElement_name() throws SAXException {
+        String value = pop("name");
+        if (in_author) {
+            author.setName(value);
+        } else if (in_contributor) {
+            save_contributor("name", value);
+            // } else if (in_textinput){
+            // FeedContext context = getCurrentContext();
+            // context.getTextInput().set("name", value);
+        }
+
+    }
+    public void endElement_tagline() throws SAXException {
+        String content = pop("tagline");
+        feed.set("tagline",content);
+        feed.setTagline(detail);
+    }
+    public void endElement_title() throws SAXException {
+        String content = pop("title");
+        getCurrentContext().set("title",content);
+        getCurrentContext().setTitle(detail);
+        in_content--;
+    }
+    public void endElement_url() throws SAXException {
+
+        String value = pop("url");
+        if (in_author) {
+            author.setUrl(value);
+        } else if (in_contributor) {
+            save_contributor("url", value);
+        } else if (in_image) {
+            // TODO
+        } else if (in_contributor) {
+            // TODO
+        }
+    }
+
+    public void save_contributor(String key, String value) {
+        log.debug("save_contributors: not implemented");
+    }
+
+    public void startElement_author(State state) throws SAXException {
+        in_author = true;
+        state.expectingText = true;
+        author = new Author();
+        push(state);
+    }
+    public void startElement_contributor(State state) throws SAXException {
+        in_author = true;
+        state.expectingText = true;
+        author = new Author();
+        push(state);
+    }
+    public void startElement_entry(State state) throws SAXException {
+        in_entry = true;
+        current_entry = new Entry();
+        state.expectingText = false;
+        push(state);
+    }
+    
+    public void startElement_feed(State state) throws SAXException {
+
+        this.in_feed = true;
+        String attr_version = state.getAttr("version");
+        String attr_namespace = state.getAttr("xmlns");
+        if (!this.feed.has("format"))
+            if (attr_version.equals("")) {
+                if (attr_namespace.equals("http://www.w3.org/2005/Atom")) {
+                    this.feed.set("format", "atom10");
+                } else {
+                    this.feed.set("format", "atom");
+                }
+            } else {
+                if (attr_version.equals("0.1")) {
+                    this.feed.set("format", "atom01");
+                } else if (attr_version.equals("0.2")) {
+                    this.feed.set("format", "atom02");
+                } else if (attr_version.equals("0.3")) {
+                    this.feed.set("format", "atom03");
+                } else {
+                    this.feed.set("format", "atom");
+                }
+            }
+        // Do some sanity checking
+        if (!this.feed.has("format")) {
+            throw new SAXParseException("Failed to detect Atom format",
+                    this.locator);
+        }
+    }
+    public void startElement_generator(State state) throws SAXException {
+        generator = new Generator();
+        generator.setName(state.getAttr("name"));
+        generator.setUrl(state.getAttr("url"));
+        generator.setVersion(state.getAttr("version"));
+        state.expectingText = true;
+        push(state);
+    }
+
+    public void startElement_link(State state) throws SAXException {
+        link = new Link();
+        link.setHref(state.getAttr("href"));
+        link.setTitle(state.getAttr("title"));
+        link.setRel(state.getAttr("rel"));
+        state.expectingText = false;
+        push(state);
+    }
 
     public void startElement_title(State state) throws SAXException {
         in_content++;
@@ -22,114 +190,10 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
 
-    public void startElement_feed(State state) throws SAXException {
-
-        this.in_feed = true;
-        String attr_version = state.getAttr("version");
-        String attr_namespace = state.getAttr("xmlns");
-        if (!this.feed.has("format"))
-            if (attr_version.equals("")) {
-                if (attr_namespace.equals("http://www.w3.org/2005/Atom")) {
-                    this.feed.set("format","atom10");
-                } else {
-                    this.feed.set("format","atom");
-                }
-            } else {
-                if (attr_version.equals("0.1")) {
-                    this.feed.set("format", "atom01");
-                } else if (attr_version.equals("0.2")) {
-                    this.feed.set("format","atom02");
-                } else if (attr_version.equals("0.3")) {
-                    this.feed.set("format","atom03");
-                } else {
-                    this.feed.set("format","atom");
-                }
-            }
-        // Do some sanity checking
-        if (!this.feed.has("format")) {
-            throw new SAXParseException("Failed to detect Atom format",
-                    this.locator);
-        }
-    }
-
-    public void endElement_title() throws SAXException {
-        String content = pop("title");
-        in_content--;
-    }
-    public void startElement_entry(State state) throws SAXException {
-        in_entry = true;
-        current_entry = new Entry();
-        state.expectingText = false;
-        push(state);
-    }
-    public void endElement_entry() throws SAXException {
-        String content = pop("entry");
-        in_entry = false;
-        feed.addEntry(current_entry);
-        current_entry = null;
-    }
-    
     public void startElement_url(State state) throws SAXException {
         in_author = true;
         state.expectingText = true;
         push(state);
-    }  
-    
-    public void startElement_author(State state) throws SAXException {
-        in_author = true;
-        state.expectingText = true;
-        author = new Author();
-        push(state);
-    }  
-    public void endElement_author() throws SAXException {
-        in_author = false;
-        pop("author");
-        getCurrentContext().setAuthor(author);
-        author = null;
     }
-    
-    public void endElement_name() throws SAXException {
-       String value = pop("name");
-       if (in_author) {
-           save_author("name", value);
-       } else if (in_contributor) {
-           save_contributor("name", value);
-       //} else if (in_textinput){
-       //FeedContext context = getCurrentContext();
-       //context.getTextInput().set("name", value);
-       }
 
-    }  
-    public void endElement_email() throws SAXException {
-    String value = pop("email");
-    if (in_author) {
-       save_author("email", value);
-    } else if (in_contributor) {
-       save_contributor("email", value);
-    }
-    }
-    public void endElement_url() throws SAXException {
-    
-    String value = pop("url");
-    if (in_author) {
-       save_author("url", value);
-    }else if (in_contributor) {
-      save_contributor("url", value);
-    }else if (in_image) {
-       // TODO
-    }else if (in_contributor) {
-       // TODO
-    }
-    }
-    
-    public void sync_author_details() {
-        log.debug("sync_author_details: not implemented");
-}
-    public void save_author(String key, String value) {
-        log.debug("save_authors: not implemented");
-}    
-    public void save_contributor(String key, String value) {
-        log.debug("save_contributors: not implemented");
-}
-    
 }
