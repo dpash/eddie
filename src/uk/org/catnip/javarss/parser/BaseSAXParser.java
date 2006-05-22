@@ -12,6 +12,7 @@ import java.util.Stack;
 import uk.org.catnip.javarss.Feed;
 import uk.org.catnip.javarss.FeedContext;
 import uk.org.catnip.javarss.Entry;
+import uk.org.catnip.javarss.Detail;
 
 public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     static Logger log = Logger.getLogger(BaseSAXParser.class);
@@ -22,6 +23,8 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
 
     protected Feed feed = new Feed();
     protected Entry current_entry;
+    protected Detail detail;
+
     protected boolean in_contributor = false;
     protected boolean in_author = false;
     protected boolean in_feed = false;
@@ -108,8 +111,13 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     protected String pop(String element) {
         if (stack.empty()) { return ""; }
         State state = (State)stack.pop();
+
         if (!state.localName.equals(element)) { return "";}
         String output = state.text.toString(); 
+        detail = new Detail();
+        detail.setLanguage(state.language);
+        detail.setType(state.type);
+        detail.setValue(output);
         if (!state.expectingText) { return output; }
         
         // If mode == base64 base64-decode text
@@ -119,24 +127,14 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         // resolve href links
         
         // If element can be relative url, resolve link
-        
+
         if (in_entry) {
-            if (element.equals("content")) {
-                // $self->{entries}->[-1]->{$element} = [];
-                // $contentparams = deep_copy($self->{contentparams});
-                // $contentparams->{'value'} = $output;
-                // push @{$self->{entries}->[-1]->{$element}}, $contentparams;
-            } else if (element.equals("category")) {
+            if (element.equals("category")) {
                 // $self->{entries}->[-1]->{$element} = $output;
                 // $domain = $self->{entries}->[-1]->{'categories'}->[-1]->[0];
                 // $self->{entries}->[-1]->{'categories'}->[-1] = [$domain, $output];
             } else if (element.equals("source")) {
                 // $self->{entries}[-1]{'source'}{'value'} = $output;
-            } else if (element.equals("link")) {
-                // $self->{entries}->[-1]->{$element} = $output;
-                if (output.length() > 0) {
-                    // $self->{entries}->[-1]->{'links'}->[-1]->{'href'} = $output;
-                }
             } else {
                 current_entry.set(element,output);
                 if (in_content > 0){
@@ -151,11 +149,8 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         } else if (in_feed && !in_textinput && !in_image) {
             feed.set(element,output);
             if (element.equals("category")) {
-                
                 // $domain = $self->{feeddata}->{'categories'}->[-1]->[0];
                 // $self->{feeddata}->{'categories'}->[-1] = [$domain, $output];
-            } else if (element.equals("link")) {
-                // $self->{feeddata}->{'links'}->[-1]->{'href'} = $output;
             } else if (in_content > 0) {
                 if ( element.equals( "description")) {
                     element = "tagline";
@@ -171,6 +166,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     }
     public void characters(char[] ch, int start, int length) {
         String data =  new String(ch, start,length);
+        data.trim();
         log.trace("characters: "+data);
         getCurrentState().addText(data);
     }
