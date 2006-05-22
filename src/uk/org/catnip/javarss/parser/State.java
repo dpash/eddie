@@ -11,14 +11,27 @@ public class State {
         this.localName = localName;
         this.qName = qName;
         this.atts = atts;
-        
+        this.type = atts.getValue("type");
+        if (this.type == null) {
+            this.type = prev.type;
+        }
+        if (this.type == null) {
+            this.type = "plain/text";
+        }
+        this.language = atts.getValue("xml:lang");
+        if (this.language == null) {
+            this.language = prev.language;
+        }
+        if (this.language == null) {
+            this.language = "en";
+        }
     }
     private String uri = "";
     public String localName = "";
     public String element = "";
     public String qName = "";
     public Attributes atts = new AttributesImpl();
-    public String lang = "";
+    public String language = "";
     public String base = "";
     public String mode = "";
     public String type = "";
