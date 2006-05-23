@@ -41,7 +41,7 @@ public class FeedContext {
         contributors.add(a);
     }
     public void addLink(Link link) {
-        log.debug("adding link: " + link);
+        log.trace("adding link: " + link);
         links.add(link);
     }
     public Iterator contributors() {
