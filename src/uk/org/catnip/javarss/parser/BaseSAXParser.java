@@ -81,10 +81,10 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         try {
             Class[] argTypes = { State.class };
             Object[] values = {state };
-            this.getClass().getMethod("startElement_" + localName, argTypes)
+            this.getClass().getMethod("startElement_" + state.getElement(), argTypes)
                     .invoke(this, values);
         } catch (NoSuchMethodException e) {
-            log.trace("unhandled element " + localName);
+            log.trace("unhandled element " + state.getElement());
             state.expectingText = true;
             push(state);
             // } catch (InvocationTargetException e) {
@@ -97,8 +97,9 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         log.trace("end_element: " + localName);
+        State state = new State(uri, localName, qName);
         try {
-            this.getClass().getMethod("endElement_" + localName, (Class[])null)
+            this.getClass().getMethod("endElement_" + state.getElement(), (Class[])null)
                     .invoke(this, (Object[])null);
         } catch (NoSuchMethodException e) {
             log.trace("unhandled element " + localName);
@@ -112,7 +113,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         if (stack.empty()) { return ""; }
         State state = (State)stack.pop();
 
-        if (!state.localName.equals(element)) { return "";}
+        if (!state.getElement().equals(element)) { return "";}
         String output = state.text.toString(); 
         detail = new Detail();
         detail.setLanguage(state.language);
