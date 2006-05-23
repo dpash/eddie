@@ -11,7 +11,7 @@ public class State {
     private static Map createElementAliases(){
         Map aliases = new Hashtable();
         aliases.put("abstract"          , "description");
-        aliases.put("content"           , "body");
+        aliases.put("body"              , "content");
         aliases.put("content_encoded"   , "body");
         aliases.put("created"           , "dcterms_created");
         aliases.put("dc_author"         , "author");
