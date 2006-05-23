@@ -66,7 +66,6 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void endElement_link() throws SAXException {
         pop("link");
-        log.debug("end element link");
         link.setDetails(detail);
         getCurrentContext().addLink(link);
         if ((link.getType().equals("text/html") ||link.getType().equals("application/xhtml+xml")) && link.getRel().equals("alternate")) {
