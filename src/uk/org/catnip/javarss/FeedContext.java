@@ -11,7 +11,7 @@ public class FeedContext {
     protected Hashtable property_map = new Hashtable();
     protected Author author;
     private Detail title;
-    private List contributors = new LinkedList();
+    protected List contributors = new LinkedList();
     protected List links = new LinkedList();
     public String set(String key, String value) {
         property_map.put(key,value);
