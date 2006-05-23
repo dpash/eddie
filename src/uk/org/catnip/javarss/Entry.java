@@ -9,9 +9,12 @@ public class Entry extends FeedContext {
     
     
     public String toString() {
-        String ret = "";
-        ret += property_map.toString();
-        return ret;
+        StringBuilder ret = new StringBuilder();
+        ret.append(property_map.toString());
+        ret.append("content =" + content + ", ");
+        ret.append("title_detail = " + this.getTitle() + ", ");
+        ret.append("contributors = " + contributors);
+        return ret.toString();
      }
     
     public void addContent(Detail c) {
