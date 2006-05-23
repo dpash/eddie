@@ -10,33 +10,33 @@ public class State {
     private static Map element_aliases = createElementAliases();
     private static Map createElementAliases(){
         Map aliases = new Hashtable();
-        aliases.put("abstract","description");
-        //"content"           => "body",
-        //"content_encoded"   => "body",
-        //"created"           => "dcterms_created",
-        //"dc_author"         => "author",
-        //"dc_creator"        => "author",
-        //"dc_date"           => "modified",
-        //"dc_language"       => "language",
-        //"dc_publisher"      => "webmaster",
-        //"dc_rights"         => "copyright",
-        //"dc_subject"        => "category",
-        //"dc_title"          => "title",
-        //"dcterms:modified"  => "modified",
-        //"entry"             => "item",
-        //"feedinfo"          => "channel",
-        //"fullitem"          => "body",
-        aliases.put("homepage", "url");
-        //"keywords"          => "category",
-        //"issued"            => "dcterms_issued",
-        //"managingeditor"    => "author",
-        //"product"           => "item",
-        //"producturl"        => "link",
-        //"pubdate"           => "modified",
-        //"published"         => "dcterms_created",
-        //"uri"               => "url",
-        //"xhtml_body"        => "body",
-        //"updated"           => "modified",
+        aliases.put("abstract"          , "description");
+        aliases.put("content"           , "body");
+        aliases.put("content_encoded"   , "body");
+        aliases.put("created"           , "dcterms_created");
+        aliases.put("dc_author"         , "author");
+        aliases.put("dc_creator"        , "author");
+        aliases.put("dc_date"           , "modified");
+        aliases.put("dc_language"       , "language");
+        aliases.put("dc_publisher"      , "webmaster");
+        aliases.put("dc_rights"         , "copyright");
+        aliases.put("dc_subject"        , "category");
+        aliases.put("dc_title"          , "title");
+        aliases.put("dcterms:modified"  , "modified");
+        aliases.put("item"              , "entry");
+        aliases.put("feedinfo"          , "channel");
+        aliases.put("fullitem"          , "body");
+        aliases.put("homepage"          , "url");
+        aliases.put("keywords"          , "category");
+        aliases.put("issued"            , "dcterms_issued");
+        aliases.put("managingeditor"    , "author");
+        aliases.put("product"           , "item");
+        aliases.put("producturl"        , "link");
+        aliases.put("pubdate"           , "modified");
+        aliases.put("published"         , "dcterms_created");
+        aliases.put("uri"               , "url");
+        aliases.put("xhtml_body"        , "body");
+        aliases.put("updated"           , "modified");
         return aliases;
     }
     public State() {}
@@ -100,7 +100,7 @@ public void setElement(String element) {
 
 private String aliasElement(String element) {
     if (element_aliases.containsKey(element)) {
-        log.trace("aliasing "+element + " to "+(String)element_aliases.get(element) );
+        log.debug("aliasing "+element + " to "+(String)element_aliases.get(element) );
         return (String)element_aliases.get(element);
     }
     return element;
