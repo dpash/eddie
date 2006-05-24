@@ -1,4 +1,4 @@
-package uk.org.catnip.javarss.parser;
+package uk.org.catnip.eddie.parser;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;

@@ -1,12 +1,12 @@
-package uk.org.catnip.javarss.parser;
+package uk.org.catnip.eddie.parser;
 
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
-import uk.org.catnip.javarss.Entry;
-import uk.org.catnip.javarss.Generator;
-import uk.org.catnip.javarss.Author;
-import uk.org.catnip.javarss.Link;
+import uk.org.catnip.eddie.Entry;
+import uk.org.catnip.eddie.Generator;
+import uk.org.catnip.eddie.Author;
+import uk.org.catnip.eddie.Link;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);

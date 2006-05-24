@@ -1,10 +1,10 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
 import java.io.*;
 import java.util.regex.*;
 import java.util.Iterator;
 import org.apache.log4j.Logger;
-import uk.org.catnip.javarss.parser.Parser;
+import uk.org.catnip.eddie.parser.Parser;
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
 

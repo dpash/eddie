@@ -1,6 +1,6 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
-import uk.org.catnip.javarss.Detail;
+import uk.org.catnip.eddie.Detail;
 
 public class Link extends Detail {
     private String href;

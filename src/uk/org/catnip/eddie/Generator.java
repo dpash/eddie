@@ -1,4 +1,4 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
 public class Generator extends Detail {
     private String name;

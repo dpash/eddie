@@ -1,10 +1,10 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
 import java.util.List;
 import java.util.LinkedList;
 import java.lang.StringBuilder;
 import java.util.Iterator;
-import uk.org.catnip.javarss.Detail;
+import uk.org.catnip.eddie.Detail;
 
 public class Feed extends FeedContext {
     public boolean error = false;

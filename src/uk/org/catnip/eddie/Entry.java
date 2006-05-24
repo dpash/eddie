@@ -1,4 +1,4 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
 import java.util.LinkedList;
 import java.util.List;

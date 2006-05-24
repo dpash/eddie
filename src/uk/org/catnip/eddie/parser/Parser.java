@@ -1,11 +1,11 @@
-package uk.org.catnip.javarss.parser;
+package uk.org.catnip.eddie.parser;
 
 import java.io.FileReader;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
-import uk.org.catnip.javarss.Feed;
+import uk.org.catnip.eddie.Feed;
 
 public class Parser {
 

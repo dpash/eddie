@@ -1,10 +1,10 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
-import uk.org.catnip.javarss.Link;
+import uk.org.catnip.eddie.Link;
 import org.apache.log4j.Logger;
 public class FeedContext {
     static Logger log = Logger.getLogger(FeedContext.class);

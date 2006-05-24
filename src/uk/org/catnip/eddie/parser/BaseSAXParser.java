@@ -1,4 +1,4 @@
-package uk.org.catnip.javarss.parser;
+package uk.org.catnip.eddie.parser;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.ErrorHandler;
@@ -9,10 +9,10 @@ import org.xml.sax.Locator;
 import org.apache.log4j.Logger;
 import java.util.Stack;
 
-import uk.org.catnip.javarss.Feed;
-import uk.org.catnip.javarss.FeedContext;
-import uk.org.catnip.javarss.Entry;
-import uk.org.catnip.javarss.Detail;
+import uk.org.catnip.eddie.Feed;
+import uk.org.catnip.eddie.FeedContext;
+import uk.org.catnip.eddie.Entry;
+import uk.org.catnip.eddie.Detail;
 
 public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     static Logger log = Logger.getLogger(BaseSAXParser.class);

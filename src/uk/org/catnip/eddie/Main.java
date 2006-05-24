@@ -1,4 +1,4 @@
-package uk.org.catnip.javarss;
+package uk.org.catnip.eddie;
 
 import org.apache.log4j.PropertyConfigurator;
 
