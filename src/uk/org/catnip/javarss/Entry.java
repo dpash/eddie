@@ -13,7 +13,8 @@ public class Entry extends FeedContext {
         ret.append(property_map.toString());
         ret.append("content =" + content + ", ");
         ret.append("title_detail = " + this.getTitle() + ", ");
-        ret.append("contributors = " + contributors);
+        ret.append("contributors = " + contributors + ", ");
+        ret.append("links = " + links);
         return ret.toString();
      }
     
