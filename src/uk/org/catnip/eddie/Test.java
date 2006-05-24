@@ -91,7 +91,7 @@ public class Test {
         } catch (Exception ex) {
             if (log.isDebugEnabled()) {
                 log.debug("****************************************");
-                log.debug("parse failed: " + ex);
+                log.debug("parse failed: ", ex);
             } else if (log.isInfoEnabled()){
                 log.info("failed: " + filename);
             } else {
@@ -217,13 +217,13 @@ public class Test {
     
     public PyDictionary convertDetail(Detail detail) {
         PyDictionary detail_dict = new PyDictionary();
-        if (!detail.getLanguage().equals("")) {
+        if (detail.getLanguage() != null) {
         detail_dict.__setitem__("language", new PyString(detail.getLanguage()));
         }
-        if (!detail.getType().equals("")) {
+        if (detail.getType() != null) {
         detail_dict.__setitem__("type", new PyString(detail.getType()));
         }
-        if (!detail.getValue().equals("")) {
+        if (detail.getValue() != null) {
         detail_dict.__setitem__("value", new PyString(detail.getValue()));
         }
         return detail_dict;
