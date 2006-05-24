@@ -90,6 +90,7 @@ public class Test {
             passed_tests++;
         } catch (Exception ex) {
             if (log.isDebugEnabled()) {
+                log.debug("****************************************");
                 log.debug("parse failed: " + ex);
             } else if (log.isInfoEnabled()){
                 log.info("failed: " + filename);
@@ -216,16 +217,28 @@ public class Test {
     
     public PyDictionary convertDetail(Detail detail) {
         PyDictionary detail_dict = new PyDictionary();
+        if (!detail.getLanguage().equals("")) {
         detail_dict.__setitem__("language", new PyString(detail.getLanguage()));
+        }
+        if (!detail.getType().equals("")) {
         detail_dict.__setitem__("type", new PyString(detail.getType()));
+        }
+        if (!detail.getValue().equals("")) {
         detail_dict.__setitem__("value", new PyString(detail.getValue()));
+        }
         return detail_dict;
     }
     public PyDictionary convertLink(Link link) {
-        PyDictionary link_dict = convertDetail(link);
+        PyDictionary link_dict =  convertDetail(link);
+        if (!link.getHref().equals("")) {
         link_dict.__setitem__("href", new PyString(link.getHref()));
+        }
+        if (!link.getTitle().equals("")) {
         link_dict.__setitem__("title", new PyString(link.getTitle()));
+        }
+        if (!link.getRel().equals("")) {
         link_dict.__setitem__("rel", new PyString(link.getRel()));
+        }
         return link_dict;
     }
     public PyDictionary convertGenerator(Generator generator) {
