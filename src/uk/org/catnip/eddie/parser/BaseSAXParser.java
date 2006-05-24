@@ -8,7 +8,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.apache.log4j.Logger;
 import java.util.Stack;
-
+import org.apache.commons.codec.binary.Base64;
 import uk.org.catnip.eddie.Feed;
 import uk.org.catnip.eddie.FeedContext;
 import uk.org.catnip.eddie.Entry;
@@ -126,7 +126,10 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         detail.setValue(output);
         if (!state.expectingText) { return output; }
         
-        // If mode == base64 base64-decode text
+        if (state.mode != null && state.mode.equals("base64")) {
+            output = new String(Base64.decodeBase64(output.getBytes()));
+        }
+        
         // If mode == escaped and content-type == application/octet-stream
         // base64-decode test
         
