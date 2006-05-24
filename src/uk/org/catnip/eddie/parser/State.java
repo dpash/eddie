@@ -127,33 +127,29 @@ private static Map createElementAliases() {
         }
         this.language = this.getAttr("xml:lang");
         if (this.language == null || this.language.equals("")) {
-            log.debug(prev);
-            log.debug("language is null or empty: using previous value:" + prev.language);
-            this.language = prev.language;
+            this.language = prev.getLanguage();
         }
-        if (this.language == null || this.language.equals("")) {
-            this.language = "";
-        }
-        log.debug("language is finally set to "+ this.language);
+
+        
     }
 
-    private String uri = "";
+    private String uri;
 
-    private String localName = "";
+    private String localName;
 
-    private String element = "";
+    private String element;
 
-    public String qName = "";
+    public String qName;
 
     public Attributes atts = new AttributesImpl();
 
-    public String language = "";
+    private String language;
 
-    public String base = "";
+    public String base;
 
-    public String mode = "";
+    public String mode;
 
-    public String type = "";
+    public String type;
 
     public boolean expectingText = false;
 
@@ -164,7 +160,7 @@ private static Map createElementAliases() {
     }
 
     public String getAttr(String key) {
-        return this.getAttr(key, "");
+        return this.getAttr(key, null);
     }
 
     public String getAttr(String key, String default_value) {
@@ -193,7 +189,7 @@ private static Map createElementAliases() {
     }
     private String aliasNamespace(String element) {
         if (namespace_aliases.containsKey(element)) {
-            log.debug("aliasing namespace " + element + " to "
+            log.trace("aliasing namespace " + element + " to "
                     + (String) namespace_aliases.get(element));
             return (String) namespace_aliases.get(element);
         }
@@ -201,10 +197,18 @@ private static Map createElementAliases() {
     }
     private String aliasElement(String element) {
         if (element_aliases.containsKey(element)) {
-            log.debug("aliasing " + element + " to "
+            log.trace("aliasing " + element + " to "
                     + (String) element_aliases.get(element));
             return (String) element_aliases.get(element);
         }
         return element;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
