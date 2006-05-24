@@ -81,8 +81,13 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         try {
             Class[] argTypes = { State.class };
             Object[] values = {state };
+            int stacksize = stack.size();
             this.getClass().getMethod("startElement_" + state.getElement(), argTypes)
                     .invoke(this, values);
+            if (stack.size() == stacksize) {
+                //naughty handler didn't push state
+                push(state);
+            }
         } catch (NoSuchMethodException e) {
             log.trace("unhandled element " + state.getElement());
             state.expectingText = true;
@@ -116,7 +121,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         if (!state.getElement().equals(element)) { return "";}
         String output = state.text.toString(); 
         detail = new Detail();
-        detail.setLanguage(state.language);
+        detail.setLanguage(state.getLanguage());
         detail.setType(state.type);
         detail.setValue(output);
         if (!state.expectingText) { return output; }
