@@ -10,7 +10,9 @@ import uk.org.catnip.javarss.Link;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
+
     private Author author;
+
     private Generator generator;
 
     private Link link;
@@ -19,7 +21,13 @@ public class FeedSAXParser extends BaseSAXParser {
         in_author = false;
         pop("author");
         getCurrentContext().setAuthor(author);
-        getCurrentContext().set("author", author.getName());
+        if (author.getName() != null && author.getEmail() != null
+                && !author.getEmail().equals("")) {
+            getCurrentContext().set("author",
+                    author.getName() + " (" + author.getEmail() + ")");
+        } else {
+            getCurrentContext().set("author", author.getName());
+        }
         author = null;
     }
 
@@ -34,6 +42,7 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().addContributor(author);
         author = null;
     }
+
     public void endElement_email() throws SAXException {
         String value = pop("email");
         if (in_author) {
@@ -42,6 +51,7 @@ public class FeedSAXParser extends BaseSAXParser {
             save_contributor("email", value);
         }
     }
+
     public void endElement_entry() throws SAXException {
         pop("entry");
         in_entry = false;
@@ -58,21 +68,26 @@ public class FeedSAXParser extends BaseSAXParser {
         feed.setGenerator(generator);
         generator = null;
     }
+
     public void endElement_id() throws SAXException {
         in_author = false;
         String id = pop("id");
         getCurrentContext().set("guid", id);
         author = null;
     }
+
     public void endElement_link() throws SAXException {
         pop("link");
         link.setDetails(detail);
         getCurrentContext().addLink(link);
-        if ((link.getType().equals("text/html") ||link.getType().equals("application/xhtml+xml")) && link.getRel().equals("alternate")) {
+        if ((link.getType().equals("text/html") || link.getType().equals(
+                "application/xhtml+xml"))
+                && link.getRel().equals("alternate")) {
             getCurrentContext().set("link", link.getHref());
         }
         link = null;
     }
+
     public void endElement_name() throws SAXException {
         String value = pop("name");
         if (in_author) {
@@ -85,17 +100,20 @@ public class FeedSAXParser extends BaseSAXParser {
         }
 
     }
+
     public void endElement_tagline() throws SAXException {
         String content = pop("tagline");
-        feed.set("tagline",content);
+        feed.set("tagline", content);
         feed.setTagline(detail);
     }
+
     public void endElement_title() throws SAXException {
         String content = pop("title");
-        getCurrentContext().set("title",content);
+        getCurrentContext().set("title", content);
         getCurrentContext().setTitle(detail);
         in_content--;
     }
+
     public void endElement_url() throws SAXException {
 
         String value = pop("url");
@@ -120,19 +138,21 @@ public class FeedSAXParser extends BaseSAXParser {
         author = new Author();
         push(state);
     }
+
     public void startElement_contributor(State state) throws SAXException {
         in_author = true;
         state.expectingText = true;
         author = new Author();
         push(state);
     }
+
     public void startElement_entry(State state) throws SAXException {
         in_entry = true;
         current_entry = new Entry();
         state.expectingText = false;
         push(state);
     }
-    
+
     public void startElement_feed(State state) throws SAXException {
 
         this.in_feed = true;
@@ -162,6 +182,7 @@ public class FeedSAXParser extends BaseSAXParser {
                     this.locator);
         }
     }
+
     public void startElement_generator(State state) throws SAXException {
         generator = new Generator();
         generator.setName(state.getAttr("name"));
