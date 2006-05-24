@@ -31,13 +31,25 @@ public class Link extends Detail {
     }
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{");        
+        sb.append("{");    
+        if (!this.href.equals("")){
         sb.append("href: '" + this.href + "', ");
+        }
+        if (!this.title.equals("")){
         sb.append("title: '" + this.title + "', ");
+        }
+        if (!this.rel.equals("")){
         sb.append("rel: '" + this.rel + "', ");
+        }
+        if (!this.getType().equals("")){
         sb.append("type: '" + this.getType()+ "', ");
+        }
+        if (!this.getLanguage().equals("")){
         sb.append("language: '" + this.getLanguage() + "', ");
+        }
+        if (!this.getValue().equals("")){
         sb.append("value: '" + this.getValue() +"'");
+        }
         sb.append("}");
         return sb.toString();
     }
