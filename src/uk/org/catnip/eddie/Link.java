@@ -32,22 +32,22 @@ public class Link extends Detail {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");    
-        if (!this.href.equals("")){
+        if (this.href != null){
         sb.append("href: '" + this.href + "', ");
         }
-        if (!this.title.equals("")){
+        if (this.title != null){
         sb.append("title: '" + this.title + "', ");
         }
-        if (!this.rel.equals("")){
+        if (this.rel != null){
         sb.append("rel: '" + this.rel + "', ");
         }
-        if (!this.getType().equals("")){
+        if (this.getType() != null){
         sb.append("type: '" + this.getType()+ "', ");
         }
-        if (!this.getLanguage().equals("")){
+        if (this.getLanguage() != null){
         sb.append("language: '" + this.getLanguage() + "', ");
         }
-        if (!this.getValue().equals("")){
+        if (this.getValue() != null){
         sb.append("value: '" + this.getValue() +"'");
         }
         sb.append("}");

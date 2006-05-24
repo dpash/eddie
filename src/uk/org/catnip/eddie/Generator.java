@@ -30,12 +30,24 @@ public class Generator extends Detail {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
+        if (this.getName() != null) {
         sb.append("name: '" + this.getName()+ "', ");
+        }
+        if (this.getUrl() != null) {
         sb.append("url: '" + this.getUrl()+ "', ");
+        }
+        if (this.getVersion() != null) {
         sb.append("version: '" + this.getVersion()+ "', ");
+        }
+        if (this.getType() != null) {
         sb.append("type: '" + this.getType()+ "', ");
+        }
+        if (this.getLanguage() != null) {
         sb.append("language: '" + this.getLanguage() + "', ");
+        }
+        if (this.getValue() != null) {
         sb.append("value: '" + this.getValue() +"'");
+        }
         sb.append("}");
         return sb.toString();
     }

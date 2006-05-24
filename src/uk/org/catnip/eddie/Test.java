@@ -230,22 +230,29 @@ public class Test {
     }
     public PyDictionary convertLink(Link link) {
         PyDictionary link_dict =  convertDetail(link);
-        if (!link.getHref().equals("")) {
+        if (link.getHref() != null) {
         link_dict.__setitem__("href", new PyString(link.getHref()));
         }
-        if (!link.getTitle().equals("")) {
+        if (link.getTitle() != null) {
         link_dict.__setitem__("title", new PyString(link.getTitle()));
         }
-        if (!link.getRel().equals("")) {
+        if (link.getRel() != null) {
         link_dict.__setitem__("rel", new PyString(link.getRel()));
         }
         return link_dict;
     }
     public PyDictionary convertGenerator(Generator generator) {
         PyDictionary link_dict = convertDetail(generator);
+    
+    if (generator.getName() != null) {
         link_dict.__setitem__("name", new PyString(generator.getName()));
+    }
+    if (generator.getUrl() != null) {
         link_dict.__setitem__("url", new PyString(generator.getUrl()));
+    }
+    if (generator.getVersion() != null) {
         link_dict.__setitem__("version", new PyString(generator.getVersion()));
+    }
         return link_dict;
     }
 }
