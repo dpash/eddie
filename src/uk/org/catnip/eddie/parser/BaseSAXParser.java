@@ -78,6 +78,20 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         log.trace("startElement:" + localName);
         State state = new State(uri, localName, qName, atts, getCurrentState());
 
+        if (state.mode != null) {
+            if (in_content > 0 && state.mode.equals( "escaped")) {
+                state.mode = "xml";
+            }
+            if (in_content > 0 && state.mode.equals( "xml")) {
+               handle_data(state,clean_html_start(state));
+               state.content = true;
+               push(state);
+               return;
+            }
+        }
+
+        
+        
         try {
             Class[] argTypes = { State.class };
             Object[] values = {state };
@@ -103,6 +117,18 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
             throws SAXException {
         log.trace("end_element: " + localName);
         State state = new State(uri, localName, qName);
+        State prev = getCurrentState();
+        
+        if (prev.mode != null) {
+            if (in_content > 0 && prev.mode.equals("escaped") && prev.content) {
+                prev.mode = "xml";
+            }
+            if (in_content > 0 && prev.mode.equals("xml") && prev.content) {
+                String data = pop(localName);
+                handle_data(prev, data + clean_html_end(state.getElement()));
+               return;
+            }
+         }
         try {
             this.getClass().getMethod("endElement_" + state.getElement(), (Class[])null)
                     .invoke(this, (Object[])null);
@@ -116,18 +142,21 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
 
     protected String pop(String element) {
         if (stack.empty()) { return ""; }
+   
+        if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
-
-        if (!state.getElement().equals(element)) { return "";}
         String output = state.text.toString(); 
+       
         detail = new Detail();
         detail.setLanguage(state.getLanguage());
         detail.setType(state.type);
+        if (!output.equals("")){
         detail.setValue(output);
+        }
         if (!state.expectingText) { return output; }
         
         if (state.mode != null && state.mode.equals("base64")) {
-            output = new String(Base64.decodeBase64(output.getBytes()));
+            output = new String(Base64.decodeBase64(output.trim().getBytes()));
         }
         
         // If mode == escaped and content-type == application/octet-stream
@@ -175,11 +204,71 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     }
     public void characters(char[] ch, int start, int length) {
         String data =  new String(ch, start,length);
-        data.trim();
+        //data.trim();
+        if (in_content > 0) {
+        if (data.equals("<")) { data = "&lt;"; }
+        if (data.equals(">")) { data = "&gt;"; }
+        }
         log.trace("characters: "+data);
         getCurrentState().addText(data);
     }
 
+    
+    public void handle_data(State state, String data) {
+        if (stack.empty()) { return; }
+        if (/*$self->{escape} &&*/ state.mode.equals("xml")) {
+           data = xmlescape(data);
+        }
+
+        getCurrentState().addText(data);
+    }
+    
+    public String xmlescape(String data) {
+        data.replace("&", "&amp;");
+        data.replace("<", "&lt;");
+        data.replace(">", "&gt;");
+        return data;
+    }
+    public String clean_html_start(State state) {
+       StringBuilder sb = new StringBuilder();
+//        if (not in($tag, $acceptable_elements)) {
+//           if (in($tag, $unacceptable_elements_with_end_tag)) {
+//              $self->{unsafe_content} = 1;
+//           }
+//           return "";
+//        } else {
+           sb.append("<");
+           sb.append(state.getElement());
+           for (int i = 0; i < state.atts.getLength(); i++){
+
+//              next if not in($attr, $acceptable_attributes);
+               sb.append(" ");
+               sb.append(state.atts.getLocalName(i));
+             sb.append("=\"");
+             sb.append(state.atts.getValue(i));
+             sb.append("\"");
+           }
+//           if (in($tag, $elements_no_end_tag)) {
+//              $str .= " /";
+//           }
+           sb.append(">");
+//        }
+       return sb.toString();
+     }
+     public String clean_html_end(String tag) {       
+//        if (not in($tag, $acceptable_elements)) {
+//           if (in($tag, $unacceptable_elements_with_end_tag)) {
+//              $self->{unsafe_content} = 0;
+//           }
+//           return "";
+//        } elsif (in($tag, $elements_no_end_tag)) {
+//           return "";
+//        } else {
+           return "</" + tag + ">";
+//        }
+     }
+
+    
     // ErrorHandler
     public void warning(SAXParseException exception) throws SAXException {
         log.debug("warning: " + filename + ": " + exception.getMessage());
