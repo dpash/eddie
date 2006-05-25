@@ -7,6 +7,7 @@ import uk.org.catnip.eddie.Entry;
 import uk.org.catnip.eddie.Generator;
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Link;
+import uk.org.catnip.eddie.Date;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
@@ -82,7 +83,7 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().addLink(link);
         if ((link.getType().equals("text/html") || link.getType().equals(
                 "application/xhtml+xml"))
-                && link.getRel().equals("alternate")) {
+                && (link.getRel() != null && link.getRel().equals("alternate"))) {
             getCurrentContext().set("link", link.getHref());
         }
         link = null;
@@ -113,7 +114,39 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().setTitle(detail);
         in_content--;
     }
-
+    public void endElement_info() throws SAXException {
+        String content = pop("info");
+        getCurrentContext().set("info", content);
+        feed.setInfo(detail);
+        in_content--;
+    }
+    public void endElement_summary() throws SAXException {
+        String content = pop("summary");
+        getCurrentContext().set("summary", content);
+        getCurrentContext().setSummary(detail);
+        in_content--;
+    }
+    public void endElement_copyright() throws SAXException {
+        String content = pop("copyright");
+        feed.set("copyright", content);
+        feed.setCopyright(detail);
+        in_content--;
+    }
+    public void endElement_issued() throws SAXException {
+        String content = pop("issued");
+        getCurrentContext().set("issued", content);
+        getCurrentContext().setIssued(new Date(content,detail));
+    }
+    public void endElement_created() throws SAXException {
+        String content = pop("created");
+        getCurrentContext().set("created", content);
+        getCurrentContext().setCreated(new Date(content,detail));
+    }
+    public void endElement_modified() throws SAXException {
+        String content = pop("modified");
+        getCurrentContext().set("modified", content);
+        getCurrentContext().setModified(new Date(content,detail));
+    }
     public void endElement_url() throws SAXException {
 
         String value = pop("url");
@@ -159,8 +192,8 @@ public class FeedSAXParser extends BaseSAXParser {
         String attr_version = state.getAttr("version");
         String attr_namespace = state.getAttr("xmlns");
         if (!this.feed.has("format"))
-            if (attr_version.equals("")) {
-                if (attr_namespace.equals("http://www.w3.org/2005/Atom")) {
+            if (attr_version == null || attr_version.equals("")) {
+                if (attr_namespace != null && attr_namespace.equals("http://www.w3.org/2005/Atom")) {
                     this.feed.set("format", "atom10");
                 } else {
                     this.feed.set("format", "atom");
@@ -209,11 +242,45 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
 
     }
+    public void startElement_info(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.type = state.getAttr("type", "text/plain");
+        state.expectingText = true;
+        push(state);
 
+    }
+
+    public void startElement_summary(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.type = state.getAttr("type", "text/plain");
+        state.expectingText = true;
+        push(state);
+
+    }
+    public void startElement_copyright(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.type = state.getAttr("type", "text/plain");
+        state.expectingText = true;
+        push(state);
+
+    }
     public void startElement_url(State state) throws SAXException {
-        in_author = true;
         state.expectingText = true;
         push(state);
     }
-
+    public void startElement_issued(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_created(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_modified(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
 }
