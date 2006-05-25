@@ -63,7 +63,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_generator() throws SAXException {
         String content = pop("generator");
         generator.setDetails(detail);
-        if (generator.getName() != null && !content.equals("")) {
+        if (generator.getName() == null && !content.equals("")) {
             generator.setName(content);
         }
         feed.setGenerator(generator);
