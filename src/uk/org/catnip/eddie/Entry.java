@@ -7,14 +7,30 @@ import java.util.Iterator;
 public class Entry extends FeedContext {
     private List content = new LinkedList();
     
-    
     public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append(property_map.toString());
+        if (!content.isEmpty()) {
         ret.append("content =" + content + ", ");
-        ret.append("title_detail = " + this.getTitle() + ", ");
+        }
+        if (this.getTitle() != null) {
+        ret.append("title_detail = '" + this.getTitle() + "', ");
+        }
+        if (!contributors.isEmpty()) {
         ret.append("contributors = " + contributors + ", ");
+        }
+        if (!links.isEmpty()){
         ret.append("links = " + links);
+        }
+        if (getCreated() != null){
+            ret.append("created = " + getCreated());
+            }
+        if (getIssued() != null){
+            ret.append("issued = " + getIssued());
+            }
+        if (getModified() != null){
+            ret.append("modifed = " + getModified());
+            }
         return ret.toString();
      }
     
