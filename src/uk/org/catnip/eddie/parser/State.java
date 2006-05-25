@@ -76,22 +76,22 @@ private static Map createElementAliases() {
         aliases.put("abstract", "description");
         aliases.put("body", "content");
         aliases.put("content_encoded", "body");
-        aliases.put("created", "dcterms_created");
-        aliases.put("dc_author", "author");
-        aliases.put("dc_creator", "author");
-        aliases.put("dc_date", "modified");
-        aliases.put("dc_language", "language");
-        aliases.put("dc_publisher", "webmaster");
-        aliases.put("dc_rights", "copyright");
-        aliases.put("dc_subject", "category");
-        aliases.put("dc_title", "title");
+        aliases.put("dcterms:created", "created");
+        aliases.put("dc:author", "author");
+        aliases.put("dc:creator", "author");
+        aliases.put("dc:date", "modified");
+        aliases.put("dc:language", "language");
+        aliases.put("dc:publisher", "webmaster");
+        aliases.put("dc:rights", "copyright");
+        aliases.put("dc:subject", "category");
+        aliases.put("dc:title", "title");
         aliases.put("dcterms:modified", "modified");
         aliases.put("item", "entry");
         aliases.put("feedinfo", "channel");
         aliases.put("fullitem", "body");
         aliases.put("homepage", "url");
         aliases.put("keywords", "category");
-        aliases.put("issued", "dcterms_issued");
+        aliases.put("dcterms:issued", "issued");
         aliases.put("managingeditor", "author");
         aliases.put("product", "item");
         aliases.put("producturl", "link");
@@ -118,23 +118,19 @@ private static Map createElementAliases() {
         this.element = aliasElement(localName);
         this.qName = qName;
         this.atts = atts;
-        this.type = atts.getValue("type");
-        if (this.type == null || this.type.equals("")) {
-            this.type = prev.type;
-        }
+        this.type = this.getAttr("type", prev.type);
+        this.mode = this.getAttr("mode",prev.mode);
         if (this.type == null || this.type.equals("")) {
             this.type = "text/plain";
         }
-        this.language = this.getAttr("xml:lang");
-        if (this.language == null || this.language.equals("")) {
-            this.language = prev.getLanguage();
-        }
+        this.language = this.getAttr("xml:lang", prev.getLanguage());
+        this.base = this.getAttr("xml:base", prev.getBase());
 
         
     }
 
     private String uri;
-
+    public boolean content = false;
     private String localName;
 
     private String element;
@@ -176,7 +172,7 @@ private static Map createElementAliases() {
         if (ret == null) {
             ret = default_value;
         }
-        log.debug("getAttr: "+ key + " = '" + ret +"'");
+        log.trace("getAttr: "+ key + " = '" + ret +"'");
         return ret;
     }
 
@@ -210,5 +206,13 @@ private static Map createElementAliases() {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
     }
 }
