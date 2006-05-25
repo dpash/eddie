@@ -3,6 +3,7 @@ package uk.org.catnip.eddie;
 import java.io.*;
 import java.util.regex.*;
 import java.util.Iterator;
+import java.util.Calendar;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.parser.Parser;
 import org.python.util.PythonInterpreter;
@@ -142,11 +143,27 @@ public class Test {
         if (feed.getTitle() != null) {
             feed_dict.__setitem__("title_detail",convertDetail(feed.getTitle()));
         }
+        if (feed.getInfo() != null) {
+            feed_dict.__setitem__("info_detail",convertDetail(feed.getInfo()));
+        }
         if (feed.getTagline() != null) {
             feed_dict.__setitem__("tagline_detail",convertDetail(feed.getTagline()));
         }
         if (feed.getGenerator() != null) {
             feed_dict.__setitem__("generator_detail",convertGenerator(feed.getGenerator()));
+        }
+        if (feed.getCopyright() != null) {
+            feed_dict.__setitem__("copyright_detail",convertDetail(feed.getCopyright()));
+        }
+        if (feed.getCreated() != null) {
+            feed_dict.__setitem__("created_parsed",convertDate(feed.getCreated()));
+        }
+        if (feed.getIssued() != null) {
+            feed_dict.__setitem__("issued_parsed",convertDate(feed.getIssued()));
+        }
+        if (feed.getModified() != null) {
+            feed_dict.__setitem__("modified_parsed",convertDate(feed.getModified()));
+            feed_dict.__setitem__("date_parsed",convertDate(feed.getModified()));
         }
         PyList contributors_list = new PyList();
         Iterator contributors = feed.contributors();
@@ -189,7 +206,19 @@ public class Test {
         if (entry.getTitle() != null) {
             entry_dict.__setitem__("title_detail",convertDetail(entry.getTitle()));
         }
-        
+        if (entry.getSummary() != null) {
+            entry_dict.__setitem__("summary_detail",convertDetail(entry.getSummary()));
+        }
+        if (entry.getCreated() != null) {
+            entry_dict.__setitem__("created_parsed",convertDate(entry.getCreated()));
+        }
+        if (entry.getIssued() != null) {
+            entry_dict.__setitem__("issued_parsed",convertDate(entry.getIssued()));
+        }
+        if (entry.getModified() != null) {
+            entry_dict.__setitem__("modified_parsed",convertDate(entry.getModified()));
+            entry_dict.__setitem__("date_parsed",convertDate(entry.getModified()));
+        }
         
         PyList contents_list = new PyList();
         Iterator contents = entry.contents();
@@ -255,4 +284,27 @@ public class Test {
     }
         return link_dict;
     }
-}
+    public PyTuple convertDate(Date date) {
+        PyTuple date_tuple;;
+    
+    if (date.getDate() != null) {
+        Calendar cal = date.getDate();
+        PyObject [] fields = {
+                new PyInteger(cal.get(Calendar.YEAR)),
+                new PyInteger(cal.get(Calendar.MONTH)+1),
+                new PyInteger(cal.get(Calendar.DAY_OF_MONTH)),
+                new PyInteger(cal.get(Calendar.HOUR_OF_DAY)),
+                new PyInteger(cal.get(Calendar.MINUTE)),
+                new PyInteger(cal.get(Calendar.SECOND)),
+                new PyInteger(Date.normaliseDayOfWeek(cal.get(Calendar.DAY_OF_WEEK))),
+                new PyInteger(cal.get(Calendar.DAY_OF_YEAR)),
+                new PyInteger(0)
+        };
+        date_tuple = new PyTuple(fields);
+
+    } else {
+        date_tuple = new PyTuple();
+    }
+
+        return date_tuple;
+    }}
