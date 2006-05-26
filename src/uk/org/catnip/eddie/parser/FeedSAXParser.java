@@ -28,35 +28,8 @@ public class FeedSAXParser extends BaseSAXParser {
         author = null;
     }
     
-    private void sync_author(String content, String option) {
-        log.debug(author);
-        String name = author.getName();
-        String email = author.getEmail();
-        String url = author.getUrl();
-        if (name != null && email != null && !email.equals("")) {
-            getCurrentContext().set(option,  name + " (" + email + ")");
-        } else if (name != null && !name.equals("")) {
-            getCurrentContext().set(option, name);
-        } else {
-            getCurrentContext().set(option, content);
-            log.debug("sync_author: " + content);
-            if (content.contains("(")) {
-                String part1 = content.substring(0, content.indexOf("("))
-                        .trim();
-                String part2 = content.substring(content.lastIndexOf("(") + 1,
-                        content.lastIndexOf(")")).trim();
-                if (part1.contains("@")) {
-                    author.setName(part2);
-                    author.setEmail(part1);
-                } else {
-                    author.setName(part1);
-                    author.setEmail(part2);
-                }
-            } else {
-                author.setName(content);
-            }
-            log.debug(author);
-        }
+    public void endElement_channel(State state) throws SAXException {
+        in_feed = false;
     }
 
     public void endElement_content() throws SAXException {
@@ -72,13 +45,19 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().addContributor(author);
         author = null;
     }
-    public void endElement_publisher() throws SAXException {
-        in_author = false;
-        sync_author(pop("publisher"), "publisher");
-        getCurrentContext().setPublisher(author);
-        author = null;
+    public void endElement_copyright() throws SAXException {
+        String content = pop("copyright");
+        feed.set("copyright", content);
+        feed.setCopyright(detail);
+        in_content--;
     }
     
+    public void endElement_created() throws SAXException {
+        String content = pop("created");
+        getCurrentContext().set("created", content);
+        getCurrentContext().setCreated(new Date(content,detail));
+    }
+
     public void endElement_email() throws SAXException {
         String value = pop("email");
         if (in_author) {
@@ -112,6 +91,19 @@ public class FeedSAXParser extends BaseSAXParser {
         author = null;
     }
 
+    public void endElement_info() throws SAXException {
+        String content = pop("info");
+        getCurrentContext().set("info", content);
+        feed.setInfo(detail);
+        in_content--;
+    }
+
+    public void endElement_issued() throws SAXException {
+        String content = pop("issued");
+        getCurrentContext().set("issued", content);
+        getCurrentContext().setIssued(new Date(content,detail));
+    }
+
     public void endElement_link() throws SAXException {
         pop("link");
         link.setDetails(detail);
@@ -123,7 +115,11 @@ public class FeedSAXParser extends BaseSAXParser {
         }
         link = null;
     }
-
+    public void endElement_modified() throws SAXException {
+        String content = pop("modified");
+        getCurrentContext().set("modified", content);
+        getCurrentContext().setModified(new Date(content,detail));
+    }
     public void endElement_name() throws SAXException {
         String value = pop("name");
         if (in_author) {
@@ -136,24 +132,11 @@ public class FeedSAXParser extends BaseSAXParser {
         }
 
     }
-
-    public void endElement_tagline() throws SAXException {
-        String content = pop("tagline");
-        feed.set("tagline", content);
-        feed.setTagline(detail);
-    }
-
-    public void endElement_title() throws SAXException {
-        String content = pop("title");
-        getCurrentContext().set("title", content);
-        getCurrentContext().setTitle(detail);
-        in_content--;
-    }
-    public void endElement_info() throws SAXException {
-        String content = pop("info");
-        getCurrentContext().set("info", content);
-        feed.setInfo(detail);
-        in_content--;
+    public void endElement_publisher() throws SAXException {
+        in_author = false;
+        sync_author(pop("publisher"), "publisher");
+        getCurrentContext().setPublisher(author);
+        author = null;
     }
     public void endElement_summary() throws SAXException {
         String content = pop("summary");
@@ -161,26 +144,16 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().setSummary(detail);
         in_content--;
     }
-    public void endElement_copyright() throws SAXException {
-        String content = pop("copyright");
-        feed.set("copyright", content);
-        feed.setCopyright(detail);
+    public void endElement_tagline() throws SAXException {
+        String content = pop("tagline");
+        feed.set("tagline", content);
+        feed.setTagline(detail);
+    }
+    public void endElement_title() throws SAXException {
+        String content = pop("title");
+        getCurrentContext().set("title", content);
+        getCurrentContext().setTitle(detail);
         in_content--;
-    }
-    public void endElement_issued() throws SAXException {
-        String content = pop("issued");
-        getCurrentContext().set("issued", content);
-        getCurrentContext().setIssued(new Date(content,detail));
-    }
-    public void endElement_created() throws SAXException {
-        String content = pop("created");
-        getCurrentContext().set("created", content);
-        getCurrentContext().setCreated(new Date(content,detail));
-    }
-    public void endElement_modified() throws SAXException {
-        String content = pop("modified");
-        getCurrentContext().set("modified", content);
-        getCurrentContext().setModified(new Date(content,detail));
     }
     public void endElement_url() throws SAXException {
 
@@ -195,14 +168,10 @@ public class FeedSAXParser extends BaseSAXParser {
             // TODO
         }
     }
-    public void endElement_channel(State state) throws SAXException {
-        in_feed = false;
-    }
-    
     public void save_contributor(String key, String value) {
         log.debug("save_contributors: not implemented");
     }
-
+    
     public void startElement_author(State state) throws SAXException {
         in_author = true;
         state.expectingText = true;
@@ -210,19 +179,39 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
 
+    public void startElement_channel(State state) throws SAXException {
+        in_feed = true;
+    }
+
+    public void startElement_content(State state) throws SAXException {
+        in_content++;
+        state.mode = "xml";
+        state.type = "application/xhtml+xml";
+        state.expectingText = true;
+        push(state);
+
+    }
     public void startElement_contributor(State state) throws SAXException {
         in_author = true;
         state.expectingText = true;
         author = new Author();
         push(state);
     }
-    public void startElement_publisher(State state) throws SAXException {
-        in_author = true;
+    
+    public void startElement_copyright(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.type = state.getAttr("type", "text/plain");
         state.expectingText = true;
-        author = new Author();
+        push(state);
+
+    }
+
+    public void startElement_created(State state) throws SAXException {
+        state.expectingText = true;
         push(state);
     }
-    
+
     public void startElement_entry(State state) throws SAXException {
         in_entry = true;
         current_entry = new Entry();
@@ -268,24 +257,6 @@ public class FeedSAXParser extends BaseSAXParser {
         state.expectingText = true;
         push(state);
     }
-
-    public void startElement_link(State state) throws SAXException {
-        link = new Link();
-        link.setHref(state.getAttr("href"));
-        link.setTitle(state.getAttr("title"));
-        link.setRel(state.getAttr("rel"));
-        state.expectingText = false;
-        push(state);
-    }
-
-    public void startElement_title(State state) throws SAXException {
-        in_content++;
-        state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
-        state.expectingText = (this.in_feed || this.in_entry);
-        push(state);
-
-    }
     public void startElement_info(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
@@ -295,48 +266,27 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
 
-    public void startElement_summary(State state) throws SAXException {
-        in_content++;
-        state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
-        state.expectingText = true;
-        push(state);
-
-    }
-    public void startElement_content(State state) throws SAXException {
-        in_content++;
-        state.mode = "xml";
-        state.type = "application/xhtml+xml";
-        state.expectingText = true;
-        push(state);
-
-    }
-    public void startElement_copyright(State state) throws SAXException {
-        in_content++;
-        state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
-        state.expectingText = true;
-        push(state);
-
-    }
-    public void startElement_url(State state) throws SAXException {
-        state.expectingText = true;
-        push(state);
-    }
     public void startElement_issued(State state) throws SAXException {
         state.expectingText = true;
         push(state);
     }
-    public void startElement_created(State state) throws SAXException {
-        state.expectingText = true;
+    public void startElement_link(State state) throws SAXException {
+        link = new Link();
+        link.setHref(state.getAttr("href"));
+        link.setTitle(state.getAttr("title"));
+        link.setRel(state.getAttr("rel"));
+        state.expectingText = false;
         push(state);
     }
     public void startElement_modified(State state) throws SAXException {
         state.expectingText = true;
         push(state);
     }
-    public void startElement_channel(State state) throws SAXException {
-        in_feed = true;
+    public void startElement_publisher(State state) throws SAXException {
+        in_author = true;
+        state.expectingText = true;
+        author = new Author();
+        push(state);
     }
     public void startElement_rss(State state) throws SAXException {
         in_feed = true;
@@ -357,6 +307,56 @@ public class FeedSAXParser extends BaseSAXParser {
             }
         } else {
             feed.set("version", "rss");
+        }
+    }
+    public void startElement_summary(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.type = state.getAttr("type", "text/plain");
+        state.expectingText = true;
+        push(state);
+
+    }
+    public void startElement_title(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.type = state.getAttr("type", "text/plain");
+        state.expectingText = (this.in_feed || this.in_entry);
+        push(state);
+
+    }
+    public void startElement_url(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    private void sync_author(String content, String option) {
+        log.debug(author);
+        String name = author.getName();
+        String email = author.getEmail();
+        String url = author.getUrl();
+        if (name != null && email != null && !email.equals("")) {
+            getCurrentContext().set(option,  name + " (" + email + ")");
+        } else if (name != null && !name.equals("")) {
+            getCurrentContext().set(option, name);
+        } else {
+            getCurrentContext().set(option, content);
+            log.debug("sync_author: " + content);
+            if (content.contains("(")) {
+                String part1 = content.substring(0, content.indexOf("("))
+                        .trim();
+                String part2 = content.substring(content.lastIndexOf("(") + 1,
+                        content.lastIndexOf(")")).trim();
+                if (part1.contains("@")) {
+                    author.setName(part2);
+                    author.setEmail(part1);
+                } else {
+                    author.setName(part1);
+                    author.setEmail(part2);
+                }
+            } else {
+                author.setName(content);
+            }
+            log.debug(author);
         }
     }
 }
