@@ -6,8 +6,13 @@ public class Main {
 
 	public static void main(String[] args) {
 
-
+	    if (System.getenv("EDDIE_LOG") != null && System.getenv("EDDIE_LOG").equals("info")) {
+            PropertyConfigurator.configure("log4j.properties.info"); 
+        } else if (System.getenv("EDDIE_LOG") != null && System.getenv("EDDIE_LOG").equals("warn")) {
+            PropertyConfigurator.configure("log4j.properties.warn"); 
+        } else {
 		PropertyConfigurator.configure("log4j.properties");
+        }
 		Test test = new Test();
 		if (args.length > 0) {
 			test.parse_dir(args[0]);
