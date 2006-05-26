@@ -118,8 +118,9 @@ public class Test {
         while (entries.hasNext()) {
             entries_list.append(convertEntry((Entry) entries.next()));
         }
-
-
+        if (feed.get("version") != null) {
+        interp.set("version", new PyString(feed.get("version")));
+        }
         interp.set("feed", convertFeed(feed));
         interp.set("entries", entries_list);
         interp.exec("ret ="+ test);
