@@ -210,14 +210,7 @@ private static Map createElementAliases() {
     public void setElement(String element) {
         this.element = element;
     }
-    private String aliasNamespace(String element) {
-        if (namespace_aliases.containsKey(element)) {
-            log.trace("aliasing namespace " + element + " to "
-                    + (String) namespace_aliases.get(element));
-            return (String) namespace_aliases.get(element);
-        }
-        return element;
-    }
+
     private String aliasElement(String namespace, String element) {
         if (namespace != null) {
             element = namespace +":" + element;
