@@ -316,7 +316,6 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_rss(State state) throws SAXException {
         in_feed = true;
         String version = state.getAttr("version");
-        String namespace = state.getAttr("xmlns");
         if (version != null) {
             if (version.startsWith("2.")) {
                 feed.set("version", "rss20");  
