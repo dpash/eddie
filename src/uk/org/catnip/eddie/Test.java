@@ -141,6 +141,9 @@ public class Test {
         if (feed.getAuthor() != null) {
             feed_dict.__setitem__("author_detail", convertAuthor(feed.getAuthor()));
         }
+        if (feed.getPublisher() != null) {
+            feed_dict.__setitem__("publisher_detail", convertAuthor(feed.getPublisher()));
+        }
         if (feed.getTitle() != null) {
             feed_dict.__setitem__("title_detail",convertDetail(feed.getTitle()));
         }
@@ -203,6 +206,9 @@ public class Test {
         }
         if (entry.getAuthor() != null) {
             entry_dict.__setitem__("author_detail", convertAuthor(entry.getAuthor()));
+        }
+        if (entry.getPublisher() != null) {
+            entry_dict.__setitem__("publisher_detail", convertAuthor(entry.getPublisher()));
         }
         if (entry.getTitle() != null) {
             entry_dict.__setitem__("title_detail",convertDetail(entry.getTitle()));

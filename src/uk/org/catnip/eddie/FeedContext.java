@@ -10,6 +10,7 @@ public class FeedContext {
     static Logger log = Logger.getLogger(FeedContext.class);
     protected Hashtable property_map = new Hashtable();
     protected Author author;
+    protected Author publisher;
     private Detail title;
     private Date issued;
     private Date modified;
@@ -84,6 +85,12 @@ public class FeedContext {
     }
     public void setModified(Date modified) {
         this.modified = modified;
+    }
+    public Author getPublisher() {
+        return publisher;
+    }
+    public void setPublisher(Author publisher) {
+        this.publisher = publisher;
     }
 
 }
