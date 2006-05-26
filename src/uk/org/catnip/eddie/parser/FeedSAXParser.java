@@ -8,12 +8,13 @@ import uk.org.catnip.eddie.Generator;
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Link;
 import uk.org.catnip.eddie.Date;
+import uk.org.catnip.eddie.Category;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
 
     private Author author;
-
+    private Category category;
     private Generator generator;
 
     private Link link;
@@ -27,8 +28,17 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().setAuthor(author);
         author = null;
     }
-    
-    public void endElement_channel(State state) throws SAXException {
+    public void endElement_category() throws SAXException {
+        String content = pop("category");
+        getCurrentContext().set("category", content);
+        
+        if (category != null) {
+        category.setTerm(content);
+        getCurrentContext().addCategory(category);
+        }
+        category = null;
+    }  
+    public void endElement_channel() throws SAXException {
         in_feed = false;
     }
 
@@ -56,6 +66,12 @@ public class FeedSAXParser extends BaseSAXParser {
         String content = pop("created");
         getCurrentContext().set("created", content);
         getCurrentContext().setCreated(new Date(content,detail));
+    }
+    
+    public void endElement_description() throws SAXException {
+        String content = pop("description");
+        getCurrentContext().set("description", content);
+        getCurrentContext().set("tagline", content);
     }
 
     public void endElement_email() throws SAXException {
@@ -178,7 +194,10 @@ public class FeedSAXParser extends BaseSAXParser {
         author = new Author();
         push(state);
     }
-
+    public void startElement_category(State state) throws SAXException {
+        category = new Category();
+        category.setSchedule(state.getAttr("domain"));
+    }
     public void startElement_channel(State state) throws SAXException {
         in_feed = true;
     }

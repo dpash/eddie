@@ -45,9 +45,13 @@ public class Feed extends FeedContext {
        if (getTitle() != null) {
            ret.append("title = " + getTitle());
            }
+       if (!categories.isEmpty()){
+           ret.append("categories = " + categories);
+           }
        if (!entries.isEmpty()) {
        ret.append("entries = " + entries.toString());
        }
+       
        return ret.toString();
     }
     List entries = new LinkedList();

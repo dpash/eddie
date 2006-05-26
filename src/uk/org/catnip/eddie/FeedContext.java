@@ -17,6 +17,7 @@ public class FeedContext {
     private Date created;
     protected List contributors = new LinkedList();
     protected List links = new LinkedList();
+    protected List categories = new LinkedList();
     private Detail summary;
     public String set(String key, String value) {
         property_map.put(key,value);
@@ -49,11 +50,17 @@ public class FeedContext {
         log.trace("adding link: " + link);
         links.add(link);
     }
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
     public Iterator contributors() {
         return contributors.iterator();
     }
     public Iterator links() {
         return links.iterator();
+    }
+    public Iterator categories() {
+        return categories.iterator();
     }
     public Detail getTitle() {
         return title;

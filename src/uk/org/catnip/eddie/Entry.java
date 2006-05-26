@@ -22,6 +22,9 @@ public class Entry extends FeedContext {
         if (!links.isEmpty()){
         ret.append("links = " + links);
         }
+        if (!categories.isEmpty()){
+            ret.append("categories = " + categories);
+            }
         if (getCreated() != null){
             ret.append("created = " + getCreated());
             }

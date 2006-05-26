@@ -115,10 +115,10 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
 
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
-        log.trace("end_element: " + localName);
+        
         State state = new State(uri, localName, qName);
         State prev = getCurrentState();
-        
+        log.debug("end_element: " + state);
         if (prev.mode != null) {
             if (in_content > 0 && prev.mode.equals("escaped") && prev.content) {
                 prev.mode = "xml";
@@ -133,8 +133,8 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
             this.getClass().getMethod("endElement_" + state.getElement(), (Class[])null)
                     .invoke(this, (Object[])null);
         } catch (NoSuchMethodException e) {
-            log.trace("unhandled element " + localName);
-            pop(localName);
+            log.debug("unhandled element " + state.getElement());
+            pop(state.getElement());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -167,11 +167,8 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         // If element can be relative url, resolve link
 
         if (in_entry) {
-            if (element.equals("category")) {
-                // $self->{entries}->[-1]->{$element} = $output;
-                // $domain = $self->{entries}->[-1]->{'categories'}->[-1]->[0];
-                // $self->{entries}->[-1]->{'categories'}->[-1] = [$domain, $output];
-            } else if (element.equals("source")) {
+            
+            if (element.equals("source")) {
                 // $self->{entries}[-1]{'source'}{'value'} = $output;
             } else {
                 current_entry.set(element,output);
@@ -186,10 +183,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
             }
         } else if (in_feed && !in_textinput && !in_image) {
             feed.set(element,output);
-            if (element.equals("category")) {
-                // $domain = $self->{feeddata}->{'categories'}->[-1]->[0];
-                // $self->{feeddata}->{'categories'}->[-1] = [$domain, $output];
-            } else if (in_content > 0) {
+            if (in_content > 0) {
                 if ( element.equals( "description")) {
                     element = "tagline";
                 }

@@ -183,7 +183,19 @@ public class Test {
             links_list.append(convertLink((Link)links.next()));
         }
         feed_dict.__setitem__("links",links_list);
+        
+        PyList category_list = new PyList();
+        Iterator categories = feed.categories();
+        while (categories.hasNext()) {
+            category_list.append(convertCategory((Category)categories.next()));
+        }
+        feed_dict.__setitem__("categories",category_list);
+      
+        log.debug(feed_dict);
+        
         return feed_dict;
+        
+        
         
     }
     public PyDictionary convertAuthor(Author author) {
@@ -247,6 +259,13 @@ public class Test {
             links_list.append(convertLink((Link)links.next()));
         }
         entry_dict.__setitem__("links",links_list);
+        
+        PyList category_list = new PyList();
+        Iterator categories = entry.categories();
+        while (categories.hasNext()) {
+            category_list.append(convertCategory((Category)categories.next()));
+        }
+        entry_dict.__setitem__("categories",category_list);
         
         return entry_dict;
     }
@@ -314,4 +333,20 @@ public class Test {
     }
 
         return date_tuple;
-    }}
+    }
+    public PyTuple convertCategory(Category category) {
+        String term = category.getTerm();
+        String schedule = category.getSchedule();
+        String label = category.getLabel();
+        
+        if (term == null) { term = ""; }
+        if (schedule == null) { schedule = ""; }
+        if (label == null) { label = ""; }
+        
+        PyObject[] fields = { new PyString(schedule),
+                new PyString(term),
+                new PyString(label) };
+        return new PyTuple(fields);
+
+    }
+}
