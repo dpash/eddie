@@ -69,6 +69,7 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void endElement_description() throws SAXException {
+        in_content--;
         String content = pop("description");
         getCurrentContext().set("description", content);
         getCurrentContext().set("tagline", content);
@@ -227,6 +228,11 @@ public class FeedSAXParser extends BaseSAXParser {
     }
 
     public void startElement_created(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_description(State state) throws SAXException {
+        in_content++;
         state.expectingText = true;
         push(state);
     }
