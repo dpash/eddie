@@ -43,4 +43,16 @@ public class Image {
     public void setWidth(String width) {
         this.width = width;
     }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("title = '" + title + "', ");
+        sb.append("href = '" + href + "', ");
+        sb.append("link = '" + link + "', ");
+        sb.append("width = '" + width + "', ");
+        sb.append("height = '" + height + "', ");
+        sb.append("description = '" + description + "'");
+        sb.append("}");
+        return sb.toString();
+    }
 }
