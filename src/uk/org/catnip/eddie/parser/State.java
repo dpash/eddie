@@ -16,58 +16,58 @@ public class State {
 
 private static Map createNamespaceAliases() {
         Map aliases = new Hashtable();
-        //aliases.put( "", "http://backend.userland.com/rss");
-        //aliases.put( "", "http://blogs.law.harvard.edu/tech/rss");
-        //aliases.put( "", "http://purl.org/rss/1.0/");
-        //aliases.put( "", "http://my.netscape.com/rdf/simple/0.9/");
-        //aliases.put( "", "http://example.com/newformat#");
-        //aliases.put( "", "http://example.com/necho");
-        //aliases.put( "", "http://purl.org/echo/");
-        //aliases.put( "", "uri/of/echo/namespace#");
-        //aliases.put( "", "http://purl.org/pie/");
-        //aliases.put( "", "http://purl.org/atom/ns#");
-        //aliases.put( "", "http://purl.org/rss/1.0/modules/rss091#");
+        //aliases.put("http://backend.userland.com/rss", "");
+        //aliases.put("http://blogs.law.harvard.edu/tech/rss", "");
+        //aliases.put("http://purl.org/rss/1.0/", "");
+        //aliases.put("http://my.netscape.com/rdf/simple/0.9/", "");
+        //aliases.put("http://example.com/newformat#", "");
+        //aliases.put("http://example.com/necho", "");
+        //aliases.put("http://purl.org/echo/", "");
+        //aliases.put("uri/of/echo/namespace#", "");
+        //aliases.put("http://purl.org/pie/", "");
+        //aliases.put("http://purl.org/atom/ns#", "");
+        //aliases.put("http://purl.org/rss/1.0/modules/rss091#", "");
 
-        aliases.put( "admin", "http://webns.net/mvcb/");
-        aliases.put( "ag", "http://purl.org/rss/1.0/modules/aggregation/");
-        aliases.put( "annotate", "http://purl.org/rss/1.0/modules/annotate/");
-        aliases.put( "audio", "http://media.tangent.org/rss/1.0/");
-        aliases.put( "blogChannel", "http://backend.userland.com/blogChannelModule");
-        aliases.put( "cc", "http://web.resource.org/cc/");
-        aliases.put( "creativeCommons", "http://backend.userland.com/creativeCommonsRssModule");
-        aliases.put( "co", "http://purl.org/rss/1.0/modules/company");
-        aliases.put( "content", "http://purl.org/rss/1.0/modules/content/");
-        aliases.put( "cp", "http://my.theinfo.org/changed/1.0/rss/");
-        aliases.put( "dc", "http://purl.org/dc/elements/1.1/");
-        aliases.put( "dcterms", "http://purl.org/dc/terms/");
-        aliases.put( "email", "http://purl.org/rss/1.0/modules/email/");
-        aliases.put( "ev", "http://purl.org/rss/1.0/modules/event/");
-        aliases.put( "icbm", "http://postneo.com/icbm/");
-        aliases.put( "image", "http://purl.org/rss/1.0/modules/image/");
-        aliases.put( "foaf", "http://xmlns.com/foaf/0.1/");
-        aliases.put( "fm", "http://freshmeat.net/rss/fm/");
-        aliases.put( "l", "http://purl.org/rss/1.0/modules/link/");
-        aliases.put( "pingback", "http://madskills.com/public/xml/rss/module/pingback/");
-        aliases.put( "prism", "http://prismstandard.org/namespaces/1.2/basic/");
-        aliases.put( "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        aliases.put( "rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-        aliases.put( "ref", "http://purl.org/rss/1.0/modules/reference/");
-        aliases.put( "reqv", "http://purl.org/rss/1.0/modules/richequiv/");
-        aliases.put( "search", "http://purl.org/rss/1.0/modules/search/");
-        aliases.put( "slash", "http://purl.org/rss/1.0/modules/slash/");
-        aliases.put( "ss", "http://purl.org/rss/1.0/modules/servicestatus/");
-        aliases.put( "str", "http://hacks.benhammersley.com/rss/streaming/");
-        aliases.put( "sub", "http://purl.org/rss/1.0/modules/subscription/");
-        aliases.put( "sy", "http://purl.org/rss/1.0/modules/syndication/");
-        aliases.put( "taxo", "http://purl.org/rss/1.0/modules/taxonomy/");
-        aliases.put( "thr", "http://purl.org/rss/1.0/modules/threading/");
-        aliases.put( "ti", "http://purl.org/rss/1.0/modules/textinput/");
-        aliases.put( "trackback", "http://madskills.com/public/xml/rss/module/trackback/");
-        aliases.put( "wfw", "http://wellformedweb.org/CommentAPI/");
-        aliases.put( "wiki", "http://purl.org/rss/1.0/modules/wiki/");
-        aliases.put( "soap", "http://schemas.xmlsoap.org/soap/envelope/");
-        aliases.put( "xhtml", "http://www.w3.org/1999/xhtml");
-        aliases.put( "xml", "http://www.w3.org/XML/1998/namespace");
+        aliases.put("http://webns.net/mvcb/", "admin");
+        aliases.put("http://purl.org/rss/1.0/modules/aggregation/", "ag");
+        aliases.put("http://purl.org/rss/1.0/modules/annotate/", "annotate");
+        aliases.put("http://media.tangent.org/rss/1.0/", "audio");
+        aliases.put("http://backend.userland.com/blogChannelModule", "blogChannel");
+        aliases.put("http://web.resource.org/cc/", "cc");
+        aliases.put("http://backend.userland.com/creativeCommonsRssModule", "creativeCommons");
+        aliases.put("http://purl.org/rss/1.0/modules/company", "co");
+        aliases.put("http://purl.org/rss/1.0/modules/content/", "content");
+        aliases.put("http://my.theinfo.org/changed/1.0/rss/", "cp");
+        aliases.put("http://purl.org/dc/elements/1.1/", "dc");
+        aliases.put("http://purl.org/dc/terms/", "dcterms");
+        aliases.put("http://purl.org/rss/1.0/modules/email/", "email");
+        aliases.put("http://purl.org/rss/1.0/modules/event/", "ev");
+        aliases.put("http://postneo.com/icbm/", "icbm");
+        aliases.put("http://purl.org/rss/1.0/modules/image/", "image");
+        aliases.put("http://xmlns.com/foaf/0.1/", "foaf");
+        aliases.put("http://freshmeat.net/rss/fm/", "fm");
+        aliases.put("http://purl.org/rss/1.0/modules/link/", "l");
+        aliases.put("http://madskills.com/public/xml/rss/module/pingback/", "pingback");
+        aliases.put("http://prismstandard.org/namespaces/1.2/basic/", "prism");
+        aliases.put("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdf");
+        aliases.put("http://www.w3.org/2000/01/rdf-schema#", "rdfs");
+        aliases.put("http://purl.org/rss/1.0/modules/reference/", "ref");
+        aliases.put("http://purl.org/rss/1.0/modules/richequiv/", "reqv");
+        aliases.put("http://purl.org/rss/1.0/modules/search/", "search");
+        aliases.put("http://purl.org/rss/1.0/modules/slash/", "slash");
+        aliases.put("http://purl.org/rss/1.0/modules/servicestatus/", "ss");
+        aliases.put("http://hacks.benhammersley.com/rss/streaming/", "str");
+        aliases.put("http://purl.org/rss/1.0/modules/subscription/", "sub");
+        aliases.put("http://purl.org/rss/1.0/modules/syndication/", "sy");
+        aliases.put("http://purl.org/rss/1.0/modules/taxonomy/", "taxo");
+        aliases.put("http://purl.org/rss/1.0/modules/threading/", "thr");
+        aliases.put("http://purl.org/rss/1.0/modules/textinput/", "ti");
+        aliases.put("http://madskills.com/public/xml/rss/module/trackback/", "trackback");
+        aliases.put("http://wellformedweb.org/CommentAPI/", "wfw");
+        aliases.put("http://purl.org/rss/1.0/modules/wiki/", "wiki");
+        aliases.put("http://schemas.xmlsoap.org/soap/envelope/", "soap");
+        aliases.put("http://www.w3.org/1999/xhtml", "xhtml");
+        aliases.put("http://www.w3.org/XML/1998/namespace", "xml");
             return aliases;
 }   
 
@@ -79,9 +79,10 @@ private static Map createElementAliases() {
         aliases.put("dcterms:created", "created");
         aliases.put("dc:author", "author");
         aliases.put("dc:creator", "author");
+        aliases.put("dc:contributor", "contributor");
         aliases.put("dc:date", "modified");
         aliases.put("dc:language", "language");
-        aliases.put("dc:publisher", "webmaster");
+        aliases.put("dc:publisher", "publisher");
         aliases.put("dc:rights", "copyright");
         aliases.put("dc:subject", "category");
         aliases.put("dc:title", "title");
@@ -108,16 +109,25 @@ private static Map createElementAliases() {
 
     public State(String uri, String localName, String qName) {
         this.uri = uri;
-        this.element = aliasElement(localName);
+        if (namespace_aliases.containsKey(this.uri)) {
+            this.namespace = (String)namespace_aliases.get(this.uri);
+        }
+        this.element = aliasElement(this.namespace, localName);
         this.qName = qName;
     }
 
     public State(String uri, String localName, String qName, Attributes atts,
             State prev) {
         this.uri = uri;
-        this.element = aliasElement(localName);
+        this.localName = localName;
         this.qName = qName;
         this.atts = atts;
+        if (namespace_aliases.containsKey(this.uri)) {
+        this.namespace = (String)namespace_aliases.get(this.uri);
+        }
+            
+        this.element = aliasElement(this.namespace, localName);
+
         this.type = this.getAttr("type", prev.type);
         this.mode = this.getAttr("mode",prev.mode);
         if (this.type == null || this.type.equals("")) {
@@ -125,14 +135,14 @@ private static Map createElementAliases() {
         }
         this.language = this.getAttr("xml:lang", prev.getLanguage());
         this.base = this.getAttr("xml:base", prev.getBase());
-
+        log.debug(this);
         
     }
 
     private String uri;
     public boolean content = false;
     private String localName;
-
+    private String namespace;
     private String element;
 
     public String qName;
@@ -149,6 +159,23 @@ private static Map createElementAliases() {
 
     public boolean expectingText = false;
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("element = '"+element+"', ");
+        sb.append("mode = '"+mode+"', ");
+        sb.append("type = '"+type+"', ");
+        sb.append("base = '"+base+"', ");
+        sb.append("language = '"+language+"', ");
+        sb.append("namespace = '"+namespace+"', ");
+        sb.append("uri = '"+uri+"', ");
+        sb.append("qname = '"+qName+"', ");
+        sb.append("localname = '"+localName+"', ");
+        sb.append("text = '"+text+"'");
+        sb.append("}");
+        return sb.toString();
+    }
+    
     public StringBuilder text = new StringBuilder();
 
     public void addText(String str) {
@@ -191,7 +218,10 @@ private static Map createElementAliases() {
         }
         return element;
     }
-    private String aliasElement(String element) {
+    private String aliasElement(String namespace, String element) {
+        if (namespace != null) {
+            element = namespace +":" + element;
+        }
         if (element_aliases.containsKey(element)) {
             log.trace("aliasing " + element + " to "
                     + (String) element_aliases.get(element));
