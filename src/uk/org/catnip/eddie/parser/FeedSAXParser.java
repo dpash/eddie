@@ -20,30 +20,65 @@ public class FeedSAXParser extends BaseSAXParser {
 
     public void endElement_author() throws SAXException {
         in_author = false;
-        pop("author");
+        String content = pop("author");
+        
+
+        sync_author(content, "author");
         getCurrentContext().setAuthor(author);
-        if (author.getName() != null && author.getEmail() != null
-                && !author.getEmail().equals("")) {
-            getCurrentContext().set("author",
-                    author.getName() + " (" + author.getEmail() + ")");
-        } else {
-            getCurrentContext().set("author", author.getName());
-        }
         author = null;
+    }
+    
+    private void sync_author(String content, String option) {
+        log.debug(author);
+        String name = author.getName();
+        String email = author.getEmail();
+        String url = author.getUrl();
+        if (name != null && email != null && !email.equals("")) {
+            getCurrentContext().set(option,  name + " (" + email + ")");
+        } else if (name != null && !name.equals("")) {
+            getCurrentContext().set(option, name);
+        } else {
+            getCurrentContext().set(option, content);
+            log.debug("sync_author: " + content);
+            if (content.contains("(")) {
+                String part1 = content.substring(0, content.indexOf("("))
+                        .trim();
+                String part2 = content.substring(content.lastIndexOf("(") + 1,
+                        content.lastIndexOf(")")).trim();
+                if (part1.contains("@")) {
+                    author.setName(part2);
+                    author.setEmail(part1);
+                } else {
+                    author.setName(part1);
+                    author.setEmail(part2);
+                }
+            } else {
+                author.setName(content);
+            }
+            log.debug(author);
+        }
     }
 
     public void endElement_content() throws SAXException {
-        pop("content");
+        String content = pop("content");
+        in_content--;
         current_entry.addContent(detail);
+        current_entry.set("description", content);
     }
 
     public void endElement_contributor() throws SAXException {
         in_author = false;
-        pop("contributor");
+        sync_author(pop("contributor"), "contributor");
         getCurrentContext().addContributor(author);
         author = null;
     }
-
+    public void endElement_publisher() throws SAXException {
+        in_author = false;
+        sync_author(pop("publisher"), "publisher");
+        getCurrentContext().setPublisher(author);
+        author = null;
+    }
+    
     public void endElement_email() throws SAXException {
         String value = pop("email");
         if (in_author) {
@@ -160,7 +195,10 @@ public class FeedSAXParser extends BaseSAXParser {
             // TODO
         }
     }
-
+    public void endElement_channel(State state) throws SAXException {
+        in_feed = false;
+    }
+    
     public void save_contributor(String key, String value) {
         log.debug("save_contributors: not implemented");
     }
@@ -178,7 +216,13 @@ public class FeedSAXParser extends BaseSAXParser {
         author = new Author();
         push(state);
     }
-
+    public void startElement_publisher(State state) throws SAXException {
+        in_author = true;
+        state.expectingText = true;
+        author = new Author();
+        push(state);
+    }
+    
     public void startElement_entry(State state) throws SAXException {
         in_entry = true;
         current_entry = new Entry();
@@ -259,6 +303,14 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
 
     }
+    public void startElement_content(State state) throws SAXException {
+        in_content++;
+        state.mode = "xml";
+        state.type = "application/xhtml+xml";
+        state.expectingText = true;
+        push(state);
+
+    }
     public void startElement_copyright(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
@@ -282,5 +334,29 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_modified(State state) throws SAXException {
         state.expectingText = true;
         push(state);
+    }
+    public void startElement_channel(State state) throws SAXException {
+        in_feed = true;
+    }
+    public void startElement_rss(State state) throws SAXException {
+        in_feed = true;
+        String version = state.getAttr("version");
+        String namespace = state.getAttr("xmlns");
+        if (version != null) {
+            if (version.startsWith("2.")) {
+                feed.set("version", "rss20");  
+            }else if (version.equals("0.94")) {
+                feed.set("version", "rss094");  
+            }else if (version.equals("0.93")) {
+                feed.set("version", "rss093");  
+            }else if (version.equals("0.92")) {
+                feed.set("version", "rss092");  
+            }else if (version.equals("0.91")) { 
+                // TODO need to check for netscape doctype
+                feed.set("version", "rss091u");  
+            }
+        } else {
+            feed.set("version", "rss");
+        }
     }
 }
