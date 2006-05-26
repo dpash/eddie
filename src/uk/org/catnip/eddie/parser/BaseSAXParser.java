@@ -75,15 +75,15 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
 
     public void startElement(String uri, String localName, String qName,
             Attributes atts) throws SAXException {
-        log.trace("startElement:" + localName);
+        
         State state = new State(uri, localName, qName, atts, getCurrentState());
-
+        log.trace("startElement:" + localName + " ("+state.getElement() + ")");
         if (state.mode != null) {
             if (in_content > 0 && state.mode.equals( "escaped")) {
                 state.mode = "xml";
             }
             if (in_content > 0 && state.mode.equals( "xml")) {
-               handle_data(state,clean_html_start(state));
+               handle_data(state,Sanitise.clean_html_start(state));
                state.content = true;
                push(state);
                return;
@@ -125,7 +125,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
             }
             if (in_content > 0 && prev.mode.equals("xml") && prev.content) {
                 String data = pop(localName);
-                handle_data(prev, data + clean_html_end(state.getElement()));
+                handle_data(prev, data + Sanitise.clean_html_end(state.getElement()));
                return;
             }
          }
@@ -205,7 +205,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     public void characters(char[] ch, int start, int length) {
         String data =  new String(ch, start,length);
         //data.trim();
-        if (in_content > 0) {
+        if (in_content > 0 && !getCurrentState().type.equals("text/html")) {
         if (data.equals("<")) { data = "&lt;"; }
         if (data.equals(">")) { data = "&gt;"; }
         }
@@ -219,7 +219,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         if (/*$self->{escape} &&*/ state.mode.equals("xml")) {
            data = xmlescape(data);
         }
-
+        
         getCurrentState().addText(data);
     }
     
@@ -229,44 +229,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         data.replace(">", "&gt;");
         return data;
     }
-    public String clean_html_start(State state) {
-       StringBuilder sb = new StringBuilder();
-//        if (not in($tag, $acceptable_elements)) {
-//           if (in($tag, $unacceptable_elements_with_end_tag)) {
-//              $self->{unsafe_content} = 1;
-//           }
-//           return "";
-//        } else {
-           sb.append("<");
-           sb.append(state.getElement());
-           for (int i = 0; i < state.atts.getLength(); i++){
-
-//              next if not in($attr, $acceptable_attributes);
-               sb.append(" ");
-               sb.append(state.atts.getLocalName(i));
-             sb.append("=\"");
-             sb.append(state.atts.getValue(i));
-             sb.append("\"");
-           }
-//           if (in($tag, $elements_no_end_tag)) {
-//              $str .= " /";
-//           }
-           sb.append(">");
-//        }
-       return sb.toString();
-     }
-     public String clean_html_end(String tag) {       
-//        if (not in($tag, $acceptable_elements)) {
-//           if (in($tag, $unacceptable_elements_with_end_tag)) {
-//              $self->{unsafe_content} = 0;
-//           }
-//           return "";
-//        } elsif (in($tag, $elements_no_end_tag)) {
-//           return "";
-//        } else {
-           return "</" + tag + ">";
-//        }
-     }
+   
 
     
     // ErrorHandler
