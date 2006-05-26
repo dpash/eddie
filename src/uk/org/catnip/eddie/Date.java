@@ -3,7 +3,6 @@ package uk.org.catnip.eddie;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import org.apache.log4j.Logger;
-import org.python.core.PyInteger;
 import java.util.TimeZone;
 public class Date extends Detail {
     static Logger log = Logger.getLogger(Date.class);
