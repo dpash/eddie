@@ -109,24 +109,25 @@ private static Map createElementAliases() {
 
     public State(String uri, String localName, String qName) {
         this.uri = uri;
+        this.localName = localName.toLowerCase();
         if (namespace_aliases.containsKey(this.uri)) {
             this.namespace = (String)namespace_aliases.get(this.uri);
         }
-        this.element = aliasElement(this.namespace, localName);
+        this.element = aliasElement(this.namespace, this.localName);
         this.qName = qName;
     }
 
     public State(String uri, String localName, String qName, Attributes atts,
             State prev) {
         this.uri = uri;
-        this.localName = localName;
+        this.localName = localName.toLowerCase();
         this.qName = qName;
         this.atts = atts;
         if (namespace_aliases.containsKey(this.uri)) {
         this.namespace = (String)namespace_aliases.get(this.uri);
         }
             
-        this.element = aliasElement(this.namespace, localName);
+        this.element = aliasElement(this.namespace, this.localName);
 
         this.type = this.getAttr("type", prev.type);
         this.mode = this.getAttr("mode",prev.mode);
@@ -212,7 +213,7 @@ private static Map createElementAliases() {
     }
 
     private String aliasElement(String namespace, String element) {
-        if (namespace != null) {
+        if (namespace != null && !namespace.equals("xhtml")) {
             element = namespace +":" + element;
         }
         if (element_aliases.containsKey(element)) {
