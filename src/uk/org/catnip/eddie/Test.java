@@ -270,6 +270,8 @@ public class Test {
         }
         entry_dict.__setitem__("categories",category_list);
         
+        log.debug(entry_dict);
+        
         return entry_dict;
     }
     
