@@ -169,6 +169,9 @@ public class Test {
             feed_dict.__setitem__("modified_parsed",convertDate(feed.getModified()));
             feed_dict.__setitem__("date_parsed",convertDate(feed.getModified()));
         }
+        if (feed.getImage() != null) {
+            feed_dict.__setitem__("image",convertImage(feed.getImage()));
+        }
         PyList contributors_list = new PyList();
         Iterator contributors = feed.contributors();
         while (contributors.hasNext()) {
@@ -348,5 +351,31 @@ public class Test {
                 new PyString(label) };
         return new PyTuple(fields);
 
+    }
+    
+    public PyDictionary convertImage(Image image) {
+        PyDictionary image_dict = new PyDictionary();
+
+        if (image.getTitle() != null) {
+            image_dict.__setitem__("title", new PyString(image.getTitle()));
+        }
+        if (image.getHref() != null) {
+            image_dict.__setitem__("href", new PyString(image.getHref()));
+        }
+        if (image.getLink() != null) {
+            image_dict.__setitem__("link", new PyString(image.getLink()));
+        }
+        if (image.getWidth() != null) {
+            image_dict.__setitem__("width", new PyString(image.getWidth()));
+        }
+        if (image.getHeight() != null) {
+            image_dict.__setitem__("height", new PyString(image.getHeight()));
+        }
+        if (image.getDescription() != null) {
+            image_dict.__setitem__("description", new PyString(image
+                    .getDescription()));
+        }
+
+        return image_dict;
     }
 }
