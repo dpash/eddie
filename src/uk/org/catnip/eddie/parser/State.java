@@ -75,6 +75,7 @@ private static Map createElementAliases() {
         Map aliases = new Hashtable();
         aliases.put("abstract", "description");
         aliases.put("body", "content");
+        aliases.put("content:encoded", "content_encoded");
         aliases.put("dcterms:created", "created");
         aliases.put("dc:author", "author");
         aliases.put("dc:creator", "author");
