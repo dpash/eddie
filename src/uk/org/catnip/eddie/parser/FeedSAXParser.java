@@ -90,6 +90,7 @@ public class FeedSAXParser extends BaseSAXParser {
             textinput.setDescription(content);
         } else {
             getCurrentContext().set("description", content);
+            getCurrentContext().set("summary", content);
             getCurrentContext().set("tagline", content);
         }
     }
@@ -219,6 +220,9 @@ public class FeedSAXParser extends BaseSAXParser {
         String content = pop("summary");
         getCurrentContext().set("summary", content);
         getCurrentContext().setSummary(detail);
+        if (current_entry != null) {
+            current_entry.addContent(detail);
+        }
         in_content--;
     }
     public void endElement_tagline() throws SAXException {
