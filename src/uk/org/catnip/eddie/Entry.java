@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 public class Entry extends FeedContext {
     private List content = new LinkedList();
+    private List enclosures = new LinkedList();
     
     public String toString() {
         StringBuilder ret = new StringBuilder();
@@ -46,5 +47,11 @@ public class Entry extends FeedContext {
         return content.iterator();
     }
 
-
+    public void addEnclosure(Enclosure e) {
+        enclosures.add(e);
+    }
+ 
+    public Iterator enclosures() {
+        return enclosures.iterator();
+    }
 }

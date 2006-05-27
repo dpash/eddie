@@ -273,6 +273,13 @@ public class Test {
         }
         entry_dict.__setitem__("categories",category_list);
         
+        PyList enclosure_list = new PyList();
+        Iterator enclosures = entry.enclosures();
+        while (enclosures.hasNext()) {
+            enclosure_list.append(convertEnclosure((Enclosure)enclosures.next()));
+        }
+        entry_dict.__setitem__("enclosures",enclosure_list);
+        
         log.debug(entry_dict);
         
         return entry_dict;
@@ -401,5 +408,21 @@ public class Test {
         }
 
         return textinput_dict;
+    }
+    
+    public PyDictionary convertEnclosure(Enclosure enclosure) {
+        PyDictionary enclosure_dict = new PyDictionary();
+
+        if (enclosure.getUrl() != null) {
+            enclosure_dict.__setitem__("url", new PyString(enclosure.getUrl()));
+        }
+        if (enclosure.getLength() != null) {
+            enclosure_dict.__setitem__("length", new PyString(enclosure.getLength()));
+        }
+        if (enclosure.getType() != null) {
+            enclosure_dict.__setitem__("type", new PyString(enclosure.getType()));
+        }
+
+        return enclosure_dict;
     }
 }

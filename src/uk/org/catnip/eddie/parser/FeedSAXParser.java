@@ -11,6 +11,7 @@ import uk.org.catnip.eddie.Date;
 import uk.org.catnip.eddie.Category;
 import uk.org.catnip.eddie.Image;
 import uk.org.catnip.eddie.TextInput;
+import uk.org.catnip.eddie.Enclosure;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
@@ -157,7 +158,7 @@ public class FeedSAXParser extends BaseSAXParser {
             image.setLink(content);
         } else if (textinput != null) {
             textinput.setLink(content);
-        } else { // TODO cleanup
+        } else if (link != null){ // TODO cleanup
             link.setDetails(detail);
             getCurrentContext().addLink(link);
             if (link.getHref() != null) {
@@ -172,8 +173,9 @@ public class FeedSAXParser extends BaseSAXParser {
             } else {
                 getCurrentContext().set("link", content);
             }
+            link = null;
         }
-        link = null;
+        
 
     }
     public void endElement_modified() throws SAXException {
@@ -299,6 +301,14 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
 
+    public void startElement_enclosure(State state) throws SAXException {
+        Enclosure enclosure = new Enclosure();
+        enclosure.setUrl(state.getAttr("url"));
+        enclosure.setLength(state.getAttr("length"));
+        enclosure.setType(state.getAttr("type"));
+        current_entry.addEnclosure(enclosure);
+    }
+    
     public void startElement_entry(State state) throws SAXException {
         in_entry = true;
         current_entry = new Entry();
@@ -366,11 +376,19 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
     public void startElement_link(State state) throws SAXException {
-        link = new Link();
-        link.setHref(state.getAttr("href"));
-        link.setTitle(state.getAttr("title"));
-        link.setRel(state.getAttr("rel"));
-        state.expectingText = false;
+        if (state.getAttr("rel") != null && state.getAttr("rel").equals("enclosure")) {
+            Enclosure enclosure = new Enclosure();
+            enclosure.setUrl(state.getAttr("href"));
+            enclosure.setLength(state.getAttr("length"));
+            enclosure.setType(state.getAttr("type"));
+            current_entry.addEnclosure(enclosure);
+        } else {
+            link = new Link();
+            link.setHref(state.getAttr("href"));
+            link.setTitle(state.getAttr("title"));
+            link.setRel(state.getAttr("rel"));
+            state.expectingText = false;
+        }
         push(state);
     }
     public void startElement_modified(State state) throws SAXException {
