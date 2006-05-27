@@ -1,12 +1,12 @@
 package uk.org.catnip.eddie;
 
 public class Image {
-    String title;
-    String url;
-    String link;
-    String width;
-    String height;
-    String description;
+    private String title;
+    private String url;
+    private String link;
+    private String width;
+    private String height;
+    private String description;
     public String getDescription() {
         return description;
     }
