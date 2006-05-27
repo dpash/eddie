@@ -32,7 +32,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     protected boolean in_textinput = false;
     protected boolean in_image = false;
     protected int in_content = 0;
-    
+    private boolean next_data_is_inline_element = false;
     protected Stack stack = new Stack();
 
     public void setFilename(String file) {
@@ -172,11 +172,18 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     public void characters(char[] ch, int start, int length) {
         String data =  new String(ch, start,length);
         //data.trim();
+        
         if (in_content > 0 && !getCurrentState().type.equals("text/html") && !getCurrentState().type.equals("text/plain")) {
         if (data.equals("<")) { data = "&lt;"; }
         if (data.equals(">")) { data = "&gt;"; }
         }
-        log.trace("characters: "+data);
+        
+        //if (next_data_is_inline_element) {
+        //    data = Sanitise.handle_inline_data(data);
+        //    next_data_is_inline_element = false;
+        //}
+        //if (data.equals("<")) { next_data_is_inline_element = true; data = ""; }
+        //log.debug("characters: "+data);
         getCurrentState().addText(data);
     }
 
