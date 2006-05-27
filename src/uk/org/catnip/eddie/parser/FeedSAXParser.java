@@ -56,6 +56,12 @@ public class FeedSAXParser extends BaseSAXParser {
         current_entry.addContent(detail);
         current_entry.set("description", content);
     }
+    public void endElement_content_encoded() throws SAXException {
+        String content = pop("content_encoded");
+        in_content--;
+        current_entry.addContent(detail);
+        current_entry.set("description", content);
+    }
 
     public void endElement_contributor() throws SAXException {
         in_author = false;
@@ -271,6 +277,14 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = "xml";
         state.type = "application/xhtml+xml";
+        state.expectingText = true;
+        push(state);
+
+    }
+    public void startElement_content_encoded(State state) throws SAXException {
+        in_content++;
+        state.mode = "escaped";
+        state.type = "text/html";
         state.expectingText = true;
         push(state);
 

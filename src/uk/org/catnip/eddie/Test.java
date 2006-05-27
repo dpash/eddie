@@ -247,7 +247,7 @@ public class Test {
         
         PyList contents_list = new PyList();
         Iterator contents = entry.contents();
-        while (contents.hasNext()) {
+        while (contents.hasNext()) { 
             contents_list.append(convertDetail((Detail)contents.next()));
         }
         entry_dict.__setitem__("content",contents_list);
@@ -286,15 +286,20 @@ public class Test {
     }
     
     public PyDictionary convertDetail(Detail detail) {
+
         PyDictionary detail_dict = new PyDictionary();
-        if (detail.getLanguage() != null) {
-        detail_dict.__setitem__("language", new PyString(detail.getLanguage()));
-        }
-        if (detail.getType() != null) {
-        detail_dict.__setitem__("type", new PyString(detail.getType()));
-        }
-        if (detail.getValue() != null) {
-        detail_dict.__setitem__("value", new PyString(detail.getValue()));
+        if (detail != null) {
+            if (detail.getLanguage() != null) {
+                detail_dict.__setitem__("language", new PyString(detail
+                        .getLanguage()));
+            }
+            if (detail.getType() != null) {
+                detail_dict.__setitem__("type", new PyString(detail.getType()));
+            }
+            if (detail.getValue() != null) {
+                detail_dict.__setitem__("value",
+                        new PyString(detail.getValue()));
+            }
         }
         return detail_dict;
     }
