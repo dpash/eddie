@@ -197,14 +197,10 @@ public class State {
     }
 
     public String getAttr(String key, String default_value) {
-        // String namespace;
-        // if (key.indexOf(':') > 0) {
-        // namespace = key.substring(0,key.indexOf(':'));
-        // key = key.substring(key.indexOf(':')+1, key.length());
-        // } else {
-        // namespace = "";
-        // }
-        // log.debug("{"+namespace+"}"+key);
+        // TODO: remove this hack
+        if (key.equals("type") && namespace != null && namespace.equals("xhtml")) {
+            return "application/xhtml+xml";
+        }
         String ret = atts.getValue(key);
         if (ret == null) {
             ret = default_value;
@@ -226,8 +222,6 @@ public class State {
             element = namespace + ":" + element;
         }
         if (element_aliases.containsKey(element)) {
-            log.trace("aliasing " + element + " to "
-                    + (String) element_aliases.get(element));
             return (String) element_aliases.get(element);
         }
         return element;
