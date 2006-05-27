@@ -172,6 +172,9 @@ public class Test {
         if (feed.getImage() != null) {
             feed_dict.__setitem__("image",convertImage(feed.getImage()));
         }
+        if (feed.getTextinput() != null) {
+            feed_dict.__setitem__("textinput",convertTextInput(feed.getTextinput()));
+        }
         PyList contributors_list = new PyList();
         Iterator contributors = feed.contributors();
         while (contributors.hasNext()) {
@@ -379,5 +382,24 @@ public class Test {
         }
 
         return image_dict;
+    }
+    public PyDictionary convertTextInput(TextInput textinput) {
+        PyDictionary textinput_dict = new PyDictionary();
+
+        if (textinput.getTitle() != null) {
+            textinput_dict.__setitem__("title", new PyString(textinput.getTitle()));
+        }
+        if (textinput.getLink() != null) {
+            textinput_dict.__setitem__("link", new PyString(textinput.getLink()));
+        }
+        if (textinput.getName() != null) {
+            textinput_dict.__setitem__("name", new PyString(textinput.getName()));
+        }
+        if (textinput.getDescription() != null) {
+            textinput_dict.__setitem__("description", new PyString(textinput
+                    .getDescription()));
+        }
+
+        return textinput_dict;
     }
 }
