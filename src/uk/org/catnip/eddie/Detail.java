@@ -6,6 +6,15 @@ public class Detail {
     private String language;
     private String type;
     private String value;
+    private String src;
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
+
     public String getLanguage() {
         return language;
     }
@@ -40,6 +49,7 @@ public class Detail {
         sb.append("{");
         sb.append("type: '" + this.type+ "', ");
         sb.append("language: '" + this.language + "', ");
+        sb.append("src: '" + this.src + "', ");
         sb.append("value: '" + this.value +"'");
         sb.append("}");
         return sb.toString();

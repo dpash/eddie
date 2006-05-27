@@ -317,6 +317,10 @@ public class Test {
                 detail_dict.__setitem__("value",
                         new PyString(detail.getValue()));
             }
+            if (detail.getSrc() != null) {
+                detail_dict.__setitem__("src",
+                        new PyString(detail.getSrc()));
+            }
         }
         return detail_dict;
     }
