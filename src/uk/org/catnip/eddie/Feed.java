@@ -12,6 +12,15 @@ public class Feed extends FeedContext {
     private Detail info;
     private Detail copyright;
     private Generator generator;
+    private Image image;
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
     public Generator getGenerator() {
         return generator;
     }
@@ -25,28 +34,31 @@ public class Feed extends FeedContext {
        //ret.append("bozo: " + error);
        ret.append(property_map.toString());
        if (author != null) {
-       ret.append("author = " + author);
+       ret.append("author = " + author + ", ");
        }
        if (info != null) {
-           ret.append("info = " + info);
+           ret.append("info = " + info + ", ");
            }
        if (tagline != null) {
-           ret.append("tagline = " + tagline);
+           ret.append("tagline = " + tagline + ", ");
+           }
+       if (image != null) {
+           ret.append("image = " + image + ", ");
            }
        if (generator != null) {
-           ret.append("generator = " + generator);
+           ret.append("generator = " + generator + ", ");
        }
        if (!contributors.isEmpty()) {
-           ret.append("contributors = " + contributors);
+           ret.append("contributors = " + contributors + ", ");
        }
        if (!links.isEmpty()) {
-       ret.append("links = " + links.toString());
+       ret.append("links = " + links + ", ");
        }
        if (getTitle() != null) {
-           ret.append("title = " + getTitle());
+           ret.append("title = " + getTitle() + ", ");
            }
        if (!categories.isEmpty()){
-           ret.append("categories = " + categories);
+           ret.append("categories = " + categories + ", ");
            }
        if (!entries.isEmpty()) {
        ret.append("entries = " + entries.toString());
