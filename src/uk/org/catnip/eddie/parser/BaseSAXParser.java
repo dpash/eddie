@@ -166,32 +166,11 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         
         // If element can be relative url, resolve link
 
+        //getCurrentContext().set(element,output);
         if (in_entry) {
-            
-            if (element.equals("source")) {
-                // $self->{entries}[-1]{'source'}{'value'} = $output;
-            } else {
                 current_entry.set(element,output);
-                if (in_content > 0){
-                    if (element.equals("description")) {
-                        // $element = 'summary';
-                    }
-                    // $contentparams = deep_copy($self->{contentparams});
-                    // $contentparams->{'value'} = $output;
-                    // $self->{entries}->[-1]->{$element . '_detail'} = $contentparams;
-                }
-            }
         } else if (in_feed && !in_textinput && !in_image) {
-            feed.set(element,output);
-            if (in_content > 0) {
-                if ( element.equals( "description")) {
-                    element = "tagline";
-                }
-                // $contentparams = deep_copy($self->{contentparams});
-                // $contentparams->{'value'} = $output;
-                // $self->{feeddata}->{$element . '_detail'} = $contentparams;
-            }
-            
+            feed.set(element,output);            
         }
         return output;
         
