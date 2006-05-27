@@ -193,7 +193,7 @@ public class Test {
         PyList category_list = new PyList();
         Iterator categories = feed.categories();
         while (categories.hasNext()) {
-            category_list.append(convertCategory((Category)categories.next()));
+            category_list.append(convertCategoryTuple((Category)categories.next()));
         }
         feed_dict.__setitem__("categories",category_list);
       
@@ -266,13 +266,24 @@ public class Test {
         }
         entry_dict.__setitem__("links",links_list);
         
+        // Tuple style categories
         PyList category_list = new PyList();
         Iterator categories = entry.categories();
         while (categories.hasNext()) {
-            category_list.append(convertCategory((Category)categories.next()));
+            category_list.append(convertCategoryTuple((Category)categories.next()));
         }
         entry_dict.__setitem__("categories",category_list);
+        
+        // Dict style tags
+        category_list = new PyList();
+        categories = entry.categories();
+        while (categories.hasNext()) {
+            category_list.append(convertCategory((Category)categories.next()));
+        }
         entry_dict.__setitem__("tags",category_list);
+        
+        
+        
         PyList enclosure_list = new PyList();
         Iterator enclosures = entry.enclosures();
         while (enclosures.hasNext()) {
@@ -360,7 +371,23 @@ public class Test {
 
         return date_tuple;
     }
-    public PyTuple convertCategory(Category category) {
+    public PyDictionary convertCategory(Category category) {
+        PyDictionary tags_dict = new PyDictionary();
+
+        if (category.getTerm() != null) {
+            tags_dict.__setitem__("term", new PyString(category.getTerm()));
+        }
+        if (category.getSchedule() != null) {
+            tags_dict.__setitem__("scheme", new PyString(category.getSchedule()));
+        }
+        if (category.getLabel() != null) {
+            tags_dict.__setitem__("label", new PyString(category.getLabel()));
+        }
+
+        return tags_dict;
+
+    }
+    public PyTuple convertCategoryTuple(Category category) {
         String term = category.getTerm();
         String schedule = category.getSchedule();
         String label = category.getLabel();
