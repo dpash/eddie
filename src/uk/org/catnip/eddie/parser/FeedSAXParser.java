@@ -36,8 +36,10 @@ public class FeedSAXParser extends BaseSAXParser {
         getCurrentContext().set("category", content);
         
         if (category != null) {
-        category.setTerm(content);
-        getCurrentContext().addCategory(category);
+            if (category.getTerm() == null) {
+                category.setTerm(content);
+            }
+            getCurrentContext().addCategory(category);
         }
         category = null;
     }  
@@ -280,7 +282,10 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void startElement_category(State state) throws SAXException {
         category = new Category();
-        category.setSchedule(state.getAttr("domain"));
+        category.setSchedule(state.getAttr("domain", state.getAttr("scheme")));
+        category.setLabel(state.getAttr("label"));
+        log.debug(state.getAttr("term"));
+        category.setTerm(state.getAttr("term"));
     }
     public void startElement_channel(State state) throws SAXException {
         in_feed = true;
