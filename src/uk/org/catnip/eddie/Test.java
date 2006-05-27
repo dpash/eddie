@@ -280,6 +280,12 @@ public class Test {
         }
         entry_dict.__setitem__("enclosures",enclosure_list);
         
+        if (entry.isGuidIsLink()) {
+            entry_dict.__setitem__("guidislink", new PyInteger(1));
+        } else {
+            entry_dict.__setitem__("guidislink", new PyInteger(0));
+        }
+        
         log.debug(entry_dict);
         
         return entry_dict;

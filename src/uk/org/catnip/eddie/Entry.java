@@ -7,7 +7,17 @@ import java.util.Iterator;
 public class Entry extends FeedContext {
     private List content = new LinkedList();
     private List enclosures = new LinkedList();
-    
+    private boolean guidIsLink = false;
+    public boolean isGuidIsLink() {
+        return guidIsLink;
+    }
+
+    public void setGuidIsLink(boolean guidIsLink) {
+        if (links.isEmpty()) {
+        this.guidIsLink = guidIsLink;
+        }
+    }
+
     public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append(property_map.toString());

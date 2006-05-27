@@ -15,7 +15,6 @@ import uk.org.catnip.eddie.Enclosure;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
-
     private Author author;
     private Category category;
     private Generator generator;
@@ -125,6 +124,13 @@ public class FeedSAXParser extends BaseSAXParser {
         feed.set("generator", content);
         generator = null;
     }
+    public void endElement_guid() throws SAXException {
+        String content = pop("guid");
+        current_entry.set("guid", content);
+        if (current_entry.isGuidIsLink()) {
+            current_entry.set("link", content);  
+        }
+    }
     public void endElement_height() throws SAXException {
         image.setHeight(pop("height"));
     }
@@ -165,6 +171,9 @@ public class FeedSAXParser extends BaseSAXParser {
         } else if (textinput != null) {
             textinput.setLink(content);
         } else if (link != null){ // TODO cleanup
+            if (in_entry) {
+                current_entry.setGuidIsLink(false);
+            }
             link.setDetails(detail);
             getCurrentContext().addLink(link);
             if (link.getHref() != null) {
@@ -368,7 +377,11 @@ public class FeedSAXParser extends BaseSAXParser {
         state.expectingText = true;
         push(state);
     }
-    
+    public void startElement_guid(State state) throws SAXException {
+        state.expectingText = true;
+        current_entry.setGuidIsLink(state.getAttr("isPermaLink", "true").equals("true"));
+        push(state);
+    }
     public void startElement_image(State state) throws SAXException {
         in_image = true;
         image = new Image();
