@@ -242,4 +242,12 @@ public class State {
     public void setBase(String base) {
         this.base = base;
     }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 }
