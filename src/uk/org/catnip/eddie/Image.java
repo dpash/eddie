@@ -2,7 +2,7 @@ package uk.org.catnip.eddie;
 
 public class Image {
     String title;
-    String href;
+    String url;
     String link;
     String width;
     String height;
@@ -19,11 +19,11 @@ public class Image {
     public void setHeight(String height) {
         this.height = height;
     }
-    public String getHref() {
-        return href;
+    public String getUrl() {
+        return url;
     }
-    public void setHref(String href) {
-        this.href = href;
+    public void setUrl(String url) {
+        this.url = url;
     }
     public String getLink() {
         return link;
@@ -47,7 +47,7 @@ public class Image {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         sb.append("title = '" + title + "', ");
-        sb.append("href = '" + href + "', ");
+        sb.append("href = '" + url + "', ");
         sb.append("link = '" + link + "', ");
         sb.append("width = '" + width + "', ");
         sb.append("height = '" + height + "', ");

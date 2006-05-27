@@ -359,17 +359,17 @@ public class Test {
         if (image.getTitle() != null) {
             image_dict.__setitem__("title", new PyString(image.getTitle()));
         }
-        if (image.getHref() != null) {
-            image_dict.__setitem__("href", new PyString(image.getHref()));
+        if (image.getUrl() != null) {
+            image_dict.__setitem__("url", new PyString(image.getUrl()));
         }
         if (image.getLink() != null) {
             image_dict.__setitem__("link", new PyString(image.getLink()));
         }
         if (image.getWidth() != null) {
-            image_dict.__setitem__("width", new PyString(image.getWidth()));
+            image_dict.__setitem__("width", new PyInteger(Integer.parseInt(image.getWidth())));
         }
         if (image.getHeight() != null) {
-            image_dict.__setitem__("height", new PyString(image.getHeight()));
+            image_dict.__setitem__("height", new PyInteger(Integer.parseInt(image.getHeight())));
         }
         if (image.getDescription() != null) {
             image_dict.__setitem__("description", new PyString(image

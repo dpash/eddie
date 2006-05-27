@@ -9,6 +9,7 @@ import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Link;
 import uk.org.catnip.eddie.Date;
 import uk.org.catnip.eddie.Category;
+import uk.org.catnip.eddie.Image;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
@@ -16,7 +17,7 @@ public class FeedSAXParser extends BaseSAXParser {
     private Author author;
     private Category category;
     private Generator generator;
-
+    private Image image;
     private Link link;
 
     public void endElement_author() throws SAXException {
@@ -71,8 +72,12 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_description() throws SAXException {
         in_content--;
         String content = pop("description");
-        getCurrentContext().set("description", content);
-        getCurrentContext().set("tagline", content);
+        if (in_image) {
+            image.setDescription(content);
+        } else {
+            getCurrentContext().set("description", content);
+            getCurrentContext().set("tagline", content);
+        }
     }
 
     public void endElement_email() throws SAXException {
@@ -100,14 +105,23 @@ public class FeedSAXParser extends BaseSAXParser {
         feed.setGenerator(generator);
         generator = null;
     }
-
+    public void endElement_height() throws SAXException {
+        image.setHeight(pop("height"));
+    }
     public void endElement_id() throws SAXException {
-        in_author = false;
+        in_author = false; // TODO clean up
         String id = pop("id");
         getCurrentContext().set("guid", id);
         author = null;
     }
-
+    
+    public void endElement_image() throws SAXException {
+        in_image = false;
+        pop("image");
+        feed.setImage(image);
+        image = null;
+    }
+    
     public void endElement_info() throws SAXException {
         String content = pop("info");
         getCurrentContext().set("info", content);
@@ -122,15 +136,27 @@ public class FeedSAXParser extends BaseSAXParser {
     }
 
     public void endElement_link() throws SAXException {
-        pop("link");
-        link.setDetails(detail);
-        getCurrentContext().addLink(link);
-        if ((link.getType().equals("text/html") || link.getType().equals(
-                "application/xhtml+xml"))
-                && (link.getRel() != null && link.getRel().equals("alternate"))) {
-            getCurrentContext().set("link", link.getHref());
+        String content = pop("link");
+        if (in_image) {
+            image.setLink(content);
+        } else { // TODO cleanup
+            link.setDetails(detail);
+            getCurrentContext().addLink(link);
+            if (link.getHref() != null) {
+
+                if ((link.getType().equals("text/html") || link.getType()
+                        .equals("application/xhtml+xml"))
+                        && (link.getRel() != null && link.getRel().equals(
+                                "alternate"))) {
+
+                    getCurrentContext().set("link", link.getHref());
+                }
+            } else {
+                getCurrentContext().set("link", content);
+            }
         }
         link = null;
+
     }
     public void endElement_modified() throws SAXException {
         String content = pop("modified");
@@ -168,23 +194,30 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void endElement_title() throws SAXException {
         String content = pop("title");
-        getCurrentContext().set("title", content);
-        getCurrentContext().setTitle(detail);
-        in_content--;
+        if (in_image) {
+            image.setTitle(content);
+        } else {
+            getCurrentContext().set("title", content);
+            getCurrentContext().setTitle(detail);
+            in_content--;
+        }
     }
     public void endElement_url() throws SAXException {
 
-        String value = pop("url");
+        String content = pop("url");
         if (in_author) {
-            author.setUrl(value);
+            author.setUrl(content);
         } else if (in_contributor) {
-            save_contributor("url", value);
+            save_contributor("url", content);
         } else if (in_image) {
-            // TODO
-        } else if (in_contributor) {
-            // TODO
+            image.setUrl(content);
         }
     }
+    
+    public void endElement_width() throws SAXException {
+        image.setWidth(pop("width"));
+    }
+    
     public void save_contributor(String key, String value) {
         log.debug("save_contributors: not implemented");
     }
@@ -282,6 +315,14 @@ public class FeedSAXParser extends BaseSAXParser {
         state.expectingText = true;
         push(state);
     }
+    
+    public void startElement_image(State state) throws SAXException {
+        in_image = true;
+        image = new Image();
+        push(state);
+
+    }
+    
     public void startElement_info(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
