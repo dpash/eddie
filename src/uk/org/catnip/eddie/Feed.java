@@ -13,6 +13,15 @@ public class Feed extends FeedContext {
     private Detail copyright;
     private Generator generator;
     private Image image;
+    private TextInput textinput;
+    public TextInput getTextinput() {
+        return textinput;
+    }
+
+    public void setTextinput(TextInput textinput) {
+        this.textinput = textinput;
+    }
+
     public Image getImage() {
         return image;
     }
