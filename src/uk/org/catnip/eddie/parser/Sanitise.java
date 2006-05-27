@@ -3,7 +3,12 @@ package uk.org.catnip.eddie.parser;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Arrays;
+import org.apache.log4j.Logger;
+import java.util.regex.*;
+
 public class Sanitise {
+    static Logger log = Logger.getLogger(Sanitise.class);
+
     static String[] acceptable_elements_array = {"a", "abbr", "acronym", "address", "area", "b", "big",
         "blockquote", "br", "button", "caption", "center", "cite", "code", "col",
         "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "fieldset",
@@ -48,6 +53,43 @@ public class Sanitise {
         return list;
     }
 
+    static public String handle_inline_data(String string) {
+        log.debug("handle_inline_data('"+string+"')");
+        Matcher endtag_regex = Pattern.compile("^/(\\w+)\\s*>(.*)").matcher(string);
+        Matcher starttag_regex = Pattern.compile("^(\\w+)(\\s+([^/>]+)|\\s*)(/?)>(.*)").matcher(string);
+        if (endtag_regex.matches()) {
+            // We have an end tag
+            String endtag = endtag_regex.group(1);
+            log.debug("found end element: " +endtag);
+            if (acceptable_elements.contains(endtag)) {
+                return "<" + string;
+            } else {
+                return endtag_regex.group(2);
+            }
+        } else if(starttag_regex.matches()) {
+            String starttag = starttag_regex.group(1);
+            boolean endtag = starttag_regex.group(4).equals("/");
+            String attributes = starttag_regex.group(3);
+            log.debug("found start element: " +starttag);
+            if (acceptable_elements.contains(starttag)) {
+                StringBuilder sb = new StringBuilder(); 
+                sb.append("<");
+                sb.append(starttag);
+                if (!attributes.equals("")){
+                    sb.append(" "+ attributes);
+                }
+                if (endtag) {
+                    sb.append("/");
+                }
+                sb.append(">");
+                sb.append(starttag_regex.group(5));
+                return sb.toString();
+            } else {
+                return starttag_regex.group(5);
+            }
+        }
+        return "<" + string;
+    }
     static public String clean_html_start(State state) {
         StringBuilder sb = new StringBuilder();
         if (!acceptable_elements.contains(state.getElement())) {
