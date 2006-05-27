@@ -33,7 +33,7 @@ public class Detail {
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.value = value.trim();
     }
     public String toString() {
         StringBuilder sb = new StringBuilder();
