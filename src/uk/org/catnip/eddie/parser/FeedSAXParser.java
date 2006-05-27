@@ -44,7 +44,11 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_channel() throws SAXException {
         in_feed = false;
     }
-
+    
+    public void endElement_comments() throws SAXException {
+        current_entry.set("comments", pop("comments"));
+    }
+    
     public void endElement_content() throws SAXException {
         String content = pop("content");
         in_content--;
@@ -60,7 +64,7 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void endElement_copyright() throws SAXException {
         String content = pop("copyright");
-        feed.set("copyright", content);
+        getCurrentContext().set("copyright", content);
         feed.setCopyright(detail);
         in_content--;
     }
@@ -83,7 +87,11 @@ public class FeedSAXParser extends BaseSAXParser {
             getCurrentContext().set("tagline", content);
         }
     }
-
+    
+    public void endElement_docs() throws SAXException {
+        feed.set("docs", pop("docs"));
+    }
+    
     public void endElement_email() throws SAXException {
         String value = pop("email");
         if (in_author) {
@@ -107,16 +115,16 @@ public class FeedSAXParser extends BaseSAXParser {
             generator.setName(content);
         }
         feed.setGenerator(generator);
+        feed.set("generator", content);
         generator = null;
     }
     public void endElement_height() throws SAXException {
         image.setHeight(pop("height"));
     }
     public void endElement_id() throws SAXException {
-        in_author = false; // TODO clean up
-        String id = pop("id");
-        getCurrentContext().set("guid", id);
-        author = null;
+        String content = pop("id");
+        getCurrentContext().set("guid", content);
+        getCurrentContext().set("id", content);
     }
     
     public void endElement_image() throws SAXException {
@@ -137,6 +145,10 @@ public class FeedSAXParser extends BaseSAXParser {
         String content = pop("issued");
         getCurrentContext().set("issued", content);
         getCurrentContext().setIssued(new Date(content,detail));
+    }
+    
+    public void endElement_language() throws SAXException {
+        getCurrentContext().set("language", pop("language"));
     }
 
     public void endElement_link() throws SAXException {
@@ -214,6 +226,11 @@ public class FeedSAXParser extends BaseSAXParser {
             in_content--;
         }
     }
+    
+    public void endElement_ttl() throws SAXException {
+        feed.set("ttl", pop("ttl"));
+    }
+    
     public void endElement_url() throws SAXException {
 
         String content = pop("url");

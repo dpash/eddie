@@ -166,12 +166,6 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         
         // If element can be relative url, resolve link
 
-        //getCurrentContext().set(element,output);
-        if (in_entry) {
-                current_entry.set(element,output);
-        } else if (in_feed && !in_textinput && !in_image) {
-            feed.set(element,output);            
-        }
         return output;
         
     }
