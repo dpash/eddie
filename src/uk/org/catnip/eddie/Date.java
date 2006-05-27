@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import java.util.TimeZone;
 public class Date extends Detail {
     static Logger log = Logger.getLogger(Date.class);
-    private String date;
     private Calendar date_parsed;
 
 
@@ -63,10 +62,8 @@ public class Date extends Detail {
     public Date(String d, Detail detail) {
         setDetails(detail);
         SimpleDateFormat formatter = new SimpleDateFormat();
-        date = d;
         d = d.replaceAll("([-+]\\d\\d:\\d\\d)", "GMT$1"); // Correct W3C times
         d = d.replaceAll(" ([ACEMP])T$", " $1ST"); // Correct Disney times
-        log.debug(date + " -> " +d);
         for (int i = 0; i < date_formats.length; i++) {
            try {
               log.debug("trying '" + date_formats[i] + "'" );
