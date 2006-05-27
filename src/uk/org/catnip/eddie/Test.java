@@ -272,7 +272,7 @@ public class Test {
             category_list.append(convertCategory((Category)categories.next()));
         }
         entry_dict.__setitem__("categories",category_list);
-        
+        entry_dict.__setitem__("tags",category_list);
         PyList enclosure_list = new PyList();
         Iterator enclosures = entry.enclosures();
         while (enclosures.hasNext()) {
