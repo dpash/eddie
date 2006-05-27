@@ -99,6 +99,7 @@ private static Map createElementAliases() {
         aliases.put("pubdate", "modified");
         aliases.put("published", "dcterms_created");
         aliases.put("uri", "url");
+        aliases.put("webmaster", "publisher");
         aliases.put("xhtml_body", "body");
         aliases.put("updated", "modified");
         return aliases;
