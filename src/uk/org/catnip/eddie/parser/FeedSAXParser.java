@@ -381,7 +381,9 @@ public class FeedSAXParser extends BaseSAXParser {
             enclosure.setUrl(state.getAttr("href"));
             enclosure.setLength(state.getAttr("length"));
             enclosure.setType(state.getAttr("type"));
-            current_entry.addEnclosure(enclosure);
+            if (current_entry != null) {
+                current_entry.addEnclosure(enclosure);
+            }
         } else {
             link = new Link();
             link.setHref(state.getAttr("href"));
