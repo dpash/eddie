@@ -1,10 +1,10 @@
 package uk.org.catnip.eddie;
 
 public class TextInput {
-    String title;
-    String link;
-    String name;
-    String description;
+    private String title;
+    private String link;
+    private String name;
+    private String description;
     public String getDescription() {
         return description;
     }
