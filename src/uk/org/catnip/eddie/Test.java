@@ -118,7 +118,7 @@ public class Test {
         while (entries.hasNext()) {
             entries_list.append(convertEntry((Entry) entries.next()));
         }
-        if (feed.get("version") != null) {
+        if (feed.get("format") != null) {
         interp.set("version", new PyString(feed.get("format")));
         }
         interp.set("feed", convertFeed(feed));
