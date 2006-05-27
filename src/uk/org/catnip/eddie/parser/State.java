@@ -256,6 +256,14 @@ public class State {
     }
 
     public void setType(String type) {
-        this.type = type;
+        if (type.equals("text")) {
+            this.type = "text/plain";
+        } else if (type.equals("html")) {
+            this.type = "text/html";
+        } else if (type.equals("xhtml")) {
+            this.type = "application/xhtml+xml";
+        } else {
+            this.type = type;
+        }
     }
 }
