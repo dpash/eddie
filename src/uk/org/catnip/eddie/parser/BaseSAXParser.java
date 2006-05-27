@@ -157,6 +157,11 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         
         if (state.mode != null && state.mode.equals("base64")) {
             output = new String(Base64.decodeBase64(output.trim().getBytes()));
+            detail.setValue(output);
+        }
+        if (state.type.equals("application/octet-stream")) {
+            output = new String(Base64.decodeBase64(output.trim().getBytes()));
+            detail.setValue(output);
         }
         
         // If mode == escaped and content-type == application/octet-stream
