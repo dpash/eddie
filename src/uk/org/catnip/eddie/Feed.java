@@ -54,6 +54,9 @@ public class Feed extends FeedContext {
        if (image != null) {
            ret.append("image = " + image + ", ");
            }
+       if (textinput != null) {
+           ret.append("textinput = " + textinput + ", ");
+           }
        if (generator != null) {
            ret.append("generator = " + generator + ", ");
        }
