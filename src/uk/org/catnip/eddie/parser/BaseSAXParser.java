@@ -149,7 +149,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
        
         detail = new Detail();
         detail.setLanguage(state.getLanguage());
-        detail.setType(state.type);
+        detail.setType(state.getType());
         if (!output.equals("")){
         detail.setValue(output);
         }
@@ -159,7 +159,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
             output = new String(Base64.decodeBase64(output.trim().getBytes()));
             detail.setValue(output);
         }
-        if (state.type.equals("application/octet-stream")) {
+        if (state.getType().equals("application/octet-stream")) {
             output = new String(Base64.decodeBase64(output.trim().getBytes()));
             detail.setValue(output);
         }
@@ -178,7 +178,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         String data =  new String(ch, start,length);
         //data.trim();
         
-        if (in_content > 0 && !getCurrentState().type.equals("text/html") && !getCurrentState().type.equals("text/plain")) {
+        if (in_content > 0 && !getCurrentState().getType().equals("text/html") && !getCurrentState().getType().equals("text/plain")) {
         if (data.equals("<")) { data = "&lt;"; }
         if (data.equals(">")) { data = "&gt;"; }
         }

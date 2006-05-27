@@ -294,7 +294,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_content(State state) throws SAXException {
         in_content++;
         state.mode = "xml";
-        state.type = state.getAttr("type", "text/plain");
+        state.setType(state.getAttr("type", "text/plain"));
         state.expectingText = true;
         push(state);
 
@@ -302,7 +302,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_content_encoded(State state) throws SAXException {
         in_content++;
         state.mode = "escaped";
-        state.type = "text/html";
+        state.setType("text/html");
         state.expectingText = true;
         push(state);
 
@@ -317,7 +317,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_copyright(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
+        state.setType(state.getAttr("type", "text/plain"));
         state.expectingText = true;
         push(state);
 
@@ -401,7 +401,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_info(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
+        state.setType(state.getAttr("type", "text/plain"));
         state.expectingText = true;
         push(state);
 
@@ -462,7 +462,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_summary(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
+        state.setType(state.getAttr("type", "text/plain"));
         state.expectingText = true;
         push(state);
 
@@ -476,7 +476,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_title(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
-        state.type = state.getAttr("type", "text/plain");
+        state.setType(state.getAttr("type", "text/plain"));
         state.expectingText = (this.in_feed || this.in_entry);
         push(state);
 

@@ -165,7 +165,7 @@ public class State {
 
     public String mode;
 
-    public String type;
+    private String type;
 
     public boolean expectingText = false;
 
@@ -249,5 +249,13 @@ public class State {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
