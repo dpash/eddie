@@ -347,10 +347,10 @@ public class FeedSAXParser extends BaseSAXParser {
 
         this.in_feed = true;
         String attr_version = state.getAttr("version");
-        String attr_namespace = state.getAttr("xmlns");
+        
         if (!this.feed.has("format"))
             if (attr_version == null || attr_version.equals("")) {
-                if (attr_namespace != null && attr_namespace.equals("http://www.w3.org/2005/Atom")) {
+                if (state.getUri().equals("http://www.w3.org/2005/Atom")) {
                     this.feed.set("format", "atom10");
                 } else {
                     this.feed.set("format", "atom");
@@ -439,19 +439,19 @@ public class FeedSAXParser extends BaseSAXParser {
         String version = state.getAttr("version");
         if (version != null) {
             if (version.startsWith("2.")) {
-                feed.set("version", "rss20");  
+                feed.set("format", "rss20");  
             }else if (version.equals("0.94")) {
-                feed.set("version", "rss094");  
+                feed.set("format", "rss094");  
             }else if (version.equals("0.93")) {
-                feed.set("version", "rss093");  
+                feed.set("format", "rss093");  
             }else if (version.equals("0.92")) {
-                feed.set("version", "rss092");  
+                feed.set("format", "rss092");  
             }else if (version.equals("0.91")) { 
                 // TODO need to check for netscape doctype
-                feed.set("version", "rss091u");  
+                feed.set("format", "rss091u");  
             }
         } else {
-            feed.set("version", "rss");
+            feed.set("format", "rss");
         }
     }
     public void startElement_summary(State state) throws SAXException {
