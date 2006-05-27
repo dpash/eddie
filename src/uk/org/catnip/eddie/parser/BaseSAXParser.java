@@ -172,7 +172,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     public void characters(char[] ch, int start, int length) {
         String data =  new String(ch, start,length);
         //data.trim();
-        if (in_content > 0 && !getCurrentState().type.equals("text/html")) {
+        if (in_content > 0 && !getCurrentState().type.equals("text/html") && !getCurrentState().type.equals("text/plain")) {
         if (data.equals("<")) { data = "&lt;"; }
         if (data.equals(">")) { data = "&gt;"; }
         }
