@@ -33,6 +33,12 @@ public class State {
         aliases.put("dc:title", "title");
         aliases.put("dcterms:modified", "modified");
         aliases.put("item", "entry");
+        aliases.put("itunes:block", "itunes_block");
+        aliases.put("itunes:author", "author");
+        aliases.put("itunes:email", "email");
+        aliases.put("itunes:name", "name");
+        aliases.put("itunes:subtitle", "subtitle");
+        aliases.put("itunes:summary", "summary");
         aliases.put("feedinfo", "channel");
         aliases.put("fullitem", "content_encoded");
         aliases.put("homepage", "url");
