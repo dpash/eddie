@@ -123,6 +123,8 @@ public class FeedSAXParser extends BaseSAXParser {
         in_entry = false;
         if (current_entry.get("summary") == null && current_entry.get("description") != null){
             current_entry.set("summary", current_entry.get("description"));
+        } else if (current_entry.get("summary") != null && current_entry.get("description") == null){
+            current_entry.set("description", current_entry.get("summary"));
         }
         feed.addEntry(current_entry);
         current_entry = null;
