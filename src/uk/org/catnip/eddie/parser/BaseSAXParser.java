@@ -20,7 +20,8 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     protected Locator locator;
 
     protected String filename;
-
+    private String contentLocation;
+    
     protected Feed feed = new Feed();
     protected Entry current_entry;
     protected Detail detail;
@@ -56,6 +57,18 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     }
 
     protected void push(State state) {
+        log.debug("asked to push "+ state);
+        if (stack.isEmpty() && state.getBase() == null) {
+            if (contentLocation != null){ 
+        
+            log.debug("setting base to '" + contentLocation+ "'");
+            state.setBase(contentLocation);
+            } else {
+                log.debug("setting base to '" + filename+ "'");
+                state.setBase(filename);  
+            }
+        }
+        log.debug("pushing "+ state);
         stack.push(state);     
     }
 
@@ -234,5 +247,14 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         feed.error = true;
         log.debug("fatalError: " + filename + ": " + exception.getMessage());
         // throw new SAXException(exception);
+    }
+
+    public String getContentLocation() {
+        return contentLocation;
+    }
+
+    public void setContentLocation(String contentLocation) {
+        log.debug("setting Content-Location to '"+ contentLocation +"'");
+        this.contentLocation = contentLocation;
     }
 }
