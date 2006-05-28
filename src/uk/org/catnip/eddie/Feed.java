@@ -10,7 +10,6 @@ public class Feed extends FeedContext {
     public boolean error = false;
     private Detail tagline;
     private Detail info;
-    private Detail copyright;
     private Generator generator;
     private Image image;
     private TextInput textinput;
@@ -101,14 +100,6 @@ public class Feed extends FeedContext {
 
     public void setInfo(Detail info) {
         this.info = info;
-    }
-
-    public Detail getCopyright() {
-        return copyright;
-    }
-
-    public void setCopyright(Detail copyright) {
-        this.copyright = copyright;
     }
     
 }

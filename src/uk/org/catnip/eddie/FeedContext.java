@@ -19,6 +19,7 @@ public class FeedContext {
     protected List links = new LinkedList();
     protected List categories = new LinkedList();
     private Detail summary;
+    private Detail copyright;
     public String set(String key, String value) {
         property_map.put(key,value);
         return value;
@@ -98,6 +99,12 @@ public class FeedContext {
     }
     public void setPublisher(Author publisher) {
         this.publisher = publisher;
+    }
+    public Detail getCopyright() {
+        return copyright;
+    }
+    public void setCopyright(Detail copyright) {
+        this.copyright = copyright;
     }
 
 }

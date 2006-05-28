@@ -74,7 +74,7 @@ public class FeedSAXParser extends BaseSAXParser {
         String content = pop("copyright");
         getCurrentContext().set("copyright", content);
         getCurrentContext().set("rights", content);
-        feed.setCopyright(detail);
+        getCurrentContext().setCopyright(detail);
         in_content--;
     }
     

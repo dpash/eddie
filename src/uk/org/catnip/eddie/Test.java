@@ -262,6 +262,9 @@ public class Test {
         if (entry.getIssued() != null) {
             entry_dict.__setitem__("issued_parsed",convertDate(entry.getIssued()));
         }
+        if (entry.getCopyright() != null) {
+            entry_dict.__setitem__("rights_detail",convertDetail(entry.getCopyright()));
+        }
         if (entry.getModified() != null) {
             entry_dict.__setitem__("modified_parsed",convertDate(entry.getModified()));
             entry_dict.__setitem__("date_parsed",convertDate(entry.getModified()));
