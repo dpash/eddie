@@ -44,6 +44,7 @@ public class State {
         aliases.put("pubdate", "modified");
         aliases.put("published", "dcterms_created");
         aliases.put("rights", "copyright");
+        aliases.put("tagline", "subtitle");
         aliases.put("uri", "url");
         aliases.put("webmaster", "publisher");
         aliases.put("xhtml_body", "body");

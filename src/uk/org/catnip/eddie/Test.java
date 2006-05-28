@@ -180,12 +180,10 @@ public class Test {
         }
         if (feed.getSubtitle() != null) {
             feed_dict.__setitem__("subtitle_detail",convertDetail(feed.getSubtitle()));
+            feed_dict.__setitem__("tagline_detail",convertDetail(feed.getSubtitle()));
         }
         if (feed.getInfo() != null) {
             feed_dict.__setitem__("info_detail",convertDetail(feed.getInfo()));
-        }
-        if (feed.getTagline() != null) {
-            feed_dict.__setitem__("tagline_detail",convertDetail(feed.getTagline()));
         }
         if (feed.getGenerator() != null) {
             feed_dict.__setitem__("generator_detail",convertGenerator(feed.getGenerator()));

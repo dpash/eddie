@@ -93,8 +93,10 @@ public class FeedSAXParser extends BaseSAXParser {
         } else if (textinput != null) {
             textinput.setDescription(content);
         } else {
-            getCurrentContext().set("description", content);
-            getCurrentContext().set("summary", content);
+            if (getCurrentContext().get("summary") == null) {
+                getCurrentContext().set("description", content);
+            }
+            //getCurrentContext().set("summary", content);
             getCurrentContext().set("tagline", content);
         }
     }
@@ -119,6 +121,9 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_entry() throws SAXException {
         pop("entry");
         in_entry = false;
+        if (current_entry.get("summary") == null && current_entry.get("description") != null){
+            current_entry.set("summary", current_entry.get("description"));
+        }
         feed.addEntry(current_entry);
         current_entry = null;
     }
@@ -266,13 +271,14 @@ public class FeedSAXParser extends BaseSAXParser {
         current_entry.getSource().setSubtitle(detail);
         } else {
             feed.set("subtitle", content);
+            feed.set("tagline", content);
             feed.setSubtitle(detail);
         }
         in_content--;
     }
     public void endElement_summary() throws SAXException {
         String content = pop("summary");
-        if (getCurrentContext().getSummary() == null){
+        if (getCurrentContext().getSummary() == null && getCurrentContext().get("description") == null){
             getCurrentContext().set("summary", content);
             getCurrentContext().setSummary(detail);
         } else {
@@ -282,11 +288,7 @@ public class FeedSAXParser extends BaseSAXParser {
         }
         in_content--;
     }
-    public void endElement_tagline() throws SAXException {
-        String content = pop("tagline");
-        feed.set("tagline", content);
-        feed.setTagline(detail);
-    }
+
     public void endElement_textinput() throws SAXException {
         String content = pop("textinput");
         feed.setTextinput(textinput);
@@ -552,7 +554,7 @@ public class FeedSAXParser extends BaseSAXParser {
         textinput = new TextInput();
         push(state);
     }
-    
+
     public void startElement_title(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");

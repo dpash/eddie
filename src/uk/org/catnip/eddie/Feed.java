@@ -8,7 +8,6 @@ import uk.org.catnip.eddie.Detail;
 
 public class Feed extends FeedContext {
     public boolean error = false;
-    private Detail tagline;
     private Detail info;
     private Detail subtitle;
     private Generator generator;
@@ -48,9 +47,6 @@ public class Feed extends FeedContext {
        if (info != null) {
            ret.append("info = " + info + ", ");
            }
-       if (tagline != null) {
-           ret.append("tagline = " + tagline + ", ");
-           }
        if (image != null) {
            ret.append("image = " + image + ", ");
            }
@@ -85,14 +81,6 @@ public class Feed extends FeedContext {
     
     public Iterator entries() {
         return entries.iterator();
-    }
-
-    public Detail getTagline() {
-        return tagline;
-    }
-
-    public void setTagline(Detail tagline) {
-        this.tagline = tagline;
     }
 
     public Detail getInfo() {
