@@ -8,12 +8,48 @@ import java.util.Hashtable;
 import org.apache.log4j.Logger;
 import java.net.URI;
 import java.net.URISyntaxException;
-public class State {
-    static Logger log = Logger.getLogger(State.class);
 
+public class State {
     private static Map element_aliases = createElementAliases();
 
+    static Logger log = Logger.getLogger(State.class);
+
     private static Map namespace_aliases = createNamespaceAliases();
+
+    private static Map createElementAliases() {
+        Map aliases = new Hashtable();
+        aliases.put("abstract", "description");
+        aliases.put("body", "content");
+        aliases.put("content:encoded", "content_encoded");
+        aliases.put("dcterms:created", "created");
+        aliases.put("dc:author", "author");
+        aliases.put("dc:creator", "author");
+        aliases.put("dc:contributor", "contributor");
+        aliases.put("dc:date", "modified");
+        aliases.put("dc:language", "language");
+        aliases.put("dc:publisher", "publisher");
+        aliases.put("dc:rights", "copyright");
+        aliases.put("dc:subject", "category");
+        aliases.put("dc:title", "title");
+        aliases.put("dcterms:modified", "modified");
+        aliases.put("item", "entry");
+        aliases.put("feedinfo", "channel");
+        aliases.put("fullitem", "content_encoded");
+        aliases.put("homepage", "url");
+        aliases.put("keywords", "category");
+        aliases.put("dcterms:issued", "issued");
+        aliases.put("managingeditor", "author");
+        aliases.put("product", "item");
+        aliases.put("producturl", "link");
+        aliases.put("pubdate", "modified");
+        aliases.put("published", "dcterms_created");
+        aliases.put("rights", "copyright");
+        aliases.put("uri", "url");
+        aliases.put("webmaster", "publisher");
+        aliases.put("xhtml_body", "body");
+        aliases.put("updated", "modified");
+        return aliases;
+    }
 
     private static Map createNamespaceAliases() {
         Map aliases = new Hashtable();
@@ -76,40 +112,31 @@ public class State {
         return aliases;
     }
 
-    private static Map createElementAliases() {
-        Map aliases = new Hashtable();
-        aliases.put("abstract", "description");
-        aliases.put("body", "content");
-        aliases.put("content:encoded", "content_encoded");
-        aliases.put("dcterms:created", "created");
-        aliases.put("dc:author", "author");
-        aliases.put("dc:creator", "author");
-        aliases.put("dc:contributor", "contributor");
-        aliases.put("dc:date", "modified");
-        aliases.put("dc:language", "language");
-        aliases.put("dc:publisher", "publisher");
-        aliases.put("dc:rights", "copyright");
-        aliases.put("dc:subject", "category");
-        aliases.put("dc:title", "title");
-        aliases.put("dcterms:modified", "modified");
-        aliases.put("item", "entry");
-        aliases.put("feedinfo", "channel");
-        aliases.put("fullitem", "content_encoded");
-        aliases.put("homepage", "url");
-        aliases.put("keywords", "category");
-        aliases.put("dcterms:issued", "issued");
-        aliases.put("managingeditor", "author");
-        aliases.put("product", "item");
-        aliases.put("producturl", "link");
-        aliases.put("pubdate", "modified");
-        aliases.put("published", "dcterms_created");
-        aliases.put("rights", "copyright");
-        aliases.put("uri", "url");
-        aliases.put("webmaster", "publisher");
-        aliases.put("xhtml_body", "body");
-        aliases.put("updated", "modified");
-        return aliases;
-    }
+    public Attributes atts = new AttributesImpl();
+
+    private URI base;
+
+    public boolean content = false;
+
+    private String element;
+
+    public boolean expectingText = false;
+
+    private String language;
+
+    private String localName;
+
+    public String mode;
+
+    private String namespace;
+
+    public String qName;
+
+    public StringBuilder text = new StringBuilder();
+
+    private String type;
+
+    private String uri;
 
     public State() {
     }
@@ -143,80 +170,12 @@ public class State {
         }
         this.language = this.getAttr("xml:lang", prev.getLanguage());
         this.setBase(this.getAttr("xml:base", prev.getBase()));
-        //log.debug(this);
+        // log.debug(this);
 
     }
-
-    private String uri;
-
-    public boolean content = false;
-
-    private String localName;
-
-    private String namespace;
-
-    private String element;
-
-    public String qName;
-
-    public Attributes atts = new AttributesImpl();
-
-    private String language;
-
-    private URI base;
-
-    public String mode;
-
-    private String type;
-
-    public boolean expectingText = false;
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("element = '" + element + "', ");
-        sb.append("mode = '" + mode + "', ");
-        sb.append("type = '" + type + "', ");
-        sb.append("base = '" + base + "', ");
-        sb.append("language = '" + language + "', ");
-        sb.append("namespace = '" + namespace + "', ");
-        sb.append("uri = '" + uri + "', ");
-        sb.append("qname = '" + qName + "', ");
-        sb.append("localname = '" + localName + "', ");
-        sb.append("text = '" + text + "'");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    public StringBuilder text = new StringBuilder();
 
     public void addText(String str) {
         text.append(str);
-    }
-
-    public String getAttr(String key) {
-        return this.getAttr(key, null);
-    }
-
-    public String getAttr(String key, String default_value) {
-        // TODO: remove this hack
-        if (key.equals("type") && namespace != null && namespace.equals("xhtml")) {
-            return "application/xhtml+xml";
-        }
-        String ret = atts.getValue(key);
-        if (ret == null) {
-            ret = default_value;
-        }
-        log.trace("getAttr: " + key + " = '" + ret + "'");
-        return ret;
-    }
-
-    public String getElement() {
-        return element;
-    }
-
-    public void setElement(String element) {
-        this.element = element;
     }
 
     private String aliasElement(String namespace, String element) {
@@ -229,12 +188,22 @@ public class State {
         return element;
     }
 
-    public String getLanguage() {
-        return language;
+    public String getAttr(String key) {
+        return this.getAttr(key, null);
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public String getAttr(String key, String default_value) {
+        // TODO: remove this hack
+        if (key.equals("type") && namespace != null
+                && namespace.equals("xhtml")) {
+            return "application/xhtml+xml";
+        }
+        String ret = atts.getValue(key);
+        if (ret == null) {
+            ret = default_value;
+        }
+        log.trace("getAttr: " + key + " = '" + ret + "'");
+        return ret;
     }
 
     public String getBase() {
@@ -243,7 +212,34 @@ public class State {
         } else {
             return null;
         }
-        
+
+    }
+
+    public String getElement() {
+        return element;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public String resolveUri(String uri) {
+        if (base == null) {
+            return uri;
+        }
+        if (uri == null) {
+            return uri;
+        }
+
+        return base.resolve(uri).toString();
     }
 
     public void setBase(String base) {
@@ -260,23 +256,13 @@ public class State {
             }
         }
     }
-    public String resolveUri(String uri) {
-        if (base == null) { return uri; }
-        if (uri == null) { return uri;}
-        
-        return base.resolve(uri).toString();
-    }
-    
-    public String getUri() {
-        return uri;
+
+    public void setElement(String element) {
+        this.element = element;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public String getType() {
-        return type;
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public void setType(String type) {
@@ -289,5 +275,26 @@ public class State {
         } else {
             this.type = type;
         }
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("element = '" + element + "', ");
+        sb.append("mode = '" + mode + "', ");
+        sb.append("type = '" + type + "', ");
+        sb.append("base = '" + base + "', ");
+        sb.append("language = '" + language + "', ");
+        sb.append("namespace = '" + namespace + "', ");
+        sb.append("uri = '" + uri + "', ");
+        sb.append("qname = '" + qName + "', ");
+        sb.append("localname = '" + localName + "', ");
+        sb.append("text = '" + text + "'");
+        sb.append("}");
+        return sb.toString();
     }
 }
