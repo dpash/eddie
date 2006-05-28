@@ -7,6 +7,7 @@ import java.util.Iterator;
 public class Entry extends FeedContext {
     private List content = new LinkedList();
     private List enclosures = new LinkedList();
+    private Source source;
     private boolean guidIsLink = false;
     public boolean isGuidIsLink() {
         return guidIsLink;
@@ -63,5 +64,13 @@ public class Entry extends FeedContext {
  
     public Iterator enclosures() {
         return enclosures.iterator();
+    }
+
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
     }
 }

@@ -12,6 +12,7 @@ import uk.org.catnip.eddie.Category;
 import uk.org.catnip.eddie.Image;
 import uk.org.catnip.eddie.TextInput;
 import uk.org.catnip.eddie.Enclosure;
+import uk.org.catnip.eddie.Source;
 
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
@@ -222,6 +223,10 @@ public class FeedSAXParser extends BaseSAXParser {
         sync_author(pop("publisher"), "publisher");
         getCurrentContext().setPublisher(author);
         author = null;
+    }
+    public void endElement_source() throws SAXException {
+        pop("source");
+        in_source = false;
     }
     public void endElement_summary() throws SAXException {
         String content = pop("summary");
@@ -465,6 +470,12 @@ public class FeedSAXParser extends BaseSAXParser {
         } else {
             feed.set("format", "rss");
         }
+    }
+    public void startElement_source(State state) throws SAXException {
+        in_source = true;
+        current_entry.setSource(new Source());
+        push(state);
+
     }
     public void startElement_summary(State state) throws SAXException {
         in_content++;

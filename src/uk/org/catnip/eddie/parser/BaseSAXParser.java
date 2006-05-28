@@ -31,6 +31,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     protected boolean in_entry = false;
     protected boolean in_textinput = false;
     protected boolean in_image = false;
+    protected boolean in_source = false;
     protected int in_content = 0;
     private boolean next_data_is_inline_element = false;
     protected Stack stack = new Stack();
@@ -60,7 +61,11 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
 
     protected FeedContext getCurrentContext() {
         if (in_entry) {
-            return current_entry;
+            if (in_source) {
+                return current_entry.getSource();
+            } else {
+                return current_entry;
+            }
         } else {
             return feed;
         }

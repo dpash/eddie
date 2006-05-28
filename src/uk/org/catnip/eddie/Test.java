@@ -265,6 +265,9 @@ public class Test {
         if (entry.getCopyright() != null) {
             entry_dict.__setitem__("rights_detail",convertDetail(entry.getCopyright()));
         }
+        if (entry.getSource() != null) {
+            entry_dict.__setitem__("source",convertSource(entry.getSource()));
+        }
         if (entry.getModified() != null) {
             entry_dict.__setitem__("modified_parsed",convertDate(entry.getModified()));
             entry_dict.__setitem__("date_parsed",convertDate(entry.getModified()));
@@ -325,6 +328,76 @@ public class Test {
         log.debug(entry_dict);
         
         return entry_dict;
+    }
+
+    public PyDictionary convertSource(Source source) {
+        PyDictionary source_dict = new PyDictionary();
+        Iterator source_it = source.keys();
+        while (source_it.hasNext()) {
+            String key = (String) source_it.next();
+            source_dict.__setitem__(key, new PyString(source.get(key)));
+        }
+        if (source.getAuthor() != null) {
+            source_dict.__setitem__("author_detail", convertAuthor(source.getAuthor()));
+        }
+        if (source.getPublisher() != null) {
+            source_dict.__setitem__("publisher_detail", convertAuthor(source.getPublisher()));
+        }
+        if (source.getTitle() != null) {
+            source_dict.__setitem__("title_detail",convertDetail(source.getTitle()));
+        }
+        if (source.getSummary() != null) {
+            source_dict.__setitem__("summary_detail",convertDetail(source.getSummary()));
+        }
+        if (source.getCreated() != null) {
+            source_dict.__setitem__("created_parsed",convertDate(source.getCreated()));
+        }
+        if (source.getIssued() != null) {
+            source_dict.__setitem__("issued_parsed",convertDate(source.getIssued()));
+        }
+        if (source.getCopyright() != null) {
+            source_dict.__setitem__("rights_detail",convertDetail(source.getCopyright()));
+        }
+
+        if (source.getModified() != null) {
+            source_dict.__setitem__("modified_parsed",convertDate(source.getModified()));
+            source_dict.__setitem__("date_parsed",convertDate(source.getModified()));
+        }
+        
+        PyList contributors_list = new PyList();
+        Iterator contributors = source.contributors();
+        while (contributors.hasNext()) {
+            contributors_list.append(convertAuthor((Author)contributors.next()));
+        }
+        source_dict.__setitem__("contributors",contributors_list);
+        
+        PyList links_list = new PyList();
+        Iterator links = source.links();
+        while (links.hasNext()) {
+            links_list.append(convertLink((Link)links.next()));
+        }
+        source_dict.__setitem__("links",links_list);
+        
+        // Tuple style categories
+        PyList category_list = new PyList();
+        Iterator categories = source.categories();
+        while (categories.hasNext()) {
+            category_list.append(convertCategoryTuple((Category)categories.next()));
+        }
+        source_dict.__setitem__("categories",category_list);
+        
+        // Dict style tags
+        category_list = new PyList();
+        categories = source.categories();
+        while (categories.hasNext()) {
+            category_list.append(convertCategory((Category)categories.next()));
+        }
+        source_dict.__setitem__("tags",category_list);
+              
+     
+        log.debug(source_dict);
+        
+        return source_dict;
     }
     
     public PyDictionary convertDetail(Detail detail) {
