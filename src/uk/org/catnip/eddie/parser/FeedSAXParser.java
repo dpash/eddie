@@ -73,6 +73,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_copyright() throws SAXException {
         String content = pop("copyright");
         getCurrentContext().set("copyright", content);
+        getCurrentContext().set("rights", content);
         feed.setCopyright(detail);
         in_content--;
     }
