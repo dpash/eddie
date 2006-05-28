@@ -272,10 +272,13 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void endElement_summary() throws SAXException {
         String content = pop("summary");
-        getCurrentContext().set("summary", content);
-        getCurrentContext().setSummary(detail);
-        if (current_entry != null) {
-            current_entry.addContent(detail);
+        if (getCurrentContext().getSummary() == null){
+            getCurrentContext().set("summary", content);
+            getCurrentContext().setSummary(detail);
+        } else {
+            if (current_entry != null) {
+                current_entry.addContent(detail);
+            }
         }
         in_content--;
     }
