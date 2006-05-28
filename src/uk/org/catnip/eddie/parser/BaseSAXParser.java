@@ -161,7 +161,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
         log.debug("popping " + state);
-        String output = state.text.toString(); 
+        String output = state.getText(); 
        
         detail = new Detail();
         detail.setBase(state.getBase());
@@ -233,7 +233,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     
     public void startEntity(java.lang.String name)
     throws SAXException {
-        getCurrentState().text.append(Entities.resolveEntity(name));
+        getCurrentState().addText(Entities.resolveEntity(name));
     }
     
     // ErrorHandler

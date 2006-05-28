@@ -132,7 +132,7 @@ public class State {
 
     public String qName;
 
-    public StringBuilder text = new StringBuilder();
+    private StringBuilder text = new StringBuilder();
 
     private String type;
 
@@ -223,6 +223,11 @@ public class State {
         return language;
     }
 
+    public String getText() {
+        return text.toString();
+    }
+
+    
     public String getType() {
         return type;
     }
