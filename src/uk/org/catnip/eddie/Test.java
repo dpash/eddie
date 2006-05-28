@@ -360,6 +360,9 @@ public class Test {
         if (link.getHreflang() != null) {
             link_dict.__setitem__("hreflang", new PyString(link.getHreflang()));
             }
+        if (link.getLength() != null) {
+            link_dict.__setitem__("length", new PyString(link.getLength()));
+            }
         return link_dict;
     }
     public PyDictionary convertGenerator(Generator generator) {

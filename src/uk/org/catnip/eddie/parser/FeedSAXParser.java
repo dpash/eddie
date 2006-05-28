@@ -424,14 +424,15 @@ public class FeedSAXParser extends BaseSAXParser {
             if (current_entry != null) {
                 current_entry.addEnclosure(enclosure);
             }
-        } else {
+        } 
             link = new Link();
             link.setHref(state.getAttr("href"));
             link.setTitle(state.getAttr("title"));
             link.setRel(state.getAttr("rel"));
             link.setHreflang(state.getAttr("hreflang"));
+            link.setLength(state.getAttr("length"));
             state.expectingText = false;
-        }
+        
         push(state);
     }
     public void startElement_modified(State state) throws SAXException {

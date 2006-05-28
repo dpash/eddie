@@ -7,6 +7,15 @@ public class Link extends Detail {
     private String title;
     private String rel;
     private String hreflang;
+    private String length;
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
     public String getHref() {
         return href;
     }
