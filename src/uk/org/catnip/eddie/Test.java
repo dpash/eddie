@@ -10,6 +10,28 @@ import org.python.util.PythonInterpreter;
 import org.python.core.*;
 
 public class Test {
+    public class EddieDict extends PyDictionary {
+        //Logger log = Logger.getLogger(EddieDict.class);
+        //private PyObject map(PyObject key) {
+           // PyString str_key = (PyString) key;
+           // if (str_key.__cmp__(new PyString("url")) == 0) {
+           //     key = new PyString("href");
+           // }
+            //log.debug("key = '"+key+"'");
+        //   return key;
+        //}
+        
+        //public PyObject __finditem__(PyObject key) {
+        //    return super.__finditem__(map(key));
+        //}
+        //public void __setitem__(PyObject key, PyObject value) {
+        //    super.__setitem__(map(key),value);
+        //}
+        //public void __delitem__(PyObject key) {
+        //    super.__delitem__(map(key));
+        //}
+    }
+    
     static Logger log = Logger.getLogger(Test.class);
 
     private PythonInterpreter interp = new PythonInterpreter();
@@ -205,10 +227,10 @@ public class Test {
         
     }
     public PyDictionary convertAuthor(Author author) {
-        PyDictionary author_detail = new PyDictionary();
+        PyDictionary author_detail = new EddieDict();
         author_detail.__setitem__("name", new PyString(author.getName()));
         author_detail.__setitem__("email", new PyString(author.getEmail()));
-        author_detail.__setitem__("url", new PyString(author.getUrl()));
+        author_detail.__setitem__("url", new PyString(author.getHref()));
         return author_detail;
     }
     

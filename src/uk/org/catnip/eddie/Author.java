@@ -3,7 +3,7 @@ package uk.org.catnip.eddie;
 public class Author {
     private String name = "";
     private String email = "";
-    private String url = "";
+    private String href = "";
     public String getEmail() {
         return email;
     }
@@ -16,18 +16,18 @@ public class Author {
     public void setName(String name) {
         this.name = name;
     }
-    public String getUrl() {
-        return url;
+    public String getHref() {
+        return href;
     }
-    public void setUrl(String url) {
-        this.url = url;
+    public void setHref(String href) {
+        this.href = href;
     }
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         sb.append("name: '" + this.name+ "', ");
         sb.append("email: '" + this.email+ "', ");
-        sb.append("url: '" + this.url +"'");
+        sb.append("url: '" + this.href +"'");
         sb.append("}");
         return sb.toString();
     }

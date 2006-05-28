@@ -118,7 +118,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         
         State state = new State(uri, localName, qName);
         State prev = getCurrentState();
-        log.debug("end_element: " + state);
+        log.trace("end_element: " + state);
         if (prev.mode != null) {
             if (in_content > 0 && prev.mode.equals("escaped") && prev.content) {
                 prev.mode = "xml";

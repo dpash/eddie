@@ -258,7 +258,7 @@ public class FeedSAXParser extends BaseSAXParser {
 
         String content = pop("url");
         if (in_author) {
-            author.setUrl(content);
+            author.setHref(content);
         } else if (in_contributor) {
             save_contributor("url", content);
         } else if (in_image) {
@@ -489,7 +489,7 @@ public class FeedSAXParser extends BaseSAXParser {
         log.debug(author);
         String name = author.getName();
         String email = author.getEmail();
-        String url = author.getUrl();
+        String url = author.getHref();
         if (name != null && email != null && !email.equals("")) {
             getCurrentContext().set(option,  name + " (" + email + ")");
         } else if (name != null && !name.equals("")) {

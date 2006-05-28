@@ -141,7 +141,7 @@ public class State {
         }
         this.language = this.getAttr("xml:lang", prev.getLanguage());
         this.base = this.getAttr("xml:base", prev.getBase());
-        log.debug(this);
+        //log.debug(this);
 
     }
 
