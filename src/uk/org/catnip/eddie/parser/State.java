@@ -162,7 +162,7 @@ public class State {
 
     private String language;
 
-    public String base;
+    private String base;
 
     public String mode;
 

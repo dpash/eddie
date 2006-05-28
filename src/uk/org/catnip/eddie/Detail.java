@@ -7,6 +7,7 @@ public class Detail {
     private String type;
     private String value;
     private String src;
+    private String base;
     public String getSrc() {
         return src;
     }
@@ -53,5 +54,13 @@ public class Detail {
         sb.append("value: '" + this.value +"'");
         sb.append("}");
         return sb.toString();
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
     }
 }

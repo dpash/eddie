@@ -429,6 +429,10 @@ public class Test {
                 detail_dict.__setitem__("src",
                         new PyString(detail.getSrc()));
             }
+            if (detail.getBase() != null) {
+                detail_dict.__setitem__("base",
+                        new PyString(detail.getBase()));
+            }
         }
         return detail_dict;
     }

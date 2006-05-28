@@ -153,6 +153,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         String output = state.text.toString(); 
        
         detail = new Detail();
+        detail.setBase(state.getBase());
         detail.setLanguage(state.getLanguage());
         detail.setType(state.getType());
         detail.setSrc(state.getAttr("src")); //TODO: this seems out of place
