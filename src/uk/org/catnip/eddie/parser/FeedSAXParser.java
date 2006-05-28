@@ -144,12 +144,20 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_height() throws SAXException {
         image.setHeight(pop("height"));
     }
+    public void endElement_icon() throws SAXException {
+        String content = pop("icon");
+        if (in_source) {
+            current_entry.getSource().set("icon", content);
+        } else {
+            feed.set("icon", content);
+        }
+    }
     public void endElement_id() throws SAXException {
         String content = pop("id");
         getCurrentContext().set("guid", content);
         getCurrentContext().set("id", content);
     }
-    
+
     public void endElement_image() throws SAXException {
         in_image = false;
         pop("image");
@@ -207,6 +215,16 @@ public class FeedSAXParser extends BaseSAXParser {
         
 
     }
+    
+    public void endElement_logo() throws SAXException {
+        String content = pop("logo");
+        if (in_source) {
+            current_entry.getSource().set("logo", content);
+        } else {
+            feed.set("logo", content);
+        }
+    }
+    
     public void endElement_modified() throws SAXException {
         String content = pop("modified");
         getCurrentContext().set("modified", content);
@@ -406,6 +424,10 @@ public class FeedSAXParser extends BaseSAXParser {
         current_entry.setGuidIsLink(state.getAttr("isPermaLink", "true").equals("true"));
         push(state);
     }
+    public void startElement_icon(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
     public void startElement_image(State state) throws SAXException {
         in_image = true;
         image = new Image();
@@ -444,6 +466,10 @@ public class FeedSAXParser extends BaseSAXParser {
             link.setLength(state.getAttr("length"));
             state.expectingText = false;
         
+        push(state);
+    }
+    public void startElement_logo(State state) throws SAXException {
+        state.expectingText = true;
         push(state);
     }
     public void startElement_modified(State state) throws SAXException {
