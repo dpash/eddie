@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.regex.*;
 import java.util.Iterator;
 import java.util.Calendar;
+import java.util.Map;
+import java.util.Hashtable;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.parser.Parser;
 import org.python.util.PythonInterpreter;
@@ -80,18 +82,24 @@ public class Test {
             String line;
             String description = "";
             String test = "";
-            Pattern desc_pattern = Pattern.compile("^Description: (.*)$");
-            Pattern test_pattern = Pattern.compile("^Expect: (.*)$");
-
+            Pattern desc_pattern = Pattern.compile("^Description:\\s+(.*)$");
+            Pattern test_pattern = Pattern.compile("^Expect:\\s+(.*)$");
+            Pattern header_pattern = Pattern.compile("^Header:\\s+([^:]*):\\s+(.*)$");
+            
+            Map headers = new Hashtable();
             while ((line = in.readLine()) != null) {
                 Matcher desc_matcher = desc_pattern.matcher(line);
                 Matcher test_matcher = test_pattern.matcher(line);
+                Matcher header_matcher = header_pattern.matcher(line);
                 if (desc_matcher.matches()) {
                     description = desc_matcher.group(1);
                 } else if (test_matcher.matches()) {
                     test = test_matcher.group(1);
+                }else if (header_matcher.matches()) {
+                        headers.put(header_matcher.group(1),header_matcher.group(2));
                 }
             }
+            log.debug(headers);
             in.close();
             if (log.isDebugEnabled()) {
                 log.debug(filename);
@@ -99,6 +107,7 @@ public class Test {
                 log.debug("Test: " + test);
             }
             Parser parser = new Parser();
+            parser.setHeaders(headers);
             Feed feed = parser.parse(filename);
             if (log.isDebugEnabled()) {
                 log.debug(feed);

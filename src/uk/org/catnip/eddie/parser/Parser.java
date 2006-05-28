@@ -6,8 +6,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
 import uk.org.catnip.eddie.Feed;
+import java.util.Map;
 
 public class Parser {
+    Map headers;
+    public void setHeaders(Map headers) {
+        this.headers = headers;
+    }
 
 	public Feed parse(String filename) throws SAXException{
         Feed ret = new Feed();
@@ -19,7 +24,11 @@ public class Parser {
 
 			xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
 			
-			handler.setFilename(filename);
+            
+            if (headers.containsKey("Content-Location")){
+                handler.setContentLocation((String)headers.get("Content-Location"));
+            }
+			handler.setFilename("http://127.0.0.1:8097/"+filename);
 			// Parse each file provided on the
 			// command line.
 
