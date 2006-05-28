@@ -125,8 +125,13 @@ public class FeedSAXParser extends BaseSAXParser {
         if (generator.getName() == null && !content.equals("")) {
             generator.setName(content);
         }
-        feed.setGenerator(generator);
-        feed.set("generator", content);
+        if (in_source) {
+            current_entry.getSource().setGenerator(generator);
+            current_entry.getSource().set("generator", content);
+        } else {
+            feed.setGenerator(generator);
+            feed.set("generator", content);
+        }
         generator = null;
     }
     public void endElement_guid() throws SAXException {

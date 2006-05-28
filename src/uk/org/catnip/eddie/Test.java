@@ -340,6 +340,9 @@ public class Test {
         if (source.getAuthor() != null) {
             source_dict.__setitem__("author_detail", convertAuthor(source.getAuthor()));
         }
+        if (source.getGenerator() != null) {
+            source_dict.__setitem__("generator_detail",convertGenerator(source.getGenerator()));
+        }
         if (source.getPublisher() != null) {
             source_dict.__setitem__("publisher_detail", convertAuthor(source.getPublisher()));
         }
