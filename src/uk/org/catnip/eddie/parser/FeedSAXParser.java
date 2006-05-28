@@ -389,6 +389,8 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void startElement_description(State state) throws SAXException {
         in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.setType("text/html");
         state.expectingText = true;
         push(state);
     }
