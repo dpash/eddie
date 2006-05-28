@@ -169,6 +169,9 @@ public class Test {
         if (feed.getTitle() != null) {
             feed_dict.__setitem__("title_detail",convertDetail(feed.getTitle()));
         }
+        if (feed.getSubtitle() != null) {
+            feed_dict.__setitem__("subtitle_detail",convertDetail(feed.getSubtitle()));
+        }
         if (feed.getInfo() != null) {
             feed_dict.__setitem__("info_detail",convertDetail(feed.getInfo()));
         }
@@ -345,6 +348,9 @@ public class Test {
         }
         if (source.getPublisher() != null) {
             source_dict.__setitem__("publisher_detail", convertAuthor(source.getPublisher()));
+        }
+        if (source.getSubtitle() != null) {
+            source_dict.__setitem__("subtitle_detail",convertDetail(source.getSubtitle()));
         }
         if (source.getTitle() != null) {
             source_dict.__setitem__("title_detail",convertDetail(source.getTitle()));

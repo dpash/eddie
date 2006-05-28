@@ -10,6 +10,7 @@ public class Feed extends FeedContext {
     public boolean error = false;
     private Detail tagline;
     private Detail info;
+    private Detail subtitle;
     private Generator generator;
     private Image image;
     private TextInput textinput;
@@ -100,6 +101,14 @@ public class Feed extends FeedContext {
 
     public void setInfo(Detail info) {
         this.info = info;
+    }
+
+    public Detail getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(Detail subtitle) {
+        this.subtitle = subtitle;
     }
     
 }

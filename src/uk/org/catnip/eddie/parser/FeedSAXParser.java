@@ -251,6 +251,17 @@ public class FeedSAXParser extends BaseSAXParser {
         pop("source");
         in_source = false;
     }
+    public void endElement_subtitle() throws SAXException {
+        String content = pop("subtitle");
+        if (in_source) {
+        current_entry.getSource().set("subtitle", content);
+        current_entry.getSource().setSubtitle(detail);
+        } else {
+            feed.set("subtitle", content);
+            feed.setSubtitle(detail);
+        }
+        in_content--;
+    }
     public void endElement_summary() throws SAXException {
         String content = pop("summary");
         getCurrentContext().set("summary", content);
@@ -505,6 +516,14 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_source(State state) throws SAXException {
         in_source = true;
         current_entry.setSource(new Source());
+        push(state);
+
+    }
+    public void startElement_subtitle(State state) throws SAXException {
+        in_content++;
+        state.mode = state.getAttr("mode", "escaped");
+        state.setType(state.getAttr("type", "text/plain"));
+        state.expectingText = true;
         push(state);
 
     }
