@@ -17,9 +17,10 @@ public class Sanitise {
         "option", "p", "pre", "q", "s", "samp", "select", "small", "span", "strike",
         "strong", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
         "thead", "tr", "tt", "u", "ul", "var"};
+    static String[] url_attributes_array = {"href", "src"};
     static List acceptable_elements = Arrays.asList(acceptable_elements_array);
     static List acceptable_attributes = init_acceptable_attribues();
-
+    static List url_attributes = Arrays.asList(url_attributes_array);
     static List elements_no_end_tag = init_elements_no_end_tag();
 
     static private List init_acceptable_attribues() {
@@ -105,11 +106,15 @@ public class Sanitise {
             if (!acceptable_attributes.contains(state.atts.getLocalName(i))) {
                 continue;
             }
-
+            String attribute = state.atts.getLocalName(i);
+            String value = state.atts.getValue(i);
+            if (url_attributes.contains(attribute)) {
+                value = state.resolveUri(value);
+            }
             sb.append(" ");
-            sb.append(state.atts.getLocalName(i));
+            sb.append(attribute);
             sb.append("=\"");
-            sb.append(state.atts.getValue(i));
+            sb.append(value);
             sb.append("\"");
         }
         if (elements_no_end_tag.contains(state.getElement())) {

@@ -249,7 +249,6 @@ public class State {
     public void setBase(String base) {
         if (base != null) {
             try {
-                log.debug("base = " + base);
                 this.base = new URI(base);
             } catch (URISyntaxException e) {
                 log.warn(e);
@@ -263,6 +262,7 @@ public class State {
     }
     public String resolveUri(String uri) {
         if (base == null) { return uri; }
+        if (uri == null) { return uri;}
         
         return base.resolve(uri).toString();
     }

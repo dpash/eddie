@@ -57,14 +57,10 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
     }
 
     protected void push(State state) {
-        log.debug("asked to push "+ state);
         if (stack.isEmpty() && state.getBase() == null) {
             if (contentLocation != null){ 
-        
-            log.debug("setting base to '" + contentLocation+ "'");
-            state.setBase(contentLocation);
+                state.setBase(contentLocation);
             } else {
-                log.debug("setting base to '" + filename+ "'");
                 state.setBase(filename);  
             }
         }
@@ -163,6 +159,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
+        log.debug("popping " + state);
         String output = state.text.toString(); 
        
         detail = new Detail();

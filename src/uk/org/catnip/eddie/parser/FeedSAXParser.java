@@ -157,7 +157,9 @@ public class FeedSAXParser extends BaseSAXParser {
         }
     }
     public void endElement_id() throws SAXException {
+        State state = getCurrentState();
         String content = pop("id");
+        content = state.resolveUri(content);
         getCurrentContext().set("guid", content);
         getCurrentContext().set("id", content);
     }
@@ -187,7 +189,9 @@ public class FeedSAXParser extends BaseSAXParser {
     }
 
     public void endElement_link() throws SAXException {
+        State state = getCurrentState();
         String content = pop("link");
+        content = state.resolveUri(content);
         if (in_image) {
             image.setLink(content);
         } else if (textinput != null) {
@@ -303,8 +307,9 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void endElement_url() throws SAXException {
-
+        State state = getCurrentState();
         String content = pop("url");
+        content = state.resolveUri(content);
         if (in_author) {
             author.setHref(content);
         } else if (in_contributor) {
@@ -429,7 +434,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_generator(State state) throws SAXException {
         generator = new Generator();
         generator.setName(state.getAttr("name"));
-        generator.setUrl(state.getAttr("url", state.getAttr("uri")));
+        generator.setUrl(state.resolveUri(state.getAttr("url", state.getAttr("uri"))));
         generator.setVersion(state.getAttr("version"));
         state.expectingText = true;
         push(state);
@@ -466,7 +471,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_link(State state) throws SAXException {
         if (state.getAttr("rel") != null && state.getAttr("rel").equals("enclosure")) {
             Enclosure enclosure = new Enclosure();
-            enclosure.setUrl(state.getAttr("href"));
+            enclosure.setUrl(state.resolveUri(state.getAttr("href")));
             enclosure.setLength(state.getAttr("length"));
             enclosure.setType(state.getAttr("type"));
             if (current_entry != null) {
@@ -474,7 +479,7 @@ public class FeedSAXParser extends BaseSAXParser {
             }
         } 
             link = new Link();
-            link.setHref(state.getAttr("href"));
+            link.setHref(state.resolveUri(state.getAttr("href")));
             link.setTitle(state.getAttr("title"));
             link.setRel(state.getAttr("rel", "alternate"));
             link.setHreflang(state.getAttr("hreflang"));
