@@ -100,7 +100,11 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void endElement_docs() throws SAXException {
-        feed.set("docs", pop("docs"));
+        State state = getCurrentState();
+        String content = pop("docs");
+        log.debug(state);
+        content = state.resolveUri(content);
+        feed.set("docs",content);
     }
     
     public void endElement_email() throws SAXException {
