@@ -7,7 +7,10 @@ public class Entities {
     static private Map entity_map = createEntities();
     
     private static Map createEntities() {
-        Map entities = new Hashtable();;
+        Map entities = new Hashtable();
+        entities.put("amp", "");
+        entities.put("gt", "");
+        entities.put("lt", "");
         entities.put("160", "\u00a0");
         entities.put("732", "\u02dc");
         entities.put("8216", "\u2018");
