@@ -6,7 +6,8 @@ import java.lang.StringBuilder;
 import java.util.Map;
 import java.util.Hashtable;
 import org.apache.log4j.Logger;
-
+import java.net.URI;
+import java.net.URISyntaxException;
 public class State {
     static Logger log = Logger.getLogger(State.class);
 
@@ -141,7 +142,7 @@ public class State {
             this.type = "text/plain";
         }
         this.language = this.getAttr("xml:lang", prev.getLanguage());
-        this.base = this.getAttr("xml:base", prev.getBase());
+        this.setBase(this.getAttr("xml:base", prev.getBase()));
         //log.debug(this);
 
     }
@@ -162,7 +163,7 @@ public class State {
 
     private String language;
 
-    private String base;
+    private URI base;
 
     public String mode;
 
@@ -237,13 +238,35 @@ public class State {
     }
 
     public String getBase() {
-        return base;
+        if (base != null) {
+            return base.toString();
+        } else {
+            return null;
+        }
+        
     }
 
     public void setBase(String base) {
-        this.base = base;
+        if (base != null) {
+            try {
+                log.debug("base = " + base);
+                this.base = new URI(base);
+            } catch (URISyntaxException e) {
+                log.warn(e);
+                try {
+                    this.base = new URI("");
+                } catch (URISyntaxException ex) {
+                    log.warn(ex);
+                }
+            }
+        }
     }
-
+    public String resolveUri(String uri) {
+        if (base == null) { return uri; }
+        
+        return base.resolve(uri).toString();
+    }
+    
     public String getUri() {
         return uri;
     }
