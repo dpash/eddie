@@ -592,4 +592,5 @@ public class FeedSAXParser extends BaseSAXParser {
             log.debug(author);
         }
     }
+    
 }
