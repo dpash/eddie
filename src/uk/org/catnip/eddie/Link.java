@@ -6,6 +6,7 @@ public class Link extends Detail {
     private String href;
     private String title;
     private String rel;
+    private String hreflang;
     public String getHref() {
         return href;
     }
@@ -52,5 +53,13 @@ public class Link extends Detail {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    public String getHreflang() {
+        return hreflang;
+    }
+
+    public void setHreflang(String hreflang) {
+        this.hreflang = hreflang;
     }
 }

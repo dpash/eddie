@@ -357,6 +357,9 @@ public class Test {
         if (link.getRel() != null) {
         link_dict.__setitem__("rel", new PyString(link.getRel()));
         }
+        if (link.getHreflang() != null) {
+            link_dict.__setitem__("hreflang", new PyString(link.getHreflang()));
+            }
         return link_dict;
     }
     public PyDictionary convertGenerator(Generator generator) {
