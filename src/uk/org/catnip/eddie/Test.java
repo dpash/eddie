@@ -183,6 +183,7 @@ public class Test {
         }
         if (feed.getCopyright() != null) {
             feed_dict.__setitem__("copyright_detail",convertDetail(feed.getCopyright()));
+            feed_dict.__setitem__("rights_detail",convertDetail(feed.getCopyright()));
         }
         if (feed.getCreated() != null) {
             feed_dict.__setitem__("created_parsed",convertDate(feed.getCreated()));
