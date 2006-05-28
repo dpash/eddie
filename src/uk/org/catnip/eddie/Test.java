@@ -485,6 +485,7 @@ public class Test {
 
         if (enclosure.getUrl() != null) {
             enclosure_dict.__setitem__("url", new PyString(enclosure.getUrl()));
+            enclosure_dict.__setitem__("href", new PyString(enclosure.getUrl()));
         }
         if (enclosure.getLength() != null) {
             enclosure_dict.__setitem__("length", new PyString(enclosure.getLength()));
