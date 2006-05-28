@@ -1,6 +1,7 @@
 package uk.org.catnip.eddie.parser;
 
 import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
@@ -13,8 +14,8 @@ import uk.org.catnip.eddie.Feed;
 import uk.org.catnip.eddie.FeedContext;
 import uk.org.catnip.eddie.Entry;
 import uk.org.catnip.eddie.Detail;
-
-public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
+import uk.org.catnip.eddie.parser.Entities;
+public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     static Logger log = Logger.getLogger(BaseSAXParser.class);
 
     protected Locator locator;
@@ -97,7 +98,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
                 state.mode = "xml";
             }
             if (in_content > 0 && state.mode.equals( "xml")) {
-               handle_data(state,Sanitise.clean_html_start(state));
+               handle_data(state,Sanitise.clean_html_start(state), false);
                state.content = true;
                push(state);
                return;
@@ -139,7 +140,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
             }
             if (in_content > 0 && prev.mode.equals("xml") && prev.content) {
                 String data = pop(localName);
-                handle_data(prev, data + Sanitise.clean_html_end(state.getElement()));
+                handle_data(prev, data + Sanitise.clean_html_end(state.getElement()), false);
                return;
             }
          }
@@ -198,6 +199,7 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         if (in_content > 0 && !getCurrentState().getType().equals("text/html") && !getCurrentState().getType().equals("text/plain")) {
         if (data.equals("<")) { data = "&lt;"; }
         if (data.equals(">")) { data = "&gt;"; }
+        if (data.equals("&")) { data = "&amp;"; }
         }
         
         //if (next_data_is_inline_element) {
@@ -205,14 +207,15 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         //    next_data_is_inline_element = false;
         //}
         //if (data.equals("<")) { next_data_is_inline_element = true; data = ""; }
-        //log.debug("characters: "+data);
+        log.debug("characters: "+data);
         getCurrentState().addText(data);
     }
 
     
-    public void handle_data(State state, String data) {
+    public void handle_data(State state, String data, boolean escape) {
+        log.debug("handle_date('"+data+"')");
         if (stack.empty()) { return; }
-        if (/*$self->{escape} &&*/ state.mode.equals("xml")) {
+        if (escape && state.getType().equals("application/xhtml+xml")) {
            data = xmlescape(data);
         }
         
@@ -226,7 +229,12 @@ public class BaseSAXParser extends DefaultHandler implements ErrorHandler {
         return data;
     }
    
-
+   
+    
+    public void startEntity(java.lang.String name)
+    throws SAXException {
+        getCurrentState().text.append(Entities.resolveEntity(name));
+    }
     
     // ErrorHandler
     public void warning(SAXParseException exception) throws SAXException {

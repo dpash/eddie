@@ -21,7 +21,7 @@ public class Parser {
 			FeedSAXParser handler = new FeedSAXParser();
 			xr.setContentHandler(handler);
 			xr.setErrorHandler(handler);
-
+            xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
 			xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
 			
             
