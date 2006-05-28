@@ -188,6 +188,10 @@ public class FeedSAXParser extends BaseSAXParser {
 
                     getCurrentContext().set("link", link.getHref());
                 }
+                if (link.getRel() != null && link.getRel().equals("alternate")) {
+                    getCurrentContext().set("link", link.getHref());
+                    
+                }
             } else {
                 getCurrentContext().set("link", content);
             }
