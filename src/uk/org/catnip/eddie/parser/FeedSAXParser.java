@@ -396,7 +396,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_generator(State state) throws SAXException {
         generator = new Generator();
         generator.setName(state.getAttr("name"));
-        generator.setUrl(state.getAttr("url"));
+        generator.setUrl(state.getAttr("url", state.getAttr("uri")));
         generator.setVersion(state.getAttr("version"));
         state.expectingText = true;
         push(state);

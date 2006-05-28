@@ -452,6 +452,7 @@ public class Test {
     }
     if (generator.getUrl() != null) {
         link_dict.__setitem__("url", new PyString(generator.getUrl()));
+        link_dict.__setitem__("href", new PyString(generator.getUrl()));
     }
     if (generator.getVersion() != null) {
         link_dict.__setitem__("version", new PyString(generator.getVersion()));
