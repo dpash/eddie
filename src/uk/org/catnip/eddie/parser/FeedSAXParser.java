@@ -428,7 +428,7 @@ public class FeedSAXParser extends BaseSAXParser {
             link = new Link();
             link.setHref(state.getAttr("href"));
             link.setTitle(state.getAttr("title"));
-            link.setRel(state.getAttr("rel"));
+            link.setRel(state.getAttr("rel", "alternate"));
             link.setHreflang(state.getAttr("hreflang"));
             link.setLength(state.getAttr("length"));
             state.expectingText = false;
