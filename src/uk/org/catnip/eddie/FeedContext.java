@@ -52,6 +52,13 @@ public class FeedContext {
         links.add(link);
     }
     public void addCategory(Category category) {
+        Iterator it = categories.iterator();
+        while (it.hasNext()) {
+            Category cur_cat = (Category)it.next();
+            if (category.getTerm().equals(cur_cat.getTerm())) {
+                return;
+            }
+        }
         categories.add(category);
     }
     public Iterator contributors() {
