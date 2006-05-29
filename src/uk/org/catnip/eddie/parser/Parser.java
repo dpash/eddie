@@ -28,6 +28,9 @@ public class Parser {
             if (headers.containsKey("Content-Location")){
                 handler.setContentLocation((String)headers.get("Content-Location"));
             }
+            if (headers.containsKey("Content-Language")){
+                handler.setContentLanguage((String)headers.get("Content-Language"));
+            }
 			handler.setFilename("http://127.0.0.1:8097/"+filename);
 			// Parse each file provided on the
 			// command line.

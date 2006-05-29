@@ -22,7 +22,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
 
     protected String filename;
     private String contentLocation;
-    
+    private String contentLanguage;
     protected Feed feed = new Feed();
     protected Entry current_entry;
     protected Detail detail;
@@ -100,6 +100,9 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             Attributes atts) throws SAXException {
         
         State state = new State(uri, localName, qName, atts, getCurrentState());
+        if(state.getLanguage() == null && contentLanguage != null) {
+            state.setLanguage(contentLanguage);
+        }
         log.trace("startElement:" + localName + " ("+state.getElement() + ")");
         if (state.mode != null) {
             if (in_content > 0 && state.mode.equals( "escaped")) {
@@ -270,5 +273,13 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
 
     public void setContentLocation(String contentLocation) {
         this.contentLocation = contentLocation;
+    }
+
+    public String getContentLanguage() {
+        return contentLanguage;
+    }
+
+    public void setContentLanguage(String contentLanguage) {
+        this.contentLanguage = contentLanguage;
     }
 }
