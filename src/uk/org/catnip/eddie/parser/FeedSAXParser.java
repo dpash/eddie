@@ -96,6 +96,10 @@ public class FeedSAXParser extends BaseSAXParser {
         } else {
             if (getCurrentContext().get("summary") == null) {
                 getCurrentContext().set("description", content);
+            } else {
+                if (current_entry != null) {
+                    current_entry.addContent(detail);
+                }
             }
             //getCurrentContext().set("summary", content);
             getCurrentContext().set("tagline", content);
