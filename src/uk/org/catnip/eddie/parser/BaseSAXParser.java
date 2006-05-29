@@ -209,12 +209,15 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         String data =  new String(ch, start,length);
         //data.trim();
         
-        if (in_content > 0 && !getCurrentState().getType().equals("text/html") && !getCurrentState().getType().equals("text/plain")) {
-        if (data.equals("<")) { data = "&lt;"; }
-        if (data.equals(">")) { data = "&gt;"; }
-        if (data.equals("&")) { data = "&amp;"; }
+        if (in_content > 0) {
+            if(getCurrentState().getType().equals("application/xhtml+xml")) {
+            if (data.equals("<")) { data = "&lt;"; }
+            if (data.equals(">")) { data = "&gt;"; }
+            if (data.equals("&")) { data = "&amp;"; }
+            } else if (getCurrentState().getType().equals("text/plain")) {
+                if (data.equals("<")) { data = "&lt;"; }
+            }
         }
-        
         log.trace("characters: "+data);
         getCurrentState().addText(data);
     }
