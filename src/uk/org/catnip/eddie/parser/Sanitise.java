@@ -1,19 +1,14 @@
 package uk.org.catnip.eddie.parser;
 
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Arrays;
 import org.apache.log4j.Logger;
-import java.util.regex.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.ext.DefaultHandler2;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
 import java.io.StringReader;
 public class Sanitise {
     static Logger log = Logger.getLogger(Sanitise.class);
@@ -26,49 +21,39 @@ public class Sanitise {
         "option", "p", "pre", "q", "s", "samp", "select", "small", "span", "strike",
         "strong", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
         "thead", "tr", "tt", "u", "ul", "var"};
+    static String[] acceptable_attributes_array = { "abbr", "accept", "accept-charset",
+            "accesskey", "action", "align", "alt", "axis", "border",
+            "cellpadding", "cellspacing", "char", "charoff", "charset",
+            "checked", "cite", "class", "clear", "cols", "colspan",
+            "color", "compact", "coords", "datetime", "dir", "disabled",
+            "enctype", "for", "frame", "headers", "height", "href",
+            "hreflang", "hspace", "id", "ismap", "label", "lang",
+            "longdesc", "maxlength", "media", "method", "multiple", "name",
+            "nohref", "noshade", "nowrap", "prompt", "readonly", "rel",
+            "rev", "rows", "rowspan", "rules", "scope", "selected",
+            "shape", "size", "span", "src", "start", "summary", "tabindex",
+            "target", "title", "type", "usemap", "valign", "value",
+            "vspace", "width" };
+    static String[] elements_no_end_tag_array = { "area", "base", "basefont", "br", "col", "frame",
+            "hr", "img", "input", "isindex", "link", "meta", "param" };
     static String[] url_attributes_array = {"href", "src"};
+    static String[] unsafe_content_elements_array = {"script", "applet"};
     static List acceptable_elements = Arrays.asList(acceptable_elements_array);
-    static List acceptable_attributes = init_acceptable_attribues();
+    static List acceptable_attributes = Arrays.asList(acceptable_attributes_array);
     static List url_attributes = Arrays.asList(url_attributes_array);
-    static List elements_no_end_tag = init_elements_no_end_tag();
+    static List unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
+    static List elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
 
-    static private List init_acceptable_attribues() {
-        List list = new LinkedList();
-        String[] attributes = { "abbr", "accept", "accept-charset",
-                "accesskey", "action", "align", "alt", "axis", "border",
-                "cellpadding", "cellspacing", "char", "charoff", "charset",
-                "checked", "cite", "class", "clear", "cols", "colspan",
-                "color", "compact", "coords", "datetime", "dir", "disabled",
-                "enctype", "for", "frame", "headers", "height", "href",
-                "hreflang", "hspace", "id", "ismap", "label", "lang",
-                "longdesc", "maxlength", "media", "method", "multiple", "name",
-                "nohref", "noshade", "nowrap", "prompt", "readonly", "rel",
-                "rev", "rows", "rowspan", "rules", "scope", "selected",
-                "shape", "size", "span", "src", "start", "summary", "tabindex",
-                "target", "title", "type", "usemap", "valign", "value",
-                "vspace", "width" };
-        for (int i = 0; i < attributes.length; i++) {
-            list.add(attributes[i]);
-        }
-        return list;
-    }
-
-    static private List init_elements_no_end_tag() {
-        List list = new LinkedList();
-        String[] elements = { "area", "base", "basefont", "br", "col", "frame",
-                "hr", "img", "input", "isindex", "link", "meta", "param" };
-        for (int i = 0; i < elements.length; i++) {
-            list.add(elements[i]);
-        }
-        return list;
-    }
     class HTMLSAXParser extends DefaultHandler2 {
         private boolean error = false;
+        private boolean started_document = false;
+        private State state;
+        private boolean unsafe_content = false;
         private StringBuilder sb = new StringBuilder();
         public void characters(char[] ch, int start, int length) {
-            
+            if (unsafe_content) { return;}
             String data =  new String(ch, start,length);
-            log.debug("characters: '"+ data+"'");
+            log.trace("characters: '"+ data+"'");
             if (error && data.contains(">")) {
                 data = data.substring(data.indexOf(">")+1);
             }
@@ -78,8 +63,14 @@ public class Sanitise {
         }
         public void startElement(String uri, String localName, String qName,
                 Attributes atts) throws SAXException {
-            log.debug("startElement: "+ localName);
-            if (!acceptable_elements.contains(localName)) { return; }
+            started_document = true;
+            log.trace("startElement: "+ localName);
+            if (!acceptable_elements.contains(localName)) { 
+                if (unsafe_content_elements.contains(localName)) {
+                    unsafe_content = true;
+                }
+                return; 
+            }
             sb.append("<");
             sb.append(localName);
             
@@ -89,9 +80,9 @@ public class Sanitise {
                 }
                 String attribute = atts.getLocalName(i);
                 String value = atts.getValue(i);
-                //if (url_attributes.contains(attribute)) {
-                //    value = resolveUri(value);
-                //}
+                if (url_attributes.contains(attribute)) {
+                    value = state.resolveUri(value);
+                }
                 sb.append(" ");
                 sb.append(attribute);
                 sb.append("=\"");
@@ -105,12 +96,23 @@ public class Sanitise {
         }
         public void endElement(String uri, String localName, String qName)
         throws SAXException {
-            log.debug("endElement: "+ localName);
-            if (!acceptable_elements.contains(localName)) { return; }
+            log.trace("endElement: "+ localName);
+            if (!acceptable_elements.contains(localName)) {
+                if (unsafe_content_elements.contains(localName)) {
+                    unsafe_content = false;
+                }
+                return; 
+            }
             if (elements_no_end_tag.contains(localName)) { return; }
             sb.append("</");
             sb.append(localName);
             sb.append(">");
+        }
+        public void comment(char[] ch, int start, int length) throws SAXException {
+            if (!started_document) { return; }
+            String data =  new String(ch, start,length);
+            log.trace("comment: '"+ data+"'");            
+            sb.append("<!--"+data+"-->");
         }
         // ErrorHandler
         public void warning(SAXParseException exception) throws SAXException {
@@ -129,17 +131,23 @@ public class Sanitise {
             log.debug("fatalError: " + exception.getMessage());
             // throw new SAXException(exception);
         }
+        public void setState(State state) {
+            this.state = state;
+        }
         public String getResult() {
-            return sb.toString();
+            return sb.toString().trim();
         }
     }
-    static public String clean(String data) {
+    static public String clean(String data, State state) {
         Sanitise s = new Sanitise();
         data = data.replace("&", "&amp;");
-        return s.real_clean("<html>"+data+"</html>");
+        return s.real_clean(data, state);
     }    
-    public String real_clean(String data) {
+    public String real_clean(String data, State state) {
         String ret = data;
+        if (!data.trim().startsWith("<!DOCTYPE")) {
+            data = "<html>"+data+"</html>";
+        }
         try {
         SAXParser xr = new SAXParser();
         HTMLSAXParser handler = new HTMLSAXParser();
@@ -148,7 +156,7 @@ public class Sanitise {
         xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
         xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
         StringReader r = new StringReader(data);
-        
+        handler.setState(state);
         xr.parse(new InputSource(r));
         ret = handler.getResult();
         } catch (SAXException e) {
@@ -163,27 +171,15 @@ public class Sanitise {
         return ret;
     }
     
- 
+    // Don't need to clean as this will happen later anyway. 
+    // TODO: Should probably move this to BaseSAXParser
     static public String clean_html_start(State state) {
-        StringBuilder sb = new StringBuilder();
-        if (!acceptable_elements.contains(state.getElement())) {
-        // if (in($tag, $unacceptable_elements_with_end_tag)) {
-        // $self->{unsafe_content} = 1;
-        // }
-        return "";
-        }
-        
+        StringBuilder sb = new StringBuilder();    
         sb.append("<");
         sb.append(state.getElement());
         for (int i = 0; i < state.atts.getLength(); i++) {
-            if (!acceptable_attributes.contains(state.atts.getLocalName(i))) {
-                continue;
-            }
             String attribute = state.atts.getLocalName(i);
             String value = state.atts.getValue(i);
-            if (url_attributes.contains(attribute)) {
-                value = state.resolveUri(value);
-            }
             sb.append(" ");
             sb.append(attribute);
             sb.append("=\"");
@@ -194,17 +190,10 @@ public class Sanitise {
             sb.append(" /");
         }
         sb.append(">");
-        // }
         return sb.toString();
     }
 
     static public String clean_html_end(String tag) {
-        if (!acceptable_elements.contains(tag)) {
-        // if (in($tag, $unacceptable_elements_with_end_tag)) {
-        // $self->{unsafe_content} = 0;
-        // }
-        return "";
-        }
         if (elements_no_end_tag.contains(tag)) {
             return "";
         } else {

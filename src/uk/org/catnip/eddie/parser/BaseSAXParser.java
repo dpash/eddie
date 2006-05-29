@@ -1,6 +1,5 @@
 package uk.org.catnip.eddie.parser;
 
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
@@ -15,6 +14,7 @@ import uk.org.catnip.eddie.FeedContext;
 import uk.org.catnip.eddie.Entry;
 import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.parser.Entities;
+
 public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     static Logger log = Logger.getLogger(BaseSAXParser.class);
 
@@ -35,7 +35,6 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     protected boolean in_image = false;
     protected boolean in_source = false;
     protected int in_content = 0;
-    private boolean next_data_is_inline_element = false;
     protected Stack stack = new Stack();
 
     public void setFilename(String file) {
@@ -65,7 +64,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
                 state.setBase(filename);  
             }
         }
-        log.debug("pushing "+ state);
+        log.trace("pushing "+ state);
         stack.push(state);     
     }
 
@@ -160,7 +159,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
-        log.debug("popping " + state);
+        log.trace("popping " + state);
         String output = state.getText(); 
        
         detail = new Detail();
@@ -189,7 +188,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         
         // If element can be relative url, resolve link
         if (in_content > 0) {
-            output = Sanitise.clean(output);
+            output = Sanitise.clean(output, state);
             detail.setValue(output);
         }
         return output;
@@ -205,12 +204,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         if (data.equals("&")) { data = "&amp;"; }
         }
         
-        //if (next_data_is_inline_element) {
-        //    data = Sanitise.handle_inline_data(data);
-        //    next_data_is_inline_element = false;
-        //}
-        //if (data.equals("<")) { next_data_is_inline_element = true; data = ""; }
-        log.debug("characters: "+data);
+        log.trace("characters: "+data);
         getCurrentState().addText(data);
     }
 
