@@ -244,6 +244,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_modified() throws SAXException {
         String content = pop("modified");
         getCurrentContext().set("modified", content);
+        getCurrentContext().set("date", content);
         getCurrentContext().setModified(new Date(content,detail));
     }
     public void endElement_name() throws SAXException {
