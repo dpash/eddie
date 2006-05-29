@@ -53,6 +53,8 @@ public class State {
         aliases.put("tagline", "subtitle");
         aliases.put("uri", "url");
         aliases.put("webmaster", "publisher");
+        aliases.put("wfw:comment", "wfw_comment");
+        aliases.put("wfw:commentrss", "wfw_commentrss");
         aliases.put("xhtml_body", "body");
         aliases.put("updated", "modified");
         return aliases;

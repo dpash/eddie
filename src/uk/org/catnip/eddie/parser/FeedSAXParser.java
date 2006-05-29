@@ -325,7 +325,14 @@ public class FeedSAXParser extends BaseSAXParser {
             image.setUrl(content);
         }
     }
-    
+    public void endElement_wfw_comment() throws SAXException {
+        State state = getCurrentState();
+        getCurrentContext().set("wfw_comment", state.resolveUri(pop("wfw_comment")));
+    }
+    public void endElement_wfw_commentrss() throws SAXException {
+        State state = getCurrentState();
+        getCurrentContext().set("wfw_commentrss", state.resolveUri(pop("wfw_commentrss")));
+    }
     public void endElement_width() throws SAXException {
         image.setWidth(pop("width"));
     }
@@ -568,6 +575,14 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
     public void startElement_url(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_wfw_comment(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_wfw_commentrss(State state) throws SAXException {
         state.expectingText = true;
         push(state);
     }
