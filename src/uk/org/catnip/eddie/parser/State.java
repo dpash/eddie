@@ -179,6 +179,9 @@ public class State {
         }
         this.language = this.getAttr("xml:lang", prev.getLanguage());
         this.setBase(this.getAttr("xml:base", prev.getBase()));
+        if (this.isBaseRelative()) {
+            this.resolveBaseWith(prev.getBase());
+        }
         // log.debug(this);
 
     }
@@ -255,11 +258,33 @@ public class State {
 
         return base.resolve(uri).toString();
     }
-
+    public boolean isBaseRelative() {
+        if (this.base == null) { return false; }
+        return !this.base.isAbsolute();
+    }
+    
+    public void resolveBaseWith(String uri) {
+        try {
+            if (this.base != null && uri != null) {
+                URI real_base = new URI(uri);
+                this.base = real_base.resolve(this.base);
+            }
+        } catch (Exception e){
+            log.warn("exception", e);
+        }
+    }
+    
     public void setBase(String base) {
         if (base != null) {
+            log.debug("setting base to '"+base+"'");
             try {
-                this.base = new URI(base);
+                log.debug("base is orginally '"+this.base+"'");
+                if (this.base != null) {
+                    this.base = this.base.resolve(base);
+                } else {
+                    
+                    this.base = new URI(base);
+                }
             } catch (URISyntaxException e) {
                 log.warn(e);
                 try {
