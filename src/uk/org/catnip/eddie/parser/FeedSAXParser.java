@@ -361,7 +361,7 @@ public class FeedSAXParser extends BaseSAXParser {
 
     public void startElement_content(State state) throws SAXException {
         in_content++;
-        state.mode = "xml";
+        state.mode = state.getAttr("mode", "xml");
         state.setType(state.getAttr("type", "text/plain"));
         state.expectingText = true;
         push(state);
