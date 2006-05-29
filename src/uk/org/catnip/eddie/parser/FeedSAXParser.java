@@ -49,7 +49,8 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void endElement_comments() throws SAXException {
-        current_entry.set("comments", pop("comments"));
+        State state = getCurrentState();
+        current_entry.set("comments", state.resolveUri(pop("comments")));
     }
     
     public void endElement_content() throws SAXException {
