@@ -141,6 +141,12 @@ public class Sanitise {
     static public String clean(String data, State state) {
         Sanitise s = new Sanitise();
         data = data.replace("&", "&amp;");
+        if (state.getType().equals("text/plain") && (state.mode != null && !state.mode.equals("base64"))) {
+            // Fix what we just broke
+            log.debug(state);
+            data = data.replace("&amp;lt;", "&lt;");
+            data = data.replace("&amp;gt;", "&gt;");
+        }
         return s.real_clean(data, state);
     }    
     public String real_clean(String data, State state) {
@@ -155,6 +161,7 @@ public class Sanitise {
         xr.setErrorHandler(handler);
         xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
         xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+        xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
         StringReader r = new StringReader(data);
         handler.setState(state);
         xr.parse(new InputSource(r));
