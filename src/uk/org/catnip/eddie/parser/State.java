@@ -276,10 +276,8 @@ public class State {
     
     public void setBase(String base) {
         if (base != null) {
-            log.debug("setting base to '"+base+"'");
             base = base.replaceAll("^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)", "$1$3");
             try {
-                log.debug("base is orginally '"+this.base+"'");
                 if (this.base != null) {
                     this.base = this.base.resolve(base);
                 } else {
