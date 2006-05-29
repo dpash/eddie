@@ -86,8 +86,8 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void endElement_description() throws SAXException {
-        in_content--;
         String content = pop("description");
+        in_content--;
         if (in_image) {
             image.setDescription(content);
         } else if (textinput != null) {
@@ -391,7 +391,7 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType("text/html");
-        state.expectingText = true;
+        state.expectingText = true;       
         push(state);
     }
 
