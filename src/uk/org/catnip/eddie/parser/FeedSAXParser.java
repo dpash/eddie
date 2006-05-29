@@ -446,6 +446,7 @@ public class FeedSAXParser extends BaseSAXParser {
                     this.feed.set("format", "atom");
                 }
             }
+        this.feed.set("language", state.getLanguage());
         // Do some sanity checking
         if (!this.feed.has("format")) {
             throw new SAXParseException("Failed to detect Atom format",
