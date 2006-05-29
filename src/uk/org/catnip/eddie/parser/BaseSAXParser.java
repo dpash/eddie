@@ -71,7 +71,9 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             }
             
         }
-        log.debug("pushing "+ state);
+        if (log.isTraceEnabled()) {
+            log.trace("pushing "+ state);
+        }
         stack.push(state);     
     }
 
@@ -154,7 +156,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             this.getClass().getMethod("endElement_" + state.getElement(), (Class[])null)
                     .invoke(this, (Object[])null);
         } catch (NoSuchMethodException e) {
-            log.debug("unhandled element " + state.getElement());
+            log.trace("unhandled element " + state.getElement());
             pop(state.getElement());
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,7 +168,9 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
-        log.debug("popping " + state);
+        if (log.isTraceEnabled()) {
+            log.trace("popping " + state);
+        }
         String output = state.getText(); 
        
         detail = new Detail();
@@ -217,7 +221,6 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
 
     
     public void handle_data(State state, String data, boolean escape) {
-        log.debug("handle_date('"+data+"')");
         if (stack.empty()) { return; }
         if (escape && state.getType().equals("application/xhtml+xml")) {
            data = xmlescape(data);
@@ -263,7 +266,6 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     }
 
     public void setContentLocation(String contentLocation) {
-        log.debug("setting Content-Location to '"+ contentLocation +"'");
         this.contentLocation = contentLocation;
     }
 }
