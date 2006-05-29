@@ -23,7 +23,7 @@ public class Parser {
 			xr.setErrorHandler(handler);
             xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
 			xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-			
+			xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
             
             if (headers.containsKey("Content-Location")){
                 handler.setContentLocation((String)headers.get("Content-Location"));
