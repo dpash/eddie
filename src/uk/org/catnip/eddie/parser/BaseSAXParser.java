@@ -188,7 +188,10 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         // resolve href links
         
         // If element can be relative url, resolve link
-
+        if (in_content > 0) {
+            output = Sanitise.clean(output);
+            detail.setValue(output);
+        }
         return output;
         
     }

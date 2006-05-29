@@ -5,7 +5,16 @@ import java.util.LinkedList;
 import java.util.Arrays;
 import org.apache.log4j.Logger;
 import java.util.regex.*;
-
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.apache.xerces.parsers.SAXParser;
+import org.xml.sax.ext.DefaultHandler2;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import java.io.StringReader;
 public class Sanitise {
     static Logger log = Logger.getLogger(Sanitise.class);
 
@@ -53,44 +62,108 @@ public class Sanitise {
         }
         return list;
     }
-
-    static public String handle_inline_data(String string) {
-        log.debug("handle_inline_data('"+string+"')");
-        Matcher endtag_regex = Pattern.compile("^/(\\w+)\\s*>(.*)").matcher(string);
-        Matcher starttag_regex = Pattern.compile("^(\\w+)(\\s+([^/>]+)|\\s*)(/?)>(.*)").matcher(string);
-        if (endtag_regex.matches()) {
-            // We have an end tag
-            String endtag = endtag_regex.group(1);
-            log.debug("found end element: " +endtag);
-            if (acceptable_elements.contains(endtag)) {
-                return "<" + string;
-            } else {
-                return endtag_regex.group(2);
+    class HTMLSAXParser extends DefaultHandler2 {
+        private boolean error = false;
+        private StringBuilder sb = new StringBuilder();
+        public void characters(char[] ch, int start, int length) {
+            
+            String data =  new String(ch, start,length);
+            log.debug("characters: '"+ data+"'");
+            if (error && data.contains(">")) {
+                data = data.substring(data.indexOf(">")+1);
             }
-        } else if(starttag_regex.matches()) {
-            String starttag = starttag_regex.group(1);
-            boolean endtag = starttag_regex.group(4).equals("/");
-            String attributes = starttag_regex.group(3);
-            log.debug("found start element: " +starttag);
-            if (acceptable_elements.contains(starttag)) {
-                StringBuilder sb = new StringBuilder(); 
-                sb.append("<");
-                sb.append(starttag);
-                if (!attributes.equals("")){
-                    sb.append(" "+ attributes);
-                }
-                if (endtag) {
-                    sb.append("/");
-                }
-                sb.append(">");
-                sb.append(starttag_regex.group(5));
-                return sb.toString();
-            } else {
-                return starttag_regex.group(5);
-            }
+            
+            sb.append(data);
+            
         }
-        return "<" + string;
+        public void startElement(String uri, String localName, String qName,
+                Attributes atts) throws SAXException {
+            log.debug("startElement: "+ localName);
+            if (!acceptable_elements.contains(localName)) { return; }
+            sb.append("<");
+            sb.append(localName);
+            
+            for (int i = 0; i < atts.getLength(); i++) {
+                if (!acceptable_attributes.contains(atts.getLocalName(i))) {
+                    continue;
+                }
+                String attribute = atts.getLocalName(i);
+                String value = atts.getValue(i);
+                //if (url_attributes.contains(attribute)) {
+                //    value = resolveUri(value);
+                //}
+                sb.append(" ");
+                sb.append(attribute);
+                sb.append("=\"");
+                sb.append(value);
+                sb.append("\"");
+            }
+            if (elements_no_end_tag.contains(localName)) {
+                sb.append(" /");
+            }
+            sb.append(">");
+        }
+        public void endElement(String uri, String localName, String qName)
+        throws SAXException {
+            log.debug("endElement: "+ localName);
+            if (!acceptable_elements.contains(localName)) { return; }
+            if (elements_no_end_tag.contains(localName)) { return; }
+            sb.append("</");
+            sb.append(localName);
+            sb.append(">");
+        }
+        // ErrorHandler
+        public void warning(SAXParseException exception) throws SAXException {
+            log.debug("warning: " + exception.getMessage());
+            // throw new SAXException(exception);
+        }
+
+        public void error(SAXParseException exception) throws SAXException {
+            error = true;
+            log.debug("error: " + exception.getMessage());
+            // throw new SAXException(exception);
+        }
+
+        public void fatalError(SAXParseException exception) throws SAXException {
+            error = true;
+            log.debug("fatalError: " + exception.getMessage());
+            // throw new SAXException(exception);
+        }
+        public String getResult() {
+            return sb.toString();
+        }
     }
+    static public String clean(String data) {
+        Sanitise s = new Sanitise();
+        data = data.replace("&", "&amp;");
+        return s.real_clean("<html>"+data+"</html>");
+    }    
+    public String real_clean(String data) {
+        String ret = data;
+        try {
+        SAXParser xr = new SAXParser();
+        HTMLSAXParser handler = new HTMLSAXParser();
+        xr.setContentHandler(handler);
+        xr.setErrorHandler(handler);
+        xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+        xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+        StringReader r = new StringReader(data);
+        
+        xr.parse(new InputSource(r));
+        ret = handler.getResult();
+        } catch (SAXException e) {
+            log.debug(e);
+        } catch (Exception e) {
+            log.error(e);
+        }
+        
+       
+        log.debug("Cleaned: '"+data+"'");
+        log.debug("     to: '"+ret+"'");
+        return ret;
+    }
+    
+ 
     static public String clean_html_start(State state) {
         StringBuilder sb = new StringBuilder();
         if (!acceptable_elements.contains(state.getElement())) {
