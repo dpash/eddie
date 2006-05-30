@@ -1,9 +1,43 @@
+/* 
+ * Eddie RSS and Atom feed parser
+ * Copyright (C) 2006  David Pashley
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ * Linking this library statically or dynamically with other modules is making a
+ * combined work based on this library. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ * 
+ * As a special exception, the copyright holders of this library give you
+ * permission to link this library with independent modules to produce an
+ * executable, regardless of the license terms of these independent modules, and
+ * to copy and distribute the resulting executable under a liense certified by the
+ * Open Source Initative (http://www.opensource.org), provided that you also meet,
+ * for each linked independent module, the terms and conditions of the license of
+ * that module. An independent module is a module which is not derived from or
+ * based on this library. If you modify this library, you may extend this
+ * exception to your version of the library, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ */
 package uk.org.catnip.eddie;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import org.apache.log4j.Logger;
 import java.util.TimeZone;
+
 public class Date extends Detail {
     static Logger log = Logger.getLogger(Date.class);
     private Calendar date_parsed;
@@ -46,6 +80,7 @@ public class Date extends Detail {
             "EEE, d MMM yyyy kk:mm:ss z",      // RFC2882
             "EEE MMM  d kk:mm:ss zzz yyyy",    // ASC
             "EEE, dd MMMM yyyy kk:mm:ss",   //Disney Mon, 26 January 2004 16:31:00 ET
+            "yyyy-MM-dd kk:mm:ss.0",
             "-yy-MM",
             "-yyMM",
             "yy-MM-dd",
@@ -62,6 +97,7 @@ public class Date extends Detail {
     public Date(String d, Detail detail) {
         setDetails(detail);
         SimpleDateFormat formatter = new SimpleDateFormat();
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         d = d.replaceAll("([-+]\\d\\d:\\d\\d)", "GMT$1"); // Correct W3C times
         d = d.replaceAll(" ([ACEMP])T$", " $1ST"); // Correct Disney times
         for (int i = 0; i < date_formats.length; i++) {
