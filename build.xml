@@ -5,32 +5,36 @@
               Please edit build-user.xml instead.
 -->
 <project name='eddie' default='build' basedir='.'>
-    <loadproperties srcFile="ant.properties"/>
-    &buildfile;
-    <path id='project.classpath'>
+   <loadproperties srcFile="ant.properties"/>
+   &buildfile;
+   <path id='project.classpath'>
       <pathelement location='build'/>
       <pathelement location='${lib.jython.path}'/>
       <pathelement location='${lib.log4j.path}'/>
       <pathelement location='${lib.xerces.path}'/>
       <pathelement location='${lib.commons-codec.path}'/>
-</path>
-    <target name='init'>
+   </path>
+   <target name='init'>
       <mkdir dir='build'/>
-</target>
-    <target name='clean'>
+   </target>
+   <target name='clean'>
       <delete dir='build'/>
-</target>
-    <target name='build' depends='init'>
+      <delete file='eddie.jar'/>
+   </target>
+   <target name='jar'>
+       <jar destfile="eddie.jar" basedir="build"/>
+    </target>
+   <target name='build' depends='init'>
       <echo message='${ant.project.name}: ${ant.file}'/>
       <javac destdir='build'>
-        <src path='src'/>
-        <classpath refid='project.classpath'/>
-</javac>
-</target>
-    <target name='Main' depends="build">
+         <src path='src'/>
+         <classpath refid='project.classpath'/>
+      </javac>
+   </target>
+   <target name='Main' depends="build">
       <java fork='yes' classname='uk.org.catnip.eddie.Main' failonerror='true'>
-        <arg value='tests'/>
-        <classpath refid='project.classpath'/>
-</java>
-</target>
+         <arg value='tests'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
 </project>
