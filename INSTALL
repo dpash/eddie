@@ -1,0 +1,11 @@
+Installing Eddie
+
+You will need:
+
+   Jython (http://www.jython.org)
+   Log4j
+   Xerces
+   Commons-Codec
+
+Update ant.properties to point to the jars. Run ant build to build the
+classes.
