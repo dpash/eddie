@@ -11,7 +11,6 @@ public class Feed extends FeedContext {
     private Detail info;
     private Detail subtitle;
     private Generator generator;
-    private Image image;
     private TextInput textinput;
     public TextInput getTextinput() {
         return textinput;
@@ -19,14 +18,6 @@ public class Feed extends FeedContext {
 
     public void setTextinput(TextInput textinput) {
         this.textinput = textinput;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
     }
 
     public Generator getGenerator() {

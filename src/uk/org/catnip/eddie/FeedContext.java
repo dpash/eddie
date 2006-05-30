@@ -20,6 +20,7 @@ public class FeedContext {
     protected List categories = new LinkedList();
     private Detail summary;
     private Detail copyright;
+    protected Image image;
     public String set(String key, String value) {
         property_map.put(key,value);
         return value;
@@ -112,6 +113,12 @@ public class FeedContext {
     }
     public void setCopyright(Detail copyright) {
         this.copyright = copyright;
+    }
+    public Image getImage() {
+        return image;
+    }
+    public void setImage(Image image) {
+        this.image = image;
     }
 
 }

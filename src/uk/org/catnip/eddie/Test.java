@@ -167,7 +167,11 @@ public class Test {
         Iterator it = feed.keys();
         while (it.hasNext()) {
             String key = (String) it.next();
-            feed_dict.__setitem__(key, new PyString(feed.get(key)));
+            if (key.equals("itunes_block") || key.equals("itunes_explicit")) {
+                feed_dict.__setitem__(key, new PyInteger(Integer.parseInt(feed.get(key))));
+            } else {
+                feed_dict.__setitem__(key, new PyString(feed.get(key)));
+            }
         }
         if (feed.getAuthor() != null) {
             feed_dict.__setitem__("author_detail", convertAuthor(feed.getAuthor()));
@@ -230,6 +234,14 @@ public class Test {
         }
         feed_dict.__setitem__("categories",category_list);
       
+        // Dict style tags
+        category_list = new PyList();
+        categories = feed.categories();
+        while (categories.hasNext()) {
+            category_list.append(convertCategory((Category)categories.next()));
+        }
+        feed_dict.__setitem__("tags",category_list);
+        
         log.debug(feed_dict);
         
         return feed_dict;
@@ -253,7 +265,11 @@ public class Test {
         Iterator entry_it = entry.keys();
         while (entry_it.hasNext()) {
             String key = (String) entry_it.next();
-            entry_dict.__setitem__(key, new PyString(entry.get(key)));
+            if (key.equals("itunes_block") || key.equals("itunes_explicit")) {
+                entry_dict.__setitem__(key, new PyInteger(Integer.parseInt(entry.get(key))));
+            } else {
+                entry_dict.__setitem__(key, new PyString(entry.get(key)));
+            }
         }
         if (entry.getAuthor() != null) {
             entry_dict.__setitem__("author_detail", convertAuthor(entry.getAuthor()));
@@ -283,7 +299,9 @@ public class Test {
             entry_dict.__setitem__("modified_parsed",convertDate(entry.getModified()));
             entry_dict.__setitem__("date_parsed",convertDate(entry.getModified()));
         }
-        
+        if (entry.getImage() != null) {
+            entry_dict.__setitem__("image",convertImage(entry.getImage()));
+        }
         PyList contents_list = new PyList();
         Iterator contents = entry.contents();
         while (contents.hasNext()) { 
@@ -424,6 +442,9 @@ public class Test {
             if (detail.getLanguage() != null) {
                 detail_dict.__setitem__("language", new PyString(detail
                         .getLanguage()));
+                if (detail.getLanguage().equals("")) {
+                    detail_dict.__setitem__("language", Py.None);
+                }
             }
             if (detail.getType() != null) {
                 detail_dict.__setitem__("type", new PyString(detail.getType()));
@@ -541,6 +562,7 @@ public class Test {
         }
         if (image.getUrl() != null) {
             image_dict.__setitem__("url", new PyString(image.getUrl()));
+            image_dict.__setitem__("href", new PyString(image.getUrl()));
         }
         if (image.getLink() != null) {
             image_dict.__setitem__("link", new PyString(image.getLink()));

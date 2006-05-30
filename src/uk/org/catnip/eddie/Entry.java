@@ -65,7 +65,10 @@ public class Entry extends FeedContext {
     public Iterator enclosures() {
         return enclosures.iterator();
     }
-
+    public boolean hasEnclosures() {
+        return !enclosures.isEmpty();
+    }
+    
     public Source getSource() {
         return source;
     }

@@ -131,6 +131,10 @@ public class FeedSAXParser extends BaseSAXParser {
         } else if (current_entry.get("summary") != null && current_entry.get("description") == null){
             current_entry.set("description", current_entry.get("summary"));
         }
+        if (current_entry.get("id") == null && current_entry.hasEnclosures()) {
+            Enclosure enclosure = (Enclosure)current_entry.enclosures().next();
+            current_entry.set("id", enclosure.getUrl());
+        }
         feed.addEntry(current_entry);
         current_entry = null;
     }
@@ -153,6 +157,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_guid() throws SAXException {
         String content = pop("guid");
         current_entry.set("guid", content);
+        current_entry.set("id", content);
         if (current_entry.isGuidIsLink()) {
             current_entry.set("link", content);  
         }
@@ -179,7 +184,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_image() throws SAXException {
         in_image = false;
         pop("image");
-        feed.setImage(image);
+        getCurrentContext().setImage(image);
         image = null;
     }
     
@@ -194,6 +199,34 @@ public class FeedSAXParser extends BaseSAXParser {
         String content = pop("issued");
         getCurrentContext().set("issued", content);
         getCurrentContext().setIssued(new Date(content,detail));
+    }
+    public void endElement_itunes_block() throws SAXException {
+        String content = pop("itunes_block");
+        if (content.equals("yes")) {
+            getCurrentContext().set("itunes_block", "1"); 
+        } else { 
+            getCurrentContext().set("itunes_block", "0");
+        }  
+    }
+    public void endElement_itunes_duration() throws SAXException {
+        String content = pop("itunes_duration");
+        getCurrentContext().set("itunes_duration", content);
+    }
+    public void endElement_itunes_explicit() throws SAXException {
+        String content = pop("itunes_explicit");
+        if (content.equals("yes")) {
+            getCurrentContext().set("itunes_explicit", "1"); 
+        } else { 
+            getCurrentContext().set("itunes_explicit", "0");
+        }  
+    }
+    public void endElement_itunes_keywords() throws SAXException {
+        String[] content = pop("itunes_keywords").split("\\s+");
+        for (String keyword : content) {
+            Category cat = new Category();
+            cat.setTerm(keyword);
+            getCurrentContext().addCategory(cat);
+        }
     }
     
     public void endElement_language() throws SAXException {
@@ -278,9 +311,11 @@ public class FeedSAXParser extends BaseSAXParser {
         current_entry.getSource().set("subtitle", content);
         current_entry.getSource().setSubtitle(detail);
         } else {
-            feed.set("subtitle", content);
-            feed.set("tagline", content);
-            feed.setSubtitle(detail);
+            getCurrentContext().set("subtitle", content);
+            getCurrentContext().set("tagline", content);
+            if (current_entry == null) {
+                feed.setSubtitle(detail);
+            }
         }
         in_content--;
     }
@@ -476,6 +511,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_image(State state) throws SAXException {
         in_image = true;
         image = new Image();
+        image.setUrl(state.getAttr("href"));
         push(state);
 
     }
@@ -493,6 +529,29 @@ public class FeedSAXParser extends BaseSAXParser {
         state.expectingText = true;
         push(state);
     }
+    public void startElement_itunes_block(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_itunes_category(State state) throws SAXException {
+        Category cat = new Category();
+        cat.setTerm(state.getAttr("text"));
+        cat.setSchedule("http://www.itunes.com/");
+        getCurrentContext().addCategory(cat);
+        push(state);
+    }
+    public void startElement_itunes_duration(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_itunes_explicit(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
+    public void startElement_itunes_keywords(State state) throws SAXException {
+        state.expectingText = true;
+        push(state);
+    }
     public void startElement_link(State state) throws SAXException {
         if (state.getAttr("rel") != null && state.getAttr("rel").equals("enclosure")) {
             Enclosure enclosure = new Enclosure();
@@ -502,7 +561,11 @@ public class FeedSAXParser extends BaseSAXParser {
             if (current_entry != null) {
                 current_entry.addEnclosure(enclosure);
             }
-        } 
+        } else if (state.getAttr("rel") != null && state.getAttr("rel").equals("image")) {
+            Image image = new Image();
+            image.setUrl(state.getAttr("href"));
+            getCurrentContext().setImage(image);
+        }
             link = new Link();
             link.setHref(state.resolveUri(state.getAttr("href")));
             link.setTitle(state.getAttr("title"));

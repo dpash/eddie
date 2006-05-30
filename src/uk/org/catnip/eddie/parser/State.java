@@ -10,14 +10,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class State {
-    private static Map element_aliases = createElementAliases();
+    private static Map<String,String> element_aliases = createElementAliases();
 
     static Logger log = Logger.getLogger(State.class);
 
-    private static Map namespace_aliases = createNamespaceAliases();
+    private static Map<String,String> namespace_aliases = createNamespaceAliases();
 
-    private static Map createElementAliases() {
-        Map aliases = new Hashtable();
+    private static Map<String,String> createElementAliases() {
+        Map<String,String> aliases = new Hashtable<String,String>();
         aliases.put("abstract", "description");
         aliases.put("body", "content");
         aliases.put("content:encoded", "content_encoded");
@@ -33,12 +33,19 @@ public class State {
         aliases.put("dc:title", "title");
         aliases.put("dcterms:modified", "modified");
         aliases.put("item", "entry");
-        aliases.put("itunes:block", "itunes_block");
         aliases.put("itunes:author", "author");
+        aliases.put("itunes:block", "itunes_block");
+        aliases.put("itunes:category", "itunes_category");
+        aliases.put("itunes:duration", "itunes_duration");
         aliases.put("itunes:email", "email");
+        aliases.put("itunes:explicit", "itunes_explicit");
+        aliases.put("itunes:image", "image");
+        aliases.put("itunes:keywords", "itunes_keywords");
+        aliases.put("itunes:link", "link");
+        aliases.put("itunes:owner", "publisher");
         aliases.put("itunes:name", "name");
         aliases.put("itunes:subtitle", "subtitle");
-        aliases.put("itunes:summary", "summary");
+        aliases.put("itunes:summary", "description");
         aliases.put("feedinfo", "channel");
         aliases.put("fullitem", "content_encoded");
         aliases.put("homepage", "url");
@@ -60,8 +67,8 @@ public class State {
         return aliases;
     }
 
-    private static Map createNamespaceAliases() {
-        Map aliases = new Hashtable();
+    private static Map<String,String> createNamespaceAliases() {
+        Map<String,String> aliases = new Hashtable<String,String>();
         // aliases.put("http://backend.userland.com/rss", "");
         // aliases.put("http://blogs.law.harvard.edu/tech/rss", "");
         // aliases.put("http://purl.org/rss/1.0/", "");
@@ -94,6 +101,8 @@ public class State {
         aliases.put("http://purl.org/rss/1.0/modules/image/", "image");
         aliases.put("http://xmlns.com/foaf/0.1/", "foaf");
         aliases.put("http://freshmeat.net/rss/fm/", "fm");
+        aliases.put("http://www.itunes.com/dtds/podcast-1.0.dtd", "itunes");
+        aliases.put("http://example.com/dtds/podcast-1.0.dtd", "itunes");
         aliases.put("http://purl.org/rss/1.0/modules/link/", "l");
         aliases.put("http://madskills.com/public/xml/rss/module/pingback/",
                 "pingback");
@@ -153,8 +162,8 @@ public class State {
     public State(String uri, String localName, String qName) {
         this.uri = uri;
         this.localName = localName.toLowerCase();
-        if (namespace_aliases.containsKey(this.uri)) {
-            this.namespace = (String) namespace_aliases.get(this.uri);
+        if (namespace_aliases.containsKey(this.uri.toLowerCase())) {
+            this.namespace = (String) namespace_aliases.get(this.uri.toLowerCase());
         }
         this.element = aliasElement(this.namespace, this.localName);
         this.qName = qName;
@@ -166,8 +175,8 @@ public class State {
         this.localName = localName.toLowerCase();
         this.qName = qName;
         this.atts = atts;
-        if (namespace_aliases.containsKey(this.uri)) {
-            this.namespace = (String) namespace_aliases.get(this.uri);
+        if (namespace_aliases.containsKey(this.uri.toLowerCase())) {
+            this.namespace = (String) namespace_aliases.get(this.uri.toLowerCase());
         }
 
         this.element = aliasElement(this.namespace, this.localName);
