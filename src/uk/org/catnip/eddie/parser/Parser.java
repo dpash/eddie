@@ -1,6 +1,6 @@
 package uk.org.catnip.eddie.parser;
 
-import java.io.FileReader;
+import java.io.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -34,9 +34,11 @@ public class Parser {
 			handler.setFilename("http://127.0.0.1:8097/"+filename);
 			// Parse each file provided on the
 			// command line.
-
-			FileReader r = new FileReader(filename);
-			xr.parse(new InputSource(r));
+			InputStream is = new FileInputStream(filename);
+             //BufferedReader in
+             //  = new BufferedReader(new InputStreamReader(is));
+			//FileReader r = new FileReader(filename);
+			xr.parse(new InputSource(is));
             ret = handler.getFeed();
 		} catch (SAXException e) {
 			throw e;
