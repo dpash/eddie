@@ -4,15 +4,15 @@
               Any modifications will be overwritten.
               Please edit build-user.xml instead.
 -->
-<project name='javarss' default='build' basedir='.'>
+<project name='eddie' default='build' basedir='.'>
+    <loadproperties srcFile="ant.properties"/>
     &buildfile;
     <path id='project.classpath'>
       <pathelement location='build'/>
-      <pathelement location='/home/david/Projects/rome/jython/jython.jar'/>
-      <pathelement location='/home/david/Projects/rome/rome-0.8/rome-0.8.jar'/>
-      <pathelement location='/usr/share/java/jdom.jar'/>
-      <pathelement location='/usr/share/java/log4j-1.2.jar'/>
-      <pathelement location='/usr/share/java/xercesImpl.jar'/>
+      <pathelement location='${lib.jython.path}'/>
+      <pathelement location='${lib.log4j.path}'/>
+      <pathelement location='${lib.xerces.path}'/>
+      <pathelement location='${lib.commons-codec.path}'/>
 </path>
     <target name='init'>
       <mkdir dir='build'/>
@@ -27,9 +27,9 @@
         <classpath refid='project.classpath'/>
 </javac>
 </target>
-    <target name='Main'>
-      <java fork='yes' classname='uk.org.catnip.javarss.Main' failonerror='true'>
-        <arg value='test/wellformed/atom/entry_author_email.xml'/>
+    <target name='Main' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.Main' failonerror='true'>
+        <arg value='tests'/>
         <classpath refid='project.classpath'/>
 </java>
 </target>
