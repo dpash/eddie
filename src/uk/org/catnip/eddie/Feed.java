@@ -45,6 +45,7 @@ public class Feed extends FeedContext {
     private Detail subtitle;
     private Generator generator;
     private TextInput textinput;
+    List<Entry> entries = new LinkedList<Entry>();
     public TextInput getTextinput() {
         return textinput;
     }
@@ -98,7 +99,7 @@ public class Feed extends FeedContext {
        
        return ret.toString();
     }
-    List entries = new LinkedList();
+    
     public void addEntry(Entry entry) {
         entries.add(entry);
     }

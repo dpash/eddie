@@ -366,7 +366,7 @@ public class FeedSAXParser extends BaseSAXParser {
     }
 
     public void endElement_textinput() throws SAXException {
-        String content = pop("textinput");
+        pop("textinput");
         feed.setTextinput(textinput);
         textinput = null;
     }
@@ -695,7 +695,7 @@ public class FeedSAXParser extends BaseSAXParser {
         log.debug(author);
         String name = author.getName();
         String email = author.getEmail();
-        String url = author.getHref();
+        
         if (name != null && email != null && !email.equals("")) {
             getCurrentContext().set(option,  name + " (" + email + ")");
         } else if (name != null && !name.equals("")) {

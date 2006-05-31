@@ -59,6 +59,11 @@ import org.python.core.*;
 
 public class Test {
     public class EddieDict extends PyDictionary {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3828710848664039712L;
         //Logger log = Logger.getLogger(EddieDict.class);
         //private PyObject map(PyObject key) {
            // PyString str_key = (PyString) key;
@@ -132,7 +137,7 @@ public class Test {
             Pattern test_pattern = Pattern.compile("^Expect:\\s+(.*)$");
             Pattern header_pattern = Pattern.compile("^Header:\\s+([^:]*):\\s+(.*)$");
             
-            Map headers = new Hashtable();
+            Map<String, String> headers = new Hashtable<String, String>();
             while ((line = in.readLine()) != null) {
                 Matcher desc_matcher = desc_pattern.matcher(line);
                 Matcher test_matcher = test_pattern.matcher(line);

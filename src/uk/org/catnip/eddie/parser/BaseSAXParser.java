@@ -68,7 +68,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     protected boolean in_image = false;
     protected boolean in_source = false;
     protected int in_content = 0;
-    protected Stack stack = new Stack();
+    protected Stack<State> stack = new Stack<State>();
 
     public void setFilename(String file) {
         this.filename = file;

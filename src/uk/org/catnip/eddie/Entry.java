@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.Iterator;
 
 public class Entry extends FeedContext {
-    private List content = new LinkedList();
-    private List enclosures = new LinkedList();
+    private List<Detail> content = new LinkedList<Detail>();
+    private List<Enclosure> enclosures = new LinkedList<Enclosure>();
     private Source source;
     private boolean guidIsLink = false;
     public boolean isGuidIsLink() {

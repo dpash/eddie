@@ -37,10 +37,10 @@ import java.util.Map;
 import java.util.Hashtable;
 
 public class Entities {
-    static private Map entity_map = createEntities();
+    static private Map<String, String> entity_map = createEntities();
     
-    private static Map createEntities() {
-        Map entities = new Hashtable();
+    private static Map<String, String> createEntities() {
+        Map<String, String> entities = new Hashtable<String, String>();
         entities.put("amp", "");
         entities.put("gt", "");
         entities.put("lt", "");
