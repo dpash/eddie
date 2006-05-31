@@ -77,6 +77,11 @@ public class Sanitize {
     static List unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
     static List elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
 
+    /**
+     * Class to parse html and remove unsafe elements and attributes
+     * @author David Pashley <david@davidpashley.com>
+     *
+     */
     class HTMLSAXParser extends DefaultHandler2 {
         private boolean error = false;
         private boolean started_document = false;
@@ -171,6 +176,15 @@ public class Sanitize {
             return sb.toString().trim();
         }
     }
+    
+    
+    /**
+     * Clean unsafe elements and attributes from html. This is the main entrance to the 
+     * sanitizing subsystem
+     * @param data string to be cleaned
+     * @param state current state information
+     * @return cleaned string
+     */
     static public String clean(String data, State state) {
         Sanitize s = new Sanitize();
         data = data.replace("&", "&amp;");
@@ -182,6 +196,14 @@ public class Sanitize {
         }
         return s.real_clean(data, state);
     }    
+    
+    
+    /**
+     * This is the class that actually does the sanitizing
+     * @param data string to be cleaned
+     * @param state current state information
+     * @return cleaned string
+     */
     public String real_clean(String data, State state) {
         String ret = data;
         if (!data.trim().startsWith("<!DOCTYPE")) {
@@ -211,8 +233,14 @@ public class Sanitize {
         return ret;
     }
     
-    // Don't need to clean as this will happen later anyway. 
-    // TODO: Should probably move this to BaseSAXParser
+
+    /**
+     * Rebuild text from a startElement SAX event
+     * Don't need to clean as this will happen later anyway.
+     * TODO: Should probably move this to BaseSAXParser
+     * @param state current sax event
+     * @return text representation of the SAX event
+     */
     static public String clean_html_start(State state) {
         StringBuilder sb = new StringBuilder();    
         sb.append("<");
@@ -233,6 +261,11 @@ public class Sanitize {
         return sb.toString();
     }
 
+    /**
+     * Rebuild text from a endElement SAX event
+     * @param tag end tag
+     * @return text representation of the SAX event
+     */
     static public String clean_html_end(String tag) {
         if (elements_no_end_tag.contains(tag)) {
             return "";
