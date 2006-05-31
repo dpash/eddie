@@ -45,6 +45,10 @@ import org.apache.commons.codec.binary.Base64;
 import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.parser.Entities;
 
+/**
+ * @author David Pashley <david@davidpashley.com>
+ *
+ */
 public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     static Logger log = Logger.getLogger(BaseSAXParser.class);
 
@@ -70,6 +74,11 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         this.locator = locator;
     }
 
+    
+    /**
+     * Get the current state
+     * @return the current state
+     */
     protected State getCurrentState() {
         if (!stack.empty()){
             return (State)stack.peek();
@@ -77,6 +86,13 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         return new State();
     }
 
+    
+    /**
+     * Add a State object onto the state stack
+     * If this is the first object on the stack set the base value
+     * from values we've been given by the caller
+     * @param state State object to add to stack
+     */
     protected void push(State state) {
         if (stack.isEmpty()) {
             String newbase;
@@ -98,14 +114,28 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         stack.push(state);     
     }
 
+    /* (non-Javadoc)
+     * @see org.xml.sax.ContentHandler#startDocument()
+     */
     public void startDocument() throws SAXException {
         log.trace("startDocument:" + this.filename);
     }
 
+    /* (non-Javadoc)
+     * @see org.xml.sax.ContentHandler#endDocument()
+     */
     public void endDocument() throws SAXException {
         log.trace("endDocument:" + this.filename);
     }
 
+    /** 
+     * Look for a method to deal with the state of the current element. 
+     * Creates a new state object.
+     * Deals with inline xml content
+     * If the element method fails to push the state, we do it for them. 
+     * We default to not expecting content
+     * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+     */
     public void startElement(String uri, String localName, String qName,
             Attributes atts) throws SAXException {
         
@@ -149,6 +179,11 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         }
     }
 
+    
+    /** 
+     * Look for a method to deal with the end of the current element
+     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+     */
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         
@@ -176,6 +211,11 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         }
     }
 
+    /**
+     * Retrieve state off the state stack and fill information into the Detail object
+     * @param element name of the current element 
+     * @return the text content of the element
+     */
     protected String pop(String element) {
         if (stack.empty()) { return ""; }
    
@@ -205,12 +245,6 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             detail.setValue(output);
         }
         
-        // If mode == escaped and content-type == application/octet-stream
-        // base64-decode test
-        
-        // resolve href links
-        
-        // If element can be relative url, resolve link
         if (in_content > 0) {
             output = Sanitise.clean(output, state);
             detail.setValue(output);
@@ -218,6 +252,10 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         return output;
         
     }
+    /** 
+     * Deal with non markup characters
+     * @see org.xml.sax.ContentHandler#characters(char[], int, int)
+     */
     public void characters(char[] ch, int start, int length) {
         String data =  new String(ch, start,length);
         //data.trim();
