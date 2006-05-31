@@ -31,7 +31,7 @@
  * exception to your version of the library, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  */
-package uk.org.catnip.eddie;
+package uk.org.catnip.eddie.tests;
 
 import java.io.*;
 import java.util.regex.*;
@@ -40,6 +40,19 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Hashtable;
 import org.apache.log4j.Logger;
+
+import uk.org.catnip.eddie.Author;
+import uk.org.catnip.eddie.Category;
+import uk.org.catnip.eddie.Date;
+import uk.org.catnip.eddie.Detail;
+import uk.org.catnip.eddie.Enclosure;
+import uk.org.catnip.eddie.Entry;
+import uk.org.catnip.eddie.Feed;
+import uk.org.catnip.eddie.Generator;
+import uk.org.catnip.eddie.Image;
+import uk.org.catnip.eddie.Link;
+import uk.org.catnip.eddie.Source;
+import uk.org.catnip.eddie.TextInput;
 import uk.org.catnip.eddie.parser.Parser;
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
