@@ -42,9 +42,6 @@ import org.xml.sax.Locator;
 import org.apache.log4j.Logger;
 import java.util.Stack;
 import org.apache.commons.codec.binary.Base64;
-import uk.org.catnip.eddie.Feed;
-import uk.org.catnip.eddie.FeedContext;
-import uk.org.catnip.eddie.Entry;
 import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.parser.Entities;
 
@@ -56,17 +53,8 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     protected String filename;
     private String contentLocation;
     private String contentLanguage;
-    protected Feed feed = new Feed();
-    protected Entry current_entry;
     protected Detail detail;
 
-    protected boolean in_contributor = false;
-    protected boolean in_author = false;
-    protected boolean in_feed = false;
-    protected boolean in_entry = false;
-    protected boolean in_textinput = false;
-    protected boolean in_image = false;
-    protected boolean in_source = false;
     protected int in_content = 0;
     protected Stack<State> stack = new Stack<State>();
 
@@ -76,10 +64,6 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
 
     public void setDocumentLocator(Locator locator) {
         this.locator = locator;
-    }
-
-    public Feed getFeed() {
-        return feed;
     }
 
     protected State getCurrentState() {
@@ -110,17 +94,6 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         stack.push(state);     
     }
 
-    protected FeedContext getCurrentContext() {
-        if (in_entry) {
-            if (in_source) {
-                return current_entry.getSource();
-            } else {
-                return current_entry;
-            }
-        } else {
-            return feed;
-        }
-    }
     public void startDocument() throws SAXException {
         log.trace("startDocument:" + this.filename);
     }

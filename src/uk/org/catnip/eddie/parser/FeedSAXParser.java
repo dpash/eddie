@@ -37,6 +37,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.Entry;
+import uk.org.catnip.eddie.Feed;
+import uk.org.catnip.eddie.FeedContext;
 import uk.org.catnip.eddie.Generator;
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Link;
@@ -55,6 +57,14 @@ public class FeedSAXParser extends BaseSAXParser {
     private Image image;
     private Link link;
     private TextInput textinput;
+    protected Feed feed = new Feed();
+    protected Entry current_entry;
+    protected boolean in_contributor = false;
+    protected boolean in_author = false;
+    protected boolean in_feed = false;
+    protected boolean in_textinput = false;
+    protected boolean in_image = false;
+    protected boolean in_source = false;
 
     public void endElement_author() throws SAXException {
         in_author = false;
@@ -158,7 +168,7 @@ public class FeedSAXParser extends BaseSAXParser {
 
     public void endElement_entry() throws SAXException {
         pop("entry");
-        in_entry = false;
+
         if (current_entry.get("summary") == null && current_entry.get("description") != null){
             current_entry.set("summary", current_entry.get("description"));
         } else if (current_entry.get("summary") != null && current_entry.get("description") == null){
@@ -275,7 +285,7 @@ public class FeedSAXParser extends BaseSAXParser {
         } else if (textinput != null) {
             textinput.setLink(content);
         } else if (link != null){ // TODO cleanup
-            if (in_entry) {
+            if (current_entry != null) {
                 current_entry.setGuidIsLink(false);
             }
             link.setDetails(detail);
@@ -485,7 +495,6 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void startElement_entry(State state) throws SAXException {
-        in_entry = true;
         current_entry = new Entry();
         state.expectingText = false;
         push(state);
@@ -675,7 +684,7 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = (this.in_feed || this.in_entry);
+        state.expectingText = (this.in_feed || (this.current_entry != null));
         push(state);
 
     }
@@ -719,6 +728,20 @@ public class FeedSAXParser extends BaseSAXParser {
                 author.setName(content);
             }
             log.debug(author);
+        }
+    }
+    public Feed getFeed() {
+        return feed;
+    }
+    protected FeedContext getCurrentContext() {
+        if (current_entry != null) {
+            if (in_source) {
+                return current_entry.getSource();
+            } else {
+                return current_entry;
+            }
+        } else {
+            return feed;
         }
     }
     
