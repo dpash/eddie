@@ -149,7 +149,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
                 state.mode = "xml";
             }
             if (in_content > 0 && state.mode.equals( "xml")) {
-               handle_data(state,Sanitise.clean_html_start(state), false);
+               handle_data(state,Sanitize.clean_html_start(state), false);
                state.content = true;
                push(state);
                return;
@@ -196,7 +196,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             }
             if (in_content > 0 && prev.mode.equals("xml") && prev.content) {
                 String data = pop(localName);
-                handle_data(prev, data + Sanitise.clean_html_end(state.getElement()), false);
+                handle_data(prev, data + Sanitize.clean_html_end(state.getElement()), false);
                return;
             }
          }
@@ -246,7 +246,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         }
         
         if (in_content > 0) {
-            output = Sanitise.clean(output, state);
+            output = Sanitize.clean(output, state);
             detail.setValue(output);
         }
         return output;
