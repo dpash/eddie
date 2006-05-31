@@ -41,12 +41,37 @@ import org.apache.xerces.parsers.SAXParser;
 import uk.org.catnip.eddie.Feed;
 import java.util.Map;
 
+/**
+ * Main class for parsing feeds. To parse a file you need to create a new 
+ * parser object, optionally let it know any HTTP headers and than ask it to 
+ * parse the file. You will receive a Feed object in return.
+ * <pre>
+ * Parser parser = new Parser();
+ * parser.setHeaders(headers);
+ * Feed feed = parser.parse(filename);
+ * </pre>
+ * @author david
+ */
 public class Parser {
-    Map headers;
+
+    private Map headers;
+    
+    
+    /**
+     * Inform the parser of any external HTTP headers. The parser currently understands
+     * Content-Location and Content-Language which are used to set the default base 
+     * and language values.
+     * @param headers set of HTTP headers
+     */
     public void setHeaders(Map headers) {
         this.headers = headers;
     }
 
+	/**
+	 * @param filename filename you wish to parse
+	 * @return returns a Feed object representing the feed
+	 * @throws SAXException
+	 */
 	public Feed parse(String filename) throws SAXException{
         Feed ret = new Feed();
 		try {
