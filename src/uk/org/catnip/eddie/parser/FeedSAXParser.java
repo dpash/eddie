@@ -731,6 +731,7 @@ public class FeedSAXParser extends BaseSAXParser {
         }
     }
     public Feed getFeed() {
+        feed.error = this.error;
         return feed;
     }
     protected FeedContext getCurrentContext() {

@@ -48,6 +48,10 @@ import uk.org.catnip.eddie.parser.Entities;
 public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     static Logger log = Logger.getLogger(BaseSAXParser.class);
 
+    /**
+     * Set if there has been any XML parsing errors
+     */
+    protected boolean error;
     protected Locator locator;
 
     protected String filename;
@@ -262,13 +266,13 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     }
 
     public void error(SAXParseException exception) throws SAXException {
-        feed.error = true;
+        this.error = true;
         log.debug("error: " + filename + ": " + exception.getMessage());
         // throw new SAXException(exception);
     }
 
     public void fatalError(SAXParseException exception) throws SAXException {
-        feed.error = true;
+        this.error = true;
         log.debug("fatalError: " + filename + ": " + exception.getMessage());
         // throw new SAXException(exception);
     }
