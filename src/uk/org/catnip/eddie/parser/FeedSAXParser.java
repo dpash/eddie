@@ -70,7 +70,6 @@ public class FeedSAXParser extends BaseSAXParser {
         in_author = false;
         String content = pop("author");
         
-
         sync_author(content, "author");
         getCurrentContext().setAuthor(author);
         author = null;
@@ -294,12 +293,11 @@ public class FeedSAXParser extends BaseSAXParser {
 
                 if ((link.getType().equals("text/html") || link.getType()
                         .equals("application/xhtml+xml"))
-                        && (link.getRel() != null && link.getRel().equals(
-                                "alternate"))) {
+                        && ("alternate".equals(link.getRel()))) {
 
                     getCurrentContext().set("link", link.getHref());
                 }
-                if (link.getRel() != null && link.getRel().equals("alternate")) {
+                if ("alternate".equals(link.getRel())) {
                     getCurrentContext().set("link", link.getHref());
                     
                 }
@@ -427,7 +425,7 @@ public class FeedSAXParser extends BaseSAXParser {
     
     public void startElement_author(State state) throws SAXException {
         in_author = true;
-        state.expectingText = true;
+        state.setExpectingText(true);
         author = new Author();
         push(state);
     }
@@ -446,7 +444,7 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "xml");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
 
     }
@@ -454,13 +452,13 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = "escaped";
         state.setType("text/html");
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
 
     }
     public void startElement_contributor(State state) throws SAXException {
         in_author = true;
-        state.expectingText = true;
+        state.setExpectingText(true);
         author = new Author();
         push(state);
     }
@@ -469,20 +467,20 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
 
     }
 
     public void startElement_created(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_description(State state) throws SAXException {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType("text/html");
-        state.expectingText = true;       
+        state.setExpectingText(true);       
         push(state);
     }
 
@@ -496,7 +494,6 @@ public class FeedSAXParser extends BaseSAXParser {
     
     public void startElement_entry(State state) throws SAXException {
         current_entry = new Entry();
-        state.expectingText = false;
         push(state);
     }
 
@@ -507,7 +504,7 @@ public class FeedSAXParser extends BaseSAXParser {
         
         if (!this.feed.has("format"))
             if (attr_version == null || attr_version.equals("")) {
-                if (state.getUri().equals("http://www.w3.org/2005/Atom")) {
+                if ("http://www.w3.org/2005/Atom".equals(state.getUri())) {
                     this.feed.set("format", "atom10");
                 } else {
                     this.feed.set("format", "atom");
@@ -526,11 +523,10 @@ public class FeedSAXParser extends BaseSAXParser {
         if (state.getLanguage() != null) {
             this.feed.set("language", state.getLanguage());
         }
+        
         // Do some sanity checking
-        if (!this.feed.has("format")) {
-            throw new SAXParseException("Failed to detect Atom format",
-                    this.locator);
-        }
+        assert(this.feed.has("format")) : "Failed to detect Atom format";
+        
     }
 
     public void startElement_generator(State state) throws SAXException {
@@ -538,16 +534,16 @@ public class FeedSAXParser extends BaseSAXParser {
         generator.setName(state.getAttr("name"));
         generator.setUrl(state.resolveUri(state.getAttr("url", state.getAttr("uri"))));
         generator.setVersion(state.getAttr("version"));
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_guid(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         current_entry.setGuidIsLink(state.getAttr("isPermaLink", "true").equals("true"));
         push(state);
     }
     public void startElement_icon(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_image(State state) throws SAXException {
@@ -562,17 +558,17 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
 
     }
 
     public void startElement_issued(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_itunes_block(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_itunes_category(State state) throws SAXException {
@@ -583,19 +579,19 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
     public void startElement_itunes_duration(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_itunes_explicit(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_itunes_keywords(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_link(State state) throws SAXException {
-        if (state.getAttr("rel") != null && state.getAttr("rel").equals("enclosure")) {
+        if ("enclosure".equals(state.getAttr("rel"))) {
             Enclosure enclosure = new Enclosure();
             enclosure.setUrl(state.resolveUri(state.getAttr("href")));
             enclosure.setLength(state.getAttr("length"));
@@ -603,7 +599,7 @@ public class FeedSAXParser extends BaseSAXParser {
             if (current_entry != null) {
                 current_entry.addEnclosure(enclosure);
             }
-        } else if (state.getAttr("rel") != null && state.getAttr("rel").equals("image")) {
+        } else if ("image".equals(state.getAttr("rel"))) {
             Image image = new Image();
             image.setUrl(state.getAttr("href"));
             getCurrentContext().setImage(image);
@@ -614,21 +610,21 @@ public class FeedSAXParser extends BaseSAXParser {
             link.setRel(state.getAttr("rel", "alternate"));
             link.setHreflang(state.getAttr("hreflang"));
             link.setLength(state.getAttr("length"));
-            state.expectingText = false;
+
         
         push(state);
     }
     public void startElement_logo(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_modified(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_publisher(State state) throws SAXException {
         in_author = true;
-        state.expectingText = true;
+        state.setExpectingText(true);
         author = new Author();
         push(state);
     }
@@ -662,7 +658,7 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
 
     }
@@ -670,7 +666,7 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
 
     }
@@ -684,20 +680,20 @@ public class FeedSAXParser extends BaseSAXParser {
         in_content++;
         state.mode = state.getAttr("mode", "escaped");
         state.setType(state.getAttr("type", "text/plain"));
-        state.expectingText = (this.in_feed || (this.current_entry != null));
+        state.setExpectingText(this.in_feed || (this.current_entry != null));
         push(state);
 
     }
     public void startElement_url(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_wfw_comment(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     public void startElement_wfw_commentrss(State state) throws SAXException {
-        state.expectingText = true;
+        state.setExpectingText(true);
         push(state);
     }
     private void sync_author(String content, String option) {
@@ -705,9 +701,9 @@ public class FeedSAXParser extends BaseSAXParser {
         String name = author.getName();
         String email = author.getEmail();
         
-        if (name != null && email != null && !email.equals("")) {
+        if (name != null && !"".equals(email)) {
             getCurrentContext().set(option,  name + " (" + email + ")");
-        } else if (name != null && !name.equals("")) {
+        } else if (!"".equals(name)) {
             getCurrentContext().set(option, name);
         } else {
             getCurrentContext().set(option, content);

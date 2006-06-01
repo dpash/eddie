@@ -170,7 +170,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             }
         } catch (NoSuchMethodException e) {
             log.trace("unhandled element " + state.getElement());
-            state.expectingText = true;
+            state.setExpectingText(true);
             push(state);
             // } catch (InvocationTargetException e) {
             // throw e.getCause();
@@ -234,13 +234,13 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         if (!output.equals("")){
         detail.setValue(output);
         }
-        if (!state.expectingText) { return output; }
+        if (!state.isExpectingText()) { return output; }
         
-        if (state.mode != null && state.mode.equals("base64")) {
+        if ("base64".equals(state.mode)) {
             output = new String(Base64.decodeBase64(output.trim().getBytes()));
             detail.setValue(output);
         }
-        if (state.getType().equals("application/octet-stream")) {
+        if ("application/octet-stream".equals(state.getType())) {
             output = new String(Base64.decodeBase64(output.trim().getBytes()));
             detail.setValue(output);
         }

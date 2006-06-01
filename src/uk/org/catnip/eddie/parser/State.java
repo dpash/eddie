@@ -171,7 +171,7 @@ public class State {
 
     private String element;
 
-    public boolean expectingText = false;
+    private boolean expectingText = false;
 
     private String language;
 
@@ -181,7 +181,7 @@ public class State {
 
     private String namespace;
 
-    public String qName;
+    private String qName;
 
     private StringBuilder text = new StringBuilder();
 
@@ -376,5 +376,13 @@ public class State {
         sb.append("text = '" + text + "'");
         sb.append("}");
         return sb.toString();
+    }
+
+    public boolean isExpectingText() {
+        return expectingText;
+    }
+
+    public void setExpectingText(boolean expectingText) {
+        this.expectingText = expectingText;
     }
 }
