@@ -34,13 +34,13 @@
 package uk.org.catnip.eddie.parser;
 
 import java.util.Map;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class Entities {
     static private Map<String, String> entity_map = createEntities();
     
     private static Map<String, String> createEntities() {
-        Map<String, String> entities = new Hashtable<String, String>();
+        Map<String, String> entities = new HashMap<String, String>();
         entities.put("amp", "");
         entities.put("gt", "");
         entities.put("lt", "");
