@@ -155,7 +155,7 @@ public class State {
         aliases.put("http://purl.org/rss/1.0/modules/textinput/", "ti");
         aliases.put("http://madskills.com/public/xml/rss/module/trackback/",
                 "trackback");
-        aliases.put("http://wellformedweb.org/CommentAPI/", "wfw");
+        aliases.put("http://wellformedweb.org/commentapi/", "wfw");
         aliases.put("http://purl.org/rss/1.0/modules/wiki/", "wiki");
         aliases.put("http://schemas.xmlsoap.org/soap/envelope/", "soap");
         aliases.put("http://www.w3.org/1999/xhtml", "xhtml");
