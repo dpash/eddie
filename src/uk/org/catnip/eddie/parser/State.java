@@ -163,7 +163,7 @@ public class State {
         return aliases;
     }
 
-    public Attributes atts = new AttributesImpl();
+    private Attributes atts = new AttributesImpl();
 
     private URI base;
 
@@ -177,7 +177,7 @@ public class State {
 
     private String localName;
 
-    public String mode;
+    private String mode;
 
     private String namespace;
 
@@ -384,5 +384,17 @@ public class State {
 
     public void setExpectingText(boolean expectingText) {
         this.expectingText = expectingText;
+    }
+
+    public Attributes getAttributes() {
+        return atts;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

@@ -143,21 +143,18 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         if(state.getLanguage() == null && contentLanguage != null) {
             state.setLanguage(contentLanguage);
         }
-        log.trace("startElement:" + localName + " ("+state.getElement() + ")");
-        if (state.mode != null) {
-            if (in_content > 0 && state.mode.equals( "escaped")) {
-                state.mode = "xml";
-            }
-            if (in_content > 0 && state.mode.equals( "xml")) {
-               handle_data(state,Sanitize.clean_html_start(state), false);
-               state.content = true;
-               push(state);
-               return;
-            }
-        }
+        log.trace("startElement:" + localName + " (" + state.getElement() + ")");
 
-        
-        
+        if (in_content > 0 && "escaped".equals(state.getMode())) {
+            state.setMode("xml");
+        }
+        if (in_content > 0 && "xml".equals(state.getMode())) {
+            handle_data(state, Sanitize.clean_html_start(state), false);
+            state.content = true;
+            push(state);
+            return;
+        }
+       
         try {
             Class[] argTypes = { State.class };
             Object[] values = {state };
@@ -190,16 +187,17 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         State state = new State(uri, localName, qName);
         State prev = getCurrentState();
         log.trace("end_element: " + state);
-        if (prev.mode != null) {
-            if (in_content > 0 && prev.mode.equals("escaped") && prev.content) {
-                prev.mode = "xml";
-            }
-            if (in_content > 0 && prev.mode.equals("xml") && prev.content) {
-                String data = pop(localName);
-                handle_data(prev, data + Sanitize.clean_html_end(state.getElement()), false);
-               return;
-            }
-         }
+        
+        if (in_content > 0 && "escaped".equals(prev.getMode()) && prev.content) {
+            prev.setMode("xml");
+        }
+        if (in_content > 0 && "xml".equals(prev.getMode()) && prev.content) {
+            String data = pop(localName);
+            handle_data(prev, data
+                    + Sanitize.clean_html_end(state.getElement()), false);
+            return;
+        }
+         
         try {
             this.getClass().getMethod("endElement_" + state.getElement(), (Class[])null)
                     .invoke(this, (Object[])null);
@@ -236,7 +234,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
         }
         if (!state.isExpectingText()) { return output; }
         
-        if ("base64".equals(state.mode)) {
+        if ("base64".equals(state.getMode())) {
             output = new String(Base64.decodeBase64(output.trim().getBytes()));
             detail.setValue(output);
         }

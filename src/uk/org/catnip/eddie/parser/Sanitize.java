@@ -188,7 +188,7 @@ public class Sanitize {
     static public String clean(String data, State state) {
         Sanitize s = new Sanitize();
         data = data.replace("&", "&amp;");
-        if (state.getType().equals("text/plain") && (state.mode != null && !state.mode.equals("base64"))) {
+        if (state.getType().equals("text/plain") && (!"base64".equals(state.getMode()))) {
             // Fix what we just broke
             log.debug(state);
             data = data.replace("&amp;lt;", "&lt;");
@@ -245,9 +245,9 @@ public class Sanitize {
         StringBuilder sb = new StringBuilder();    
         sb.append("<");
         sb.append(state.getElement());
-        for (int i = 0; i < state.atts.getLength(); i++) {
-            String attribute = state.atts.getLocalName(i);
-            String value = state.atts.getValue(i);
+        for (int i = 0; i < state.getAttributes().getLength(); i++) {
+            String attribute = state.getAttributes().getLocalName(i);
+            String value = state.getAttributes().getValue(i);
             sb.append(" ");
             sb.append(attribute);
             sb.append("=\"");
