@@ -63,7 +63,7 @@ public class BaseSAXParser extends DefaultHandler2 {
     protected Detail detail;
 
     protected int in_content = 0;
-    protected Stack<State> stack = new Stack<State>();
+    private Stack<State> stack = new Stack<State>();
 
     public void setFilename(String file) {
         this.filename = file;
