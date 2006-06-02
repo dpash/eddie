@@ -45,7 +45,7 @@ import java.net.URISyntaxException;
 public class State {
     private static Map<String,String> element_aliases = createElementAliases();
 
-    static Logger log = Logger.getLogger(State.class);
+    private static Logger log = Logger.getLogger(State.class);
 
     private static Map<String,String> namespace_aliases = createNamespaceAliases();
 
@@ -204,28 +204,22 @@ public class State {
 
     public State(String uri, String localName, String qName, Attributes atts,
             State prev) {
-        this.uri = uri;
-        this.localName = localName.toLowerCase();
-        this.qName = qName;
+        this(uri,localName,qName);
         this.atts = atts;
-        if (namespace_aliases.containsKey(this.uri.toLowerCase())) {
-            this.namespace = (String) namespace_aliases.get(this.uri.toLowerCase());
+        
+        if ("xhtml".equals(this.namespace)) {
+            this.setType("xhtml");
+        } else {
+            this.setType(this.getAttr("type", prev.type));
         }
-
-        this.element = aliasElement(this.namespace, this.localName);
-
-        this.type = this.getAttr("type", prev.type);
+        
         this.mode = this.getAttr("mode", prev.mode);
-        if (this.type == null || this.type.equals("")) {
-            this.type = "text/plain";
-        }
+
         this.language = this.getAttr("xml:lang", prev.getLanguage());
         this.setBase(this.getAttr("xml:base", prev.getBase()));
         if (this.isBaseRelative()) {
             this.resolveBaseWith(prev.getBase());
         }
-        // log.debug(this);
-
     }
 
     public void addText(String str) {
@@ -233,7 +227,7 @@ public class State {
     }
 
     private String aliasElement(String namespace, String element) {
-        if (namespace != null && !namespace.equals("xhtml")) {
+        if (this.namespace != null && !this.namespace.equals("xhtml")) {
             element = namespace + ":" + element;
         }
         if (element_aliases.containsKey(element)) {
@@ -247,16 +241,12 @@ public class State {
     }
 
     public String getAttr(String key, String default_value) {
-        // TODO: remove this hack
-        if (key.equals("type") && namespace != null
-                && namespace.equals("xhtml")) {
-            return "application/xhtml+xml";
-        }
+
         String ret = atts.getValue(key);
         if (ret == null) {
             ret = default_value;
         }
-        log.trace("getAttr: " + key + " = '" + ret + "'");
+
         return ret;
     }
 
@@ -346,14 +336,18 @@ public class State {
     }
 
     public void setType(String type) {
-        if (type.equals("text")) {
-            this.type = "text/plain";
-        } else if (type.equals("html")) {
-            this.type = "text/html";
-        } else if (type.equals("xhtml")) {
-            this.type = "application/xhtml+xml";
+        if (type != null) {
+            if (type.equals("text")) {
+                this.type = "text/plain";
+            } else if (type.equals("html")) {
+                this.type = "text/html";
+            } else if (type.equals("xhtml")) {
+                this.type = "application/xhtml+xml";
+            } else {
+                this.type = type;
+            }
         } else {
-            this.type = type;
+            this.type = "text/plain";
         }
     }
 
