@@ -65,11 +65,11 @@ public class BaseSAXParser extends DefaultHandler2 {
     protected int in_content = 0;
     private Stack<State> stack = new Stack<State>();
 
-    public void setFilename(String file) {
+    public void setFilename(final String file) {
         this.filename = file;
     }
 
-    public void setDocumentLocator(Locator locator) {
+    public void setDocumentLocator(final Locator locator) {
         this.locator = locator;
     }
 
@@ -99,14 +99,13 @@ public class BaseSAXParser extends DefaultHandler2 {
         return state;
     }
 
-    
     /**
      * Add a State object onto the state stack
      * If this is the first object on the stack set the base value
      * from values we've been given by the caller
      * @param state State object to add to stack
      */
-    protected void push(State state) {
+    protected void push(final State state) {
  
         if (log.isDebugEnabled()) {
             log.debug("pushing "+ state);
@@ -136,8 +135,8 @@ public class BaseSAXParser extends DefaultHandler2 {
      * We default to not expecting content
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
-    public void startElement(String uri, String localName, String qName,
-            Attributes atts) throws SAXException {
+    public void startElement(final String uri, final String localName, final String qName,
+           final Attributes atts) throws SAXException {
         
         State state = new State(uri, localName, qName, atts, getCurrentState());
 
@@ -179,7 +178,7 @@ public class BaseSAXParser extends DefaultHandler2 {
      * Look for a method to deal with the end of the current element
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void endElement(String uri, String localName, String qName)
+    public void endElement(final String uri, final String localName, final String qName)
             throws SAXException {
         
         State state = new State(uri, localName, qName);
@@ -212,7 +211,7 @@ public class BaseSAXParser extends DefaultHandler2 {
      * @param element name of the current element 
      * @return the text content of the element
      */
-    protected String pop(String element) {
+    protected String pop(final String element) {
         if (stack.empty()) { return ""; }
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
@@ -256,19 +255,18 @@ public class BaseSAXParser extends DefaultHandler2 {
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
     public void characters(char[] ch, int start, int length) {
-        String data =  new String(ch, start,length);
-        //data.trim();
-        
+        String data = new String(ch, start, length);
+
         if (in_content > 0) {
-            if(getCurrentState().getType().equals("application/xhtml+xml")) {
-            if (data.equals("<")) { data = "&lt;"; }
-            if (data.equals(">")) { data = "&gt;"; }
-            if (data.equals("&")) { data = "&amp;"; }
+            if (getCurrentState().getType().equals("application/xhtml+xml")) {
+                if (data.equals("<")) { data = "&lt;"; }
+                if (data.equals(">")) { data = "&gt;"; }
+                if (data.equals("&")) { data = "&amp;"; }
             } else if (getCurrentState().getType().equals("text/plain")) {
                 if (data.equals("<")) { data = "&lt;"; }
             }
         }
-        log.trace("characters: "+data);
+        log.trace("characters: " + data);
         getCurrentState().addText(data);
     }
 
