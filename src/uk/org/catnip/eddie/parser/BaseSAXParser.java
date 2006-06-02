@@ -222,6 +222,9 @@ public class BaseSAXParser extends DefaultHandler2 {
         }
         String output = state.getText(); 
        
+        // TODO: we should give Detail the current stack item
+        // This would mean that we don't have BaseSAXParser knowing about 
+        // objects it shouldn't, making it less tied to RSS and Atom
         detail = new Detail();
         detail.setBase(state.getBase());
         detail.setLanguage(state.getLanguage());
