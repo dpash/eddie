@@ -37,7 +37,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 import java.lang.StringBuilder;
 import java.util.Map;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.apache.log4j.Logger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,7 +50,7 @@ public class State {
     private static Map<String,String> namespace_aliases = createNamespaceAliases();
 
     private static Map<String,String> createElementAliases() {
-        Map<String,String> aliases = new Hashtable<String,String>();
+        Map<String,String> aliases = new HashMap<String,String>();
         aliases.put("abstract", "description");
         aliases.put("body", "content");
         aliases.put("content:encoded", "content_encoded");
@@ -101,7 +101,7 @@ public class State {
     }
 
     private static Map<String,String> createNamespaceAliases() {
-        Map<String,String> aliases = new Hashtable<String,String>();
+        Map<String,String> aliases = new HashMap<String,String>();
         // aliases.put("http://backend.userland.com/rss", "");
         // aliases.put("http://blogs.law.harvard.edu/tech/rss", "");
         // aliases.put("http://purl.org/rss/1.0/", "");
@@ -357,18 +357,27 @@ public class State {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("element = '" + element + "', ");
-        sb.append("mode = '" + mode + "', ");
-        sb.append("type = '" + type + "', ");
-        sb.append("base = '" + base + "', ");
-        sb.append("language = '" + language + "', ");
-        sb.append("namespace = '" + namespace + "', ");
-        sb.append("uri = '" + uri + "', ");
-        sb.append("qname = '" + qName + "', ");
-        sb.append("localname = '" + localName + "', ");
-        sb.append("text = '" + text + "'");
-        sb.append("}");
+        sb.append("{ element = '");
+        sb.append(element);
+        sb.append("', mode = '");
+        sb.append(mode);
+        sb.append("', type = '");
+        sb.append(type);
+        sb.append("', base = '");
+        sb.append(base);
+        sb.append("', language = '");
+        sb.append(language);
+        sb.append("', namespace = '");
+        sb.append(namespace);
+        sb.append("', uri = '");
+        sb.append(uri);
+        sb.append("', qname = '");
+        sb.append(qName);
+        sb.append("', localname = '");
+        sb.append(localName);
+        sb.append("', text = '");
+        sb.append(text);
+        sb.append("' }");
         return sb.toString();
     }
 
