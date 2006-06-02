@@ -33,7 +33,6 @@
  */
 package uk.org.catnip.eddie.parser;
 
-import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.Entry;
@@ -59,15 +58,12 @@ public class FeedSAXParser extends BaseSAXParser {
     private TextInput textinput;
     protected Feed feed = new Feed();
     protected Entry current_entry;
-    protected boolean in_contributor = false;
-    protected boolean in_author = false;
     protected boolean in_feed = false;
     protected boolean in_textinput = false;
     protected boolean in_image = false;
     protected boolean in_source = false;
 
     public void endElement_author() throws SAXException {
-        in_author = false;
         String content = pop("author");
         
         sync_author(content, "author");
@@ -109,7 +105,6 @@ public class FeedSAXParser extends BaseSAXParser {
     }
 
     public void endElement_contributor() throws SAXException {
-        in_author = false;
         sync_author(pop("contributor"), "contributor");
         getCurrentContext().addContributor(author);
         author = null;
@@ -158,10 +153,8 @@ public class FeedSAXParser extends BaseSAXParser {
     
     public void endElement_email() throws SAXException {
         String value = pop("email");
-        if (in_author) {
+        if (author != null) {
             author.setEmail(value);
-        } else if (in_contributor) {
-            save_contributor("email", value);
         }
     }
 
@@ -327,17 +320,14 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void endElement_name() throws SAXException {
         String content = pop("name");
-        if (in_author) {
+        if (author != null) {
             author.setName(content);
-        } else if (in_contributor) {
-            save_contributor("name", content);
         } else if (textinput != null) {
             textinput.setName(content);
         }
 
     }
     public void endElement_publisher() throws SAXException {
-        in_author = false;
         sync_author(pop("publisher"), "publisher");
         getCurrentContext().setPublisher(author);
         author = null;
@@ -399,10 +389,8 @@ public class FeedSAXParser extends BaseSAXParser {
         State state = getCurrentState();
         String content = pop("url");
         content = state.resolveUri(content);
-        if (in_author) {
+        if (author != null) {
             author.setHref(content);
-        } else if (in_contributor) {
-            save_contributor("url", content);
         } else if (in_image) {
             image.setUrl(content);
         }
@@ -418,13 +406,8 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_width() throws SAXException {
         image.setWidth(pop("width"));
     }
-    
-    public void save_contributor(String key, String value) {
-        log.debug("save_contributors: not implemented");
-    }
-    
+        
     public void startElement_author(State state) throws SAXException {
-        in_author = true;
         state.setExpectingText(true);
         author = new Author();
         push(state);
@@ -457,7 +440,6 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
     public void startElement_contributor(State state) throws SAXException {
-        in_author = true;
         state.setExpectingText(true);
         author = new Author();
         push(state);
@@ -623,7 +605,6 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
     public void startElement_publisher(State state) throws SAXException {
-        in_author = true;
         state.setExpectingText(true);
         author = new Author();
         push(state);
