@@ -34,7 +34,6 @@
 package uk.org.catnip.eddie.parser;
 
 import org.xml.sax.ext.DefaultHandler2;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
@@ -49,7 +48,7 @@ import uk.org.catnip.eddie.parser.Entities;
  * @author David Pashley <david@davidpashley.com>
  *
  */
-public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
+public class BaseSAXParser extends DefaultHandler2 {
     static Logger log = Logger.getLogger(BaseSAXParser.class);
 
     /**
@@ -77,13 +76,27 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
     
     /**
      * Get the current state
+     * It returns a reference to the top item on the stack
+     * If the stack is empty (start of the document) we create a new 
+     * State object and set the base and language values so they are inherited
+     * throughout the document 
      * @return the current state
      */
     protected State getCurrentState() {
         if (!stack.empty()){
             return (State)stack.peek();
         } 
-        return new State();
+        State state = new State();
+
+        if (contentLocation != null){  
+            state.setBase(contentLocation);
+        } else {
+            state.setBase(filename);  
+        }
+        if(contentLanguage != null) {
+            state.setLanguage(contentLanguage);
+        }
+        return state;
     }
 
     
@@ -94,22 +107,9 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
      * @param state State object to add to stack
      */
     protected void push(State state) {
-        if (stack.isEmpty()) {
-            String newbase;
-            if (contentLocation != null){  
-                newbase = contentLocation;
-            } else {
-                newbase = filename;  
-            }
-            if (state.getBase() == null) {
-                state.setBase(newbase);
-            } else if (state.isBaseRelative()) {
-                state.resolveBaseWith(newbase);
-            }
-            
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("pushing "+ state);
+ 
+        if (log.isDebugEnabled()) {
+            log.debug("pushing "+ state);
         }
         stack.push(state);     
     }
@@ -140,9 +140,7 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
             Attributes atts) throws SAXException {
         
         State state = new State(uri, localName, qName, atts, getCurrentState());
-        if(state.getLanguage() == null && contentLanguage != null) {
-            state.setLanguage(contentLanguage);
-        }
+
         log.trace("startElement:" + localName + " (" + state.getElement() + ")");
 
         if (in_content > 0 && "escaped".equals(state.getMode())) {
@@ -219,8 +217,8 @@ public class BaseSAXParser extends DefaultHandler2 implements ErrorHandler {
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
-        if (log.isTraceEnabled()) {
-            log.trace("popping " + state);
+        if (log.isDebugEnabled()) {
+            log.debug("popping " + state);
         }
         String output = state.getText(); 
        
