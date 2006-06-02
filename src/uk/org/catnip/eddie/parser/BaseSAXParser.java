@@ -140,8 +140,10 @@ public class BaseSAXParser extends DefaultHandler2 {
         
         State state = new State(uri, localName, qName, atts, getCurrentState());
 
-        log.trace("startElement:" + localName + " (" + state.getElement() + ")");
-
+        if (log.isTraceEnabled()) {
+            log.trace("startElement:" + localName + " (" + state.getElement() + ")");
+        }
+        
         if (in_content > 0 && "escaped".equals(state.getMode())) {
             state.setMode("xml");
         }
@@ -183,7 +185,9 @@ public class BaseSAXParser extends DefaultHandler2 {
         
         State state = new State(uri, localName, qName);
         State prev = getCurrentState();
-        log.trace("end_element: " + state);
+        if(log.isTraceEnabled()){
+            log.trace("end_element: " + state);
+        }
         
         if (in_content > 0 && "escaped".equals(prev.getMode()) && prev.content) {
             prev.setMode("xml");
