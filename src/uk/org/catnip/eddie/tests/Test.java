@@ -293,7 +293,7 @@ public class Test {
         }
         feed_dict.__setitem__("tags",category_list);
         
-        log.debug(feed_dict);
+        //log.debug(feed_dict);
         
         return feed_dict;
         
@@ -405,7 +405,7 @@ public class Test {
             entry_dict.__setitem__("guidislink", new PyInteger(0));
         }
         
-        log.debug(entry_dict);
+        //log.debug(entry_dict);
         
         return entry_dict;
     }
