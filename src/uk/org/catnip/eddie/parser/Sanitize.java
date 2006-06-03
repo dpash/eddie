@@ -222,14 +222,14 @@ public class Sanitize {
         xr.parse(new InputSource(r));
         ret = handler.getResult();
         } catch (SAXException e) {
-            log.debug(e);
+            log.debug("error", e);
         } catch (Exception e) {
-            log.error(e);
+            log.error("error", e);
         }
         
        
-        log.debug("Cleaned: '"+data+"'");
-        log.debug("     to: '"+ret+"'");
+        //log.debug("Cleaned: '"+data+"'");
+        //log.debug("     to: '"+ret+"'");
         return ret;
     }
     
