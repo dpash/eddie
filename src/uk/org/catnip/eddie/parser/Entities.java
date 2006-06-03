@@ -35,10 +35,11 @@ package uk.org.catnip.eddie.parser;
 
 import java.util.Map;
 import java.util.HashMap;
+import org.apache.log4j.Logger;
 
 public class Entities {
     static private Map<String, String> entity_map = createEntities();
-    
+    private static Logger log = Logger.getLogger(Entities.class);
     private static Map<String, String> createEntities() {
         Map<String, String> entities = new HashMap<String, String>();
         entities.put("amp", "");
@@ -301,10 +302,36 @@ public class Entities {
     }
     
     static public String resolveEntity(String entity) {
+        if(log.isTraceEnabled()) {
+            log.trace("resolving '"+entity+"'");
+        }
         if (entity_map.containsKey(entity)) {
             return (String)entity_map.get(entity);
         } else {
             return "&"+entity+";";
         }
+    }
+    static public String decodeEntities(String str) {
+        StringBuilder sb = new StringBuilder();
+        int len = str.length();
+        for (int index = 0; index < len; ++index) {
+            char character = str.charAt(index);
+            if ('&' == character) {
+                character = str.charAt(++index);
+                if ('#' == character) {
+                    StringBuilder value = new StringBuilder();
+                    while (';' != (character = str.charAt(++index))) {
+                        value.append(character);
+                    }
+                    sb.append(Character.toChars(Integer.parseInt(value.toString())));
+                } else {
+                    sb.append('&');
+                    sb.append(character);
+                }
+            } else {
+                sb.append(character);
+            }
+        }
+        return sb.toString();
     }
 }
