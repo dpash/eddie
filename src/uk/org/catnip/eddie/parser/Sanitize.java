@@ -119,7 +119,7 @@ public class Sanitize {
                 String attribute = atts.getLocalName(i);
                 String value = atts.getValue(i);
                 if (url_attributes.contains(attribute)) {
-                    value = state.resolveUri(value);
+                    value = state.resolveUri(Entities.decodeEntities(value));
                 }
                 sb.append(" ");
                 sb.append(attribute);
