@@ -64,7 +64,7 @@ public class BaseSAXParser extends DefaultHandler2 {
 
     protected int in_content = 0;
     private Stack<State> stack = new Stack<State>();
-
+    private State current_state;
     public void setFilename(final String file) {
         this.filename = file;
     }
@@ -83,20 +83,25 @@ public class BaseSAXParser extends DefaultHandler2 {
      * @return the current state
      */
     protected State getCurrentState() {
+        if (current_state != null) { 
+            return current_state;
+        }
+        
         if (!stack.empty()){
-            return (State)stack.peek();
+            current_state = (State)stack.peek();
+            return current_state;
         } 
-        State state = new State();
+        State current_state = new State();
 
         if (contentLocation != null){  
-            state.setBase(contentLocation);
+            current_state.setBase(contentLocation);
         } else {
-            state.setBase(filename);  
+            current_state.setBase(filename);  
         }
         if(contentLanguage != null) {
-            state.setLanguage(contentLanguage);
+            current_state.setLanguage(contentLanguage);
         }
-        return state;
+        return current_state;
     }
 
     /**
@@ -110,6 +115,7 @@ public class BaseSAXParser extends DefaultHandler2 {
         if (log.isDebugEnabled()) {
             log.debug("pushing "+ state);
         }
+        current_state = state;
         stack.push(state);     
     }
 
@@ -220,6 +226,7 @@ public class BaseSAXParser extends DefaultHandler2 {
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
+        current_state = null;
         if (log.isDebugEnabled()) {
             log.debug("popping " + state);
         }
@@ -270,7 +277,9 @@ public class BaseSAXParser extends DefaultHandler2 {
                 if (data.equals("<")) { data = "&lt;"; }
             }
         }
-        log.trace("characters: " + data);
+        if(log.isTraceEnabled()) {
+            log.trace("characters: " + data);
+        }
         getCurrentState().addText(data);
     }
 
