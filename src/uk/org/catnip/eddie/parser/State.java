@@ -287,8 +287,7 @@ public class State {
         if (uri == null) {
             return uri;
         }
-        uri = uri.replaceAll("&#038;", "&");
-        uri = uri.replaceAll(" ", "%20");
+        uri = uri.trim().replaceAll("&#038;", "&").replaceAll(" ", "%20");
         try {
         	return base.resolve(uri).toString();
         } catch (IllegalArgumentException e) {
