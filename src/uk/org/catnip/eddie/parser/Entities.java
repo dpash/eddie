@@ -45,6 +45,7 @@ public class Entities {
         entities.put("gt", "");
         entities.put("lt", "");
         entities.put("apos", "");
+        entities.put("quot", "");
         entities.put("160", "\u00a0");
         entities.put("732", "\u02dc");
         entities.put("8216", "\u2018");
