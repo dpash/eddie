@@ -112,8 +112,8 @@ public class BaseSAXParser extends DefaultHandler2 {
      */
     protected void push(final State state) {
  
-        if (log.isDebugEnabled()) {
-            log.debug("pushing "+ state);
+        if (log.isTraceEnabled()) {
+            log.trace("pushing "+ state);
         }
         current_state = state;
         stack.push(state);     
@@ -227,8 +227,8 @@ public class BaseSAXParser extends DefaultHandler2 {
         if (!getCurrentState().getElement().equals(element)) { return "";}
         State state = (State)stack.pop();
         current_state = null;
-        if (log.isDebugEnabled()) {
-            log.debug("popping " + state);
+        if (log.isTraceEnabled()) {
+            log.trace("popping " + state);
         }
         String output = state.getText(); 
        
@@ -277,6 +277,7 @@ public class BaseSAXParser extends DefaultHandler2 {
                 if (data.equals("<")) { data = "&lt;"; }
             }
         }
+
         if(log.isTraceEnabled()) {
             log.trace("characters: " + data);
         }
