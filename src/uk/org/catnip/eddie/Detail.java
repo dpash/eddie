@@ -81,10 +81,35 @@ public class Detail {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("type: '" + this.type+ "', ");
-        sb.append("language: '" + this.language + "', ");
-        sb.append("src: '" + this.src + "', ");
-        sb.append("value: '" + this.value +"'");
+        if (type != null){
+            sb.append("type: '");
+            sb.append(this.type);
+            sb.append("', ");
+        }
+        if (language != null){
+            sb.append("language: '");
+            sb.append(this.language);
+            sb.append("', ");
+        }
+        if (src != null){
+            sb.append("src: '");
+            sb.append(this.src);
+            sb.append("', ");
+        }
+        if (base != null){
+            sb.append("base: '");
+            sb.append(this.base);
+            sb.append("', ");
+        }
+        if (value != null){
+            sb.append("value: '");
+            if (value.length() > 100) {
+                sb.append(this.value.substring(0,100));
+            } else {
+                sb.append(this.value);
+            }
+            sb.append("'");
+        }
         sb.append("}");
         return sb.toString();
     }

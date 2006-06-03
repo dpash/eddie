@@ -54,33 +54,66 @@ public class Entry extends FeedContext {
 
     public String toString() {
         StringBuilder ret = new StringBuilder();
-        ret.append(property_map.toString());
+        ret.append("{\n");
+        Iterator it = property_map.keySet().iterator();
+        while (it.hasNext()){
+            String key = (String)it.next();
+            String value = property_map.get(key);
+            ret.append("\t");
+            ret.append(key);
+            ret.append(" = '");
+            if (value.length() > 100) {
+                ret.append(value.substring(0,100));
+            } else {
+                ret.append(value);
+            }
+            ret.append("',\n");
+        }
+        // ret.append(property_map.toString());
+
         if (!content.isEmpty()) {
-        ret.append("content =" + content + ", ");
+            ret.append("\tcontent =");
+            ret.append(content);
+            ret.append(",\n");
         }
         if (this.getTitle() != null) {
-        ret.append("title_detail = '" + this.getTitle() + "', ");
+            ret.append("\ttitle_detail = '");
+            ret.append(this.getTitle());
+            ret.append("',\n");
         }
         if (!contributors.isEmpty()) {
-        ret.append("contributors = " + contributors + ", ");
+            ret.append("\tcontributors = ");
+            ret.append(contributors);
+            ret.append(",\n");
         }
-        if (!links.isEmpty()){
-        ret.append("links = " + links);
+        if (!links.isEmpty()) {
+            ret.append("\tlinks = ");
+            ret.append(links);
+            ret.append("',\n");
         }
-        if (!categories.isEmpty()){
-            ret.append("categories = " + categories);
-            }
-        if (getCreated() != null){
-            ret.append("created = " + getCreated());
-            }
-        if (getIssued() != null){
-            ret.append("issued = " + getIssued());
-            }
-        if (getModified() != null){
-            ret.append("modifed = " + getModified());
-            }
+        if (!categories.isEmpty()) {
+            ret.append("\tcategories = ");
+            ret.append(categories);
+            ret.append("',\n");
+        }
+        if (getCreated() != null) {
+            ret.append("\tcreated = '");
+            ret.append(getCreated());
+            ret.append("'\n");
+        }
+        if (getIssued() != null) {
+            ret.append("\tissued = '");
+            ret.append(getIssued());
+            ret.append("'\n");
+        }
+        if (getModified() != null) {
+            ret.append("\tmodifed = '");
+            ret.append(getModified());
+            ret.append("'\n");
+        }
+        ret.append("}");
         return ret.toString();
-     }
+    }
     
     public void addContent(Detail c) {
         content.add(c);
