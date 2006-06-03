@@ -287,8 +287,16 @@ public class State {
         if (uri == null) {
             return uri;
         }
-
-        return base.resolve(uri).toString();
+        uri = uri.replaceAll("&#038;", "&");
+        uri = uri.replaceAll(" ", "%20");
+        try {
+        	return base.resolve(uri).toString();
+        } catch (IllegalArgumentException e) {
+            if (log.isInfoEnabled()) {
+            log.info("malformed url: " + uri);
+            }
+            return uri;
+        }
     }
     public boolean isBaseRelative() {
         if (this.base == null) { return false; }
