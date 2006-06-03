@@ -40,6 +40,7 @@ import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
 import uk.org.catnip.eddie.Feed;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  * Main class for parsing feeds. To parse a file you need to create a new 
@@ -53,7 +54,7 @@ import java.util.Map;
  * @author david
  */
 public class Parser {
-
+    private static Logger log = Logger.getLogger(Sanitize.class);
     private Map headers;
     
     
@@ -99,11 +100,12 @@ public class Parser {
 			xr.parse(new InputSource(is));
             ret = handler.getFeed();
 		} catch (SAXException e) {
-			throw e;
+			log.info("SAXException", e);
+            throw e;
 		} catch (java.io.FileNotFoundException e) {
-			System.out.print(e);
+			log.info("FileNotFoundException", e);
 		} catch (java.io.IOException e) {
-			System.out.print(e);
+			log.info("IOException", e);
 		}
         return ret;
 	}
