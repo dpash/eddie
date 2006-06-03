@@ -2,7 +2,7 @@
 #log4j.rootCategory=WARN, console, file
 #log4j.rootCategory=WARN, syslog
 #log4j.rootCategory=DEBUG, console
-log4j.rootCategory=DEBUG, console
+log4j.rootCategory=WARN, console
 
 # Sets up a console (standard out) appender.
 log4j.appender.console.layout=org.apache.log4j.PatternLayout

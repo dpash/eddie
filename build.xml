@@ -32,8 +32,33 @@
       </javac>
    </target>
    <target name='Main' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.Main' failonerror='true'>
-         <arg value='tests'/>
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='cache' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='cache'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='base' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/base'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='rss' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/rss'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='profile' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <jvmarg value='-Xrunjmp:nomonitors,filter=uk.org.catnip'/>
+         <arg value='test/'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
