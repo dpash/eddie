@@ -38,75 +38,92 @@ import java.io.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
-import uk.org.catnip.eddie.Feed;
+import uk.org.catnip.eddie.FeedData;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- * Main class for parsing feeds. To parse a file you need to create a new 
- * parser object, optionally let it know any HTTP headers and than ask it to 
- * parse the file. You will receive a Feed object in return.
+ * Main class for parsing feeds. To parse a file you need to create a new parser
+ * object, optionally let it know any HTTP headers and than ask it to parse the
+ * file. You will receive a Feed object in return.
+ * 
  * <pre>
  * Parser parser = new Parser();
  * parser.setHeaders(headers);
  * Feed feed = parser.parse(filename);
  * </pre>
+ * 
  * @author david
  */
 public class Parser {
-    private static Logger log = Logger.getLogger(Sanitize.class);
-    private Map headers;
-    
-    
-    /**
-     * Inform the parser of any external HTTP headers. The parser currently understands
-     * Content-Location and Content-Language which are used to set the default base 
-     * and language values.
-     * @param headers set of HTTP headers
-     */
-    public void setHeaders(Map headers) {
-        this.headers = headers;
-    }
+	private static Logger log = Logger.getLogger(Sanitize.class);
+
+	private Map headers;
 
 	/**
-	 * @param filename filename you wish to parse
+	 * Inform the parser of any external HTTP headers. The parser currently
+	 * understands Content-Location and Content-Language which are used to set
+	 * the default base and language values.
+	 * 
+	 * @param headers
+	 *            set of HTTP headers
+	 */
+	public void setHeaders(Map headers) {
+		this.headers = headers;
+	}
+
+	/**
+	 * @param filename
+	 *            filename you wish to parse
 	 * @return returns a Feed object representing the feed
 	 * @throws SAXException
 	 */
-	public Feed parse(String filename) throws SAXException{
-        Feed ret = new Feed();
+	public FeedData parse(String filename) throws SAXException {
+		try {
+			return parse(new FileInputStream(filename));
+		} catch (java.io.FileNotFoundException e) {
+			log.info("FileNotFoundException", e);
+		}
+		return new FeedData();
+	}
+
+	public FeedData parse(byte[] data) {
+		return parse(new ByteArrayInputStream(data));
+	}
+
+	public FeedData parse(InputStream istream) {
+		return parse(new InputStreamReader(istream));
+	}
+	
+	public FeedData parse(Reader in)  {
+		FeedData ret = new FeedData();
 		try {
 			SAXParser xr = new SAXParser();
 			FeedSAXParser handler = new FeedSAXParser();
 			xr.setContentHandler(handler);
 			xr.setErrorHandler(handler);
-            xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-			xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-			xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-            
-            if (headers.containsKey("Content-Location")){
-                handler.setContentLocation((String)headers.get("Content-Location"));
-            }
-            if (headers.containsKey("Content-Language")){
-                handler.setContentLanguage((String)headers.get("Content-Language"));
-            }
-			handler.setFilename("http://127.0.0.1:8097/"+filename);
-			// Parse each file provided on the
-			// command line.
-			InputStream is = new FileInputStream(filename);
-             //BufferedReader in
-             //  = new BufferedReader(new InputStreamReader(is));
-			//FileReader r = new FileReader(filename);
-			xr.parse(new InputSource(is));
-            ret = handler.getFeed();
+			xr.setProperty("http://xml.org/sax/properties/lexical-handler",	handler);
+			xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error",true);
+			xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",	false);
+
+			if (headers != null) {
+				if (headers.containsKey("Content-Location")) {
+					handler.setContentLocation((String) headers
+							.get("Content-Location"));
+				}
+				if (headers.containsKey("Content-Language")) {
+					handler.setContentLanguage((String) headers
+							.get("Content-Language"));
+				}
+			}
+
+			xr.parse(new InputSource(in));
+			ret = handler.getFeed();
 		} catch (SAXException e) {
-			log.info("SAXException", e);
-            throw e;
-		} catch (java.io.FileNotFoundException e) {
-			log.info("FileNotFoundException", e);
+			log.info("SAXException: failed to parse", e);
 		} catch (java.io.IOException e) {
 			log.info("IOException", e);
 		}
-        return ret;
+		return ret;
 	}
 }
