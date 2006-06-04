@@ -102,14 +102,18 @@ public class Date extends Detail {
         d = d.replaceAll(" ([ACEMP])T$", " $1ST"); // Correct Disney times
         for (int i = 0; i < date_formats.length; i++) {
            try {
+        	   if (log.isTraceEnabled()) {
               log.debug("trying '" + date_formats[i] + "'" );
+        	   }
               formatter.applyPattern(date_formats[i]);
               formatter.parse(d);
               date_parsed = formatter.getCalendar();
               date_parsed.setTimeZone(TimeZone.getTimeZone("GMT"));
               break;
            } catch(Exception e) {
+        	   if (log.isTraceEnabled()) {
               log.debug("parsing of date failed");
+        	   }
               // Oh well. We tried
            }
         }
