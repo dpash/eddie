@@ -48,6 +48,15 @@ import uk.org.catnip.eddie.TextInput;
 import uk.org.catnip.eddie.Enclosure;
 import uk.org.catnip.eddie.Source;
 
+/**
+ * TODO: Add support for &lthtml&gtl Elements and if we find one 
+ * and we aren't in content, then throw an exception and get parser to 
+ * try again with a basic html parser to get links out, so we can find
+ * any feeds contained in it.
+ *
+ * @author david
+ *
+ */
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
     private Author author;
