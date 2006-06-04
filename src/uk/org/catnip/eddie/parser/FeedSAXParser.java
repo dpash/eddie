@@ -36,7 +36,7 @@ package uk.org.catnip.eddie.parser;
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.Entry;
-import uk.org.catnip.eddie.Feed;
+import uk.org.catnip.eddie.FeedData;
 import uk.org.catnip.eddie.FeedContext;
 import uk.org.catnip.eddie.Generator;
 import uk.org.catnip.eddie.Author;
@@ -56,7 +56,7 @@ public class FeedSAXParser extends BaseSAXParser {
     private Image image;
     private Link link;
     private TextInput textinput;
-    protected Feed feed = new Feed();
+    protected FeedData feed = new FeedData();
     protected Entry current_entry;
     protected boolean in_feed = false;
     protected boolean in_textinput = false;
@@ -92,10 +92,15 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     
     public void endElement_content() throws SAXException {
-        String content = pop("content");
+        State state = getCurrentState();
+    	String content = pop("content");
         in_content--;
-        current_entry.addContent(detail);
-        current_entry.set("description", content);
+        if (current_entry != null) {
+        	current_entry.addContent(detail);
+        	current_entry.set("description", content);
+        } else {
+        	log.warn("Tried to add content outside of an entry"+ state);
+        }
     }
     public void endElement_content_encoded() throws SAXException {
         String content = pop("content_encoded");
@@ -706,7 +711,7 @@ public class FeedSAXParser extends BaseSAXParser {
             log.debug(author);
         }
     }
-    public Feed getFeed() {
+    public FeedData getFeed() {
         feed.error = this.error;
         return feed;
     }
