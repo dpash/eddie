@@ -123,6 +123,8 @@ public class Parser {
 			log.info("SAXException: failed to parse", e);
 		} catch (java.io.IOException e) {
 			log.info("IOException", e);
+		} catch (NullPointerException e) {
+		    log.info("got NullPointerException:", e);
 		}
 		return ret;
 	}
