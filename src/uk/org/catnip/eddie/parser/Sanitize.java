@@ -42,6 +42,7 @@ import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import java.io.StringReader;
 public class Sanitize {
     static Logger log = Logger.getLogger(Sanitize.class);
@@ -76,23 +77,28 @@ public class Sanitize {
     static List url_attributes = Arrays.asList(url_attributes_array);
     static List unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
     static List elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
-
+    
     /**
      * Class to parse html and remove unsafe elements and attributes
      * @author David Pashley <david@davidpashley.com>
      *
      */
     class HTMLSAXParser extends DefaultHandler2 {
-        private boolean error = false;
+        private int errors = 0;
         private boolean started_document = false;
         private State state;
         private boolean unsafe_content = false;
+        private static final int MAX_ERRORS=2000;
         private StringBuilder sb = new StringBuilder();
+        protected Locator locator;
+        public void setDocumentLocator(final Locator locator) {
+            this.locator = locator;
+        }
         public void characters(char[] ch, int start, int length) {
             if (unsafe_content) { return;}
             String data =  new String(ch, start,length);
             log.trace("characters: '"+ data+"'");
-            if (error && data.contains(">")) {
+            if (errors > 0 && data.contains(">")) {
                 data = data.substring(data.indexOf(">")+1);
             }
             
@@ -159,14 +165,20 @@ public class Sanitize {
         }
 
         public void error(SAXParseException exception) throws SAXException {
-            error = true;
+            //errors++;
             log.debug("error: " + exception.getMessage());
-            // throw new SAXException(exception);
+            if (errors > MAX_ERRORS) {
+            throw new SAXParseException("too many errors", locator, exception);
+            }
         }
 
         public void fatalError(SAXParseException exception) throws SAXException {
-            error = true;
+            errors++;
             log.debug("fatalError: " + exception.getMessage());
+            if (errors > MAX_ERRORS) {
+            	throw new SAXParseException("too many errors", locator, exception);
+               
+                }
             // throw new SAXException(exception);
         }
         public void setState(State state) {
@@ -221,6 +233,8 @@ public class Sanitize {
         handler.setState(state);
         xr.parse(new InputSource(r));
         ret = handler.getResult();
+        } catch (SAXParseException e) {
+            log.info("error", e);
         } catch (SAXException e) {
             log.debug("error", e);
         } catch (Exception e) {
