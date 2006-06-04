@@ -47,7 +47,7 @@ import uk.org.catnip.eddie.Date;
 import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.Enclosure;
 import uk.org.catnip.eddie.Entry;
-import uk.org.catnip.eddie.Feed;
+import uk.org.catnip.eddie.FeedData;
 import uk.org.catnip.eddie.Generator;
 import uk.org.catnip.eddie.Image;
 import uk.org.catnip.eddie.Link;
@@ -159,7 +159,7 @@ public class Test {
             }
             Parser parser = new Parser();
             parser.setHeaders(headers);
-            Feed feed = parser.parse(filename);
+            FeedData feed = parser.parse(filename);
             if (log.isDebugEnabled()) {
                 log.debug(feed);
             }
@@ -187,7 +187,7 @@ public class Test {
 
     }
 
-    public void runPython(Feed feed, String test) throws Exception {
+    public void runPython(FeedData feed, String test) throws Exception {
 
         if (feed.error) {
             interp.set("bozo", new PyInteger(1));
@@ -213,7 +213,7 @@ public class Test {
         }
 
     }
-    public PyDictionary convertFeed(Feed feed) {
+    public PyDictionary convertFeed(FeedData feed) {
         PyDictionary feed_dict = new PyDictionary();
         Iterator it = feed.keys();
         while (it.hasNext()) {

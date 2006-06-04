@@ -39,7 +39,7 @@ import java.lang.StringBuilder;
 import java.util.Iterator;
 import uk.org.catnip.eddie.Detail;
 
-public class Feed extends FeedContext {
+public class FeedData extends FeedContext {
     public boolean error = false;
     private Detail info;
     private Detail subtitle;
