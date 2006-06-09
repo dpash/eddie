@@ -138,6 +138,7 @@ public class Test {
             Pattern header_pattern = Pattern.compile("^Header:\\s+([^:]*):\\s+(.*)$");
             
             Map<String, String> headers = new Hashtable<String, String>();
+            headers.put("Content-Location", "http://127.0.0.1:8097/"+filename);
             while ((line = in.readLine()) != null) {
                 Matcher desc_matcher = desc_pattern.matcher(line);
                 Matcher test_matcher = test_pattern.matcher(line);
