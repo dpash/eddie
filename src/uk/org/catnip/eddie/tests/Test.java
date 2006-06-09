@@ -37,13 +37,15 @@ import java.io.*;
 import java.util.regex.*;
 import java.util.Iterator;
 import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Hashtable;
 import org.apache.log4j.Logger;
 
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Category;
-import uk.org.catnip.eddie.Date;
 import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.Enclosure;
 import uk.org.catnip.eddie.Entry;
@@ -53,6 +55,7 @@ import uk.org.catnip.eddie.Image;
 import uk.org.catnip.eddie.Link;
 import uk.org.catnip.eddie.Source;
 import uk.org.catnip.eddie.TextInput;
+
 import uk.org.catnip.eddie.parser.Parser;
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -553,8 +556,10 @@ public class Test {
     public PyTuple convertDate(Date date) {
         PyTuple date_tuple;;
     
-    if (date.getDate() != null) {
-        Calendar cal = date.getDate();
+    if (date != null) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         PyObject [] fields = {
                 new PyInteger(cal.get(Calendar.YEAR)),
                 new PyInteger(cal.get(Calendar.MONTH)+1),
@@ -562,7 +567,7 @@ public class Test {
                 new PyInteger(cal.get(Calendar.HOUR_OF_DAY)),
                 new PyInteger(cal.get(Calendar.MINUTE)),
                 new PyInteger(cal.get(Calendar.SECOND)),
-                new PyInteger(Date.normaliseDayOfWeek(cal.get(Calendar.DAY_OF_WEEK))),
+                new PyInteger(normaliseDayOfWeek(cal.get(Calendar.DAY_OF_WEEK))),
                 new PyInteger(cal.get(Calendar.DAY_OF_YEAR)),
                 new PyInteger(0)
         };
@@ -667,5 +672,15 @@ public class Test {
         }
 
         return enclosure_dict;
+    }
+    static public int normaliseDayOfWeek(int day) {
+        if (day == Calendar.MONDAY) { return 0; }
+        if (day == Calendar.TUESDAY) { return 1; }
+        if (day == Calendar.WEDNESDAY) { return 2; }
+        if (day == Calendar.THURSDAY) { return 3; }
+        if (day == Calendar.FRIDAY) { return 4; }
+        if (day == Calendar.SATURDAY) { return 5; }
+        if (day == Calendar.SUNDAY) { return 6; }
+        return 0;
     }
 }

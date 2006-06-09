@@ -41,7 +41,6 @@ import uk.org.catnip.eddie.FeedContext;
 import uk.org.catnip.eddie.Generator;
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Link;
-import uk.org.catnip.eddie.Date;
 import uk.org.catnip.eddie.Category;
 import uk.org.catnip.eddie.Image;
 import uk.org.catnip.eddie.TextInput;
@@ -134,7 +133,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_created() throws SAXException {
         String content = pop("created");
         getCurrentContext().set("created", content);
-        getCurrentContext().setCreated(new Date(content,detail));
+        getCurrentContext().setCreated(DateParser.parse(content));
     }
     
     public void endElement_description() throws SAXException {
@@ -247,7 +246,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_issued() throws SAXException {
         String content = pop("issued");
         getCurrentContext().set("issued", content);
-        getCurrentContext().setIssued(new Date(content,detail));
+        getCurrentContext().setIssued(DateParser.parse(content));
     }
     public void endElement_itunes_block() throws SAXException {
         String content = pop("itunes_block");
@@ -330,7 +329,7 @@ public class FeedSAXParser extends BaseSAXParser {
         String content = pop("modified");
         getCurrentContext().set("modified", content);
         getCurrentContext().set("date", content);
-        getCurrentContext().setModified(new Date(content,detail));
+        getCurrentContext().setModified(DateParser.parse(content));
     }
     public void endElement_name() throws SAXException {
         String content = pop("name");
