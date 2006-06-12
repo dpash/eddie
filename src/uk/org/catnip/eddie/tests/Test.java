@@ -217,7 +217,7 @@ public class Test {
         }
 
     }
-    public PyDictionary convertFeed(FeedData feed) {
+    public static PyDictionary convertFeed(FeedData feed) {
         PyDictionary feed_dict = new PyDictionary();
         Iterator it = feed.keys();
         while (it.hasNext()) {
@@ -304,8 +304,8 @@ public class Test {
         
         
     }
-    public PyDictionary convertAuthor(Author author) {
-        PyDictionary author_detail = new EddieDict();
+    public static PyDictionary convertAuthor(Author author) {
+        PyDictionary author_detail = new PyDictionary();
         author_detail.__setitem__("name", new PyString(author.getName()));
         author_detail.__setitem__("email", new PyString(author.getEmail()));
         author_detail.__setitem__("url", new PyString(author.getHref()));
@@ -315,7 +315,7 @@ public class Test {
 
     
     
-    public PyDictionary convertEntry(Entry entry) {
+    public static PyDictionary convertEntry(Entry entry) {
         PyDictionary entry_dict = new PyDictionary();
         Iterator entry_it = entry.keys();
         while (entry_it.hasNext()) {
@@ -414,7 +414,7 @@ public class Test {
         return entry_dict;
     }
 
-    public PyDictionary convertSource(Source source) {
+    public static PyDictionary convertSource(Source source) {
         PyDictionary source_dict = new PyDictionary();
         Iterator source_it = source.keys();
         while (source_it.hasNext()) {
@@ -490,7 +490,7 @@ public class Test {
         return source_dict;
     }
     
-    public PyDictionary convertDetail(Detail detail) {
+    public static PyDictionary convertDetail(Detail detail) {
 
         PyDictionary detail_dict = new PyDictionary();
         if (detail != null) {
@@ -519,7 +519,7 @@ public class Test {
         }
         return detail_dict;
     }
-    public PyDictionary convertLink(Link link) {
+    public static PyDictionary convertLink(Link link) {
         PyDictionary link_dict =  convertDetail(link);
         if (link.getHref() != null) {
         link_dict.__setitem__("href", new PyString(link.getHref()));
@@ -538,7 +538,7 @@ public class Test {
             }
         return link_dict;
     }
-    public PyDictionary convertGenerator(Generator generator) {
+    public static PyDictionary convertGenerator(Generator generator) {
         PyDictionary link_dict = convertDetail(generator);
     
     if (generator.getName() != null) {
@@ -553,7 +553,7 @@ public class Test {
     }
         return link_dict;
     }
-    public PyTuple convertDate(Date date) {
+    public static  PyTuple convertDate(Date date) {
         PyTuple date_tuple;;
     
     if (date != null) {
@@ -579,7 +579,7 @@ public class Test {
 
         return date_tuple;
     }
-    public PyDictionary convertCategory(Category category) {
+    public static PyDictionary convertCategory(Category category) {
         PyDictionary tags_dict = new PyDictionary();
 
         if (category.getTerm() != null) {
@@ -595,7 +595,7 @@ public class Test {
         return tags_dict;
 
     }
-    public PyTuple convertCategoryTuple(Category category) {
+    public static PyTuple convertCategoryTuple(Category category) {
         String term = category.getTerm();
         String schedule = category.getSchedule();
         String label = category.getLabel();
@@ -611,7 +611,7 @@ public class Test {
 
     }
     
-    public PyDictionary convertImage(Image image) {
+    public static PyDictionary convertImage(Image image) {
         PyDictionary image_dict = new PyDictionary();
 
         if (image.getTitle() != null) {
@@ -637,7 +637,7 @@ public class Test {
 
         return image_dict;
     }
-    public PyDictionary convertTextInput(TextInput textinput) {
+    public static PyDictionary convertTextInput(TextInput textinput) {
         PyDictionary textinput_dict = new PyDictionary();
 
         if (textinput.getTitle() != null) {
@@ -657,7 +657,7 @@ public class Test {
         return textinput_dict;
     }
     
-    public PyDictionary convertEnclosure(Enclosure enclosure) {
+    public static PyDictionary convertEnclosure(Enclosure enclosure) {
         PyDictionary enclosure_dict = new PyDictionary();
 
         if (enclosure.getUrl() != null) {
