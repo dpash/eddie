@@ -44,7 +44,7 @@ public class Database {
 	
 	public void connect() {
 		try {
-			Class c = Class.forName("org.postgresql.Driver");
+			Class.forName("org.postgresql.Driver");
 			conn = DriverManager.getConnection(database, username, password);
 		} catch (ClassNotFoundException e) {
 			log.info("failed to load driver", e);
