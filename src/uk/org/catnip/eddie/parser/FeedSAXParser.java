@@ -35,6 +35,7 @@ package uk.org.catnip.eddie.parser;
 
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
+import uk.org.catnip.eddie.Cloud;
 import uk.org.catnip.eddie.Entry;
 import uk.org.catnip.eddie.FeedData;
 import uk.org.catnip.eddie.FeedContext;
@@ -452,6 +453,18 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
 
+    public void startElement_cloud(State state) throws SAXException {
+        Cloud cloud = new Cloud();
+        cloud.setDomain(state.getAttr("domain"));
+        cloud.setPort(state.getAttr("port"));
+        cloud.setPath(state.getAttr("path"));
+        cloud.setRegisterProcedure(state.getAttr("registerProcedure"));
+        cloud.setProtocol(state.getAttr("protocol"));
+        feed.setCloud(cloud);
+        push(state);
+
+    }
+    
     public void startElement_content(State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "xml"));
@@ -510,6 +523,9 @@ public class FeedSAXParser extends BaseSAXParser {
             link.setHref(state.resolveUri(state.getAttr("href")));
             current_entry.addLink(link);
             link = null;
+        }
+        if (null != state.getAttr("rdf:about")) {
+            current_entry.set("id", state.getAttr("rdf:about"));
         }
         push(state);
     }
@@ -644,6 +660,16 @@ public class FeedSAXParser extends BaseSAXParser {
         author = new Author();
         push(state);
     }
+    
+    public void startElement_rdf(State state) throws SAXException {
+        if ("http://my.netscape.com/rdf/simple/0.9/"
+                .equals(state.getAttr("xmlns"))) {
+            feed.set("format", "rss090");
+        } else if ("http://purl.org/rss/1.0/".equals(state.getAttr("xmlns"))) {
+            feed.set("format", "rss10");
+        }
+    }
+    
     public void startElement_rss(State state) throws SAXException {
         in_feed = true;
         String version = state.getAttr("version");
@@ -657,8 +683,9 @@ public class FeedSAXParser extends BaseSAXParser {
             }else if (version.equals("0.92")) {
                 feed.set("format", "rss092");  
             }else if (version.equals("0.91")) { 
-                // TODO need to check for netscape doctype
-                feed.set("format", "rss091u");  
+                if (feed.get("format") == null) {
+                    feed.set("format", "rss091u");  
+                }
             }
         } else {
             feed.set("format", "rss");
@@ -742,6 +769,18 @@ public class FeedSAXParser extends BaseSAXParser {
             log.debug(author);
         }
     }
+    
+    public void startDTD(String name, String publicId, String systemId)
+            throws SAXException {
+        log.debug("startDTD( '"+ name + "', '"+ publicId+"', '"+systemId+"')");
+        if ("-//Netscape Communications//DTD RSS 0.91//EN".equals(publicId)) {
+            feed.set("format", "rss091n");
+        }
+        
+    }
+
+
+    
     public FeedData getFeed() {
         feed.error = this.error;
         return feed;
