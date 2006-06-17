@@ -36,26 +36,14 @@ package uk.org.catnip.eddie.tests;
 import java.io.*;
 import java.util.regex.*;
 import java.util.Iterator;
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.GregorianCalendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.Hashtable;
 import org.apache.log4j.Logger;
 
-import uk.org.catnip.eddie.Author;
-import uk.org.catnip.eddie.Category;
-import uk.org.catnip.eddie.Detail;
-import uk.org.catnip.eddie.Enclosure;
 import uk.org.catnip.eddie.Entry;
 import uk.org.catnip.eddie.FeedData;
-import uk.org.catnip.eddie.Generator;
-import uk.org.catnip.eddie.Image;
-import uk.org.catnip.eddie.Link;
-import uk.org.catnip.eddie.Source;
-import uk.org.catnip.eddie.TextInput;
 
+import uk.org.catnip.eddie.parser.DetectEncoding;
 import uk.org.catnip.eddie.parser.Parser;
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
@@ -69,12 +57,9 @@ public class EddieTestBase extends TestCase {
     private PythonInterpreter interp = new PythonInterpreter();
 
     public boolean test(String filename) throws Exception {
-
-		BufferedReader in = new BufferedReader(new FileReader(filename));
+        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), new DetectEncoding().detect(filename, "utf-8")));
 		String line;
-		String description = "";
 		String test = "";
-		Pattern desc_pattern = Pattern.compile("^Description:\\s+(.*)$");
 		Pattern test_pattern = Pattern.compile("^Expect:\\s+(.*)$");
 		Pattern header_pattern = Pattern
 				.compile("^Header:\\s+([^:]*):\\s+(.*)$");
@@ -82,12 +67,9 @@ public class EddieTestBase extends TestCase {
 		Map<String, String> headers = new Hashtable<String, String>();
 		headers.put("Content-Location", "http://127.0.0.1:8097/" + filename);
 		while ((line = in.readLine()) != null) {
-			Matcher desc_matcher = desc_pattern.matcher(line);
 			Matcher test_matcher = test_pattern.matcher(line);
 			Matcher header_matcher = header_pattern.matcher(line);
-			if (desc_matcher.matches()) {
-				description = desc_matcher.group(1);
-			} else if (test_matcher.matches()) {
+			if (test_matcher.matches()) {
 				test = test_matcher.group(1);
 			} else if (header_matcher.matches()) {
 				headers.put(header_matcher.group(1), header_matcher.group(2));
@@ -124,12 +106,7 @@ public class EddieTestBase extends TestCase {
         interp.set("entries", entries_list);
         interp.exec("ret ="+ test);
         PyInteger ret = (PyInteger)interp.get("ret");
-        if (ret.getValue() == 0) { 
-        	return false;
-        } else {
-        	return true;
-        }
-
+        return (ret.getValue() != 0);
     }
     
 }
