@@ -151,8 +151,13 @@ public class FeedSAXParser extends BaseSAXParser {
                     current_entry.addContent(detail);
                 }
             }
-            //getCurrentContext().set("summary", content);
+            
             getCurrentContext().set("tagline", content);
+            if (current_entry == null) {
+                feed.setSubtitle(detail);
+            } else {
+                current_entry.setSummary(detail);
+            }
         }
     }
     
@@ -434,6 +439,17 @@ public class FeedSAXParser extends BaseSAXParser {
     }
     public void startElement_channel(State state) throws SAXException {
         in_feed = true;
+        if (null != state.getAttr("base")) {
+            state.setBase(state.getAttr("base"));
+        }
+        if (null != state.getAttr("href")) {
+            feed.set("link",state.resolveUri(state.getAttr("href")));
+            link = new Link();
+            link.setHref(state.resolveUri(state.getAttr("href")));
+            feed.addLink(link);
+            link = null;
+        }
+
     }
 
     public void startElement_content(State state) throws SAXException {
@@ -488,6 +504,13 @@ public class FeedSAXParser extends BaseSAXParser {
     
     public void startElement_entry(State state) throws SAXException {
         current_entry = new Entry();
+        if (null != state.getAttr("href")) {
+            current_entry.set("link",state.resolveUri(state.getAttr("href")));
+            link = new Link();
+            link.setHref(state.resolveUri(state.getAttr("href")));
+            current_entry.addLink(link);
+            link = null;
+        }
         push(state);
     }
 
