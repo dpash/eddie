@@ -140,7 +140,11 @@ class SQLObject {
 					log.debug(sql.toString() + values);
 					PreparedStatement stmt = Database.getDB().getConn().prepareStatement(sql.toString());
 					for (int index = 0; index < values.size(); ++index) {
-						stmt.setObject(index+1, values.get(index));
+						if (java.util.Date.class.isInstance(values.get(index))) {
+							stmt.setTimestamp(index+1, new java.sql.Timestamp(((java.util.Date)values.get(index)).getTime()));
+						} else {
+							stmt.setObject(index+1, values.get(index));
+						}
 					}
 					
 					int res = stmt.executeUpdate();
