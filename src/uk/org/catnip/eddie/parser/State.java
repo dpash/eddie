@@ -44,7 +44,7 @@ import java.net.URISyntaxException;
 
 public class State {
     private static Map<String,String> element_aliases = createElementAliases();
-
+    private Map<String, String> attributes = null;
     private static Logger log = Logger.getLogger(State.class);
 
     private static Map<String,String> namespace_aliases = createNamespaceAliases();
@@ -192,6 +192,7 @@ public class State {
     public State() {
     }
 
+    
     public State(String uri, String localName, String qName) {
         this.uri = uri;
         this.localName = localName.toLowerCase();
@@ -241,15 +242,28 @@ public class State {
     }
 
     public String getAttr(String key, String default_value) {
-
-        String ret = atts.getValue(key);
-        if (ret == null) {
+        genAttributes();
+        key = key.toLowerCase();
+        String ret;
+        if (attributes.containsKey(key)) {
+            ret = attributes.get(key);
+        } else {
             ret = default_value;
         }
-
+        log.debug("getAttr("+key+") = "+ ret);
         return ret;
     }
 
+    private void genAttributes() {
+        if (attributes != null) { return; }
+        attributes = new HashMap<String, String>();
+        for (int i = 0; i < atts.getLength(); i++) {
+            String key = atts.getQName(i).toLowerCase();
+            String value = atts.getValue(i);
+            attributes.put(key, value);
+        }
+    }
+    
     public String getBase() {
         if (base != null) {
             return base.toString();
@@ -384,7 +398,9 @@ public class State {
         sb.append(localName);
         sb.append("', text = '");
         sb.append(text);
-        sb.append("' }");
+        sb.append("', attributes = [");
+        sb.append(attributes);
+        sb.append("] }");
         return sb.toString();
     }
 
