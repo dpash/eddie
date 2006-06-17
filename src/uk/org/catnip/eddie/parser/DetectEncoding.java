@@ -12,6 +12,13 @@ import java.util.Map;
 import java.util.regex.*;
 import org.apache.log4j.Logger;
 
+/**
+ * Class to detect the encoding of the input
+ * @see http://diveintomark.org/archives/2004/02/13/xml-media-types
+ * @author david
+ *
+ */
+
 public class DetectEncoding {
     static Logger log = Logger.getLogger(DetectEncoding.class);
     class Magic {
