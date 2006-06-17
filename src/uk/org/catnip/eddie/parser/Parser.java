@@ -34,12 +34,19 @@
 package uk.org.catnip.eddie.parser;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.MalformedInputException;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
 import uk.org.catnip.eddie.FeedData;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -56,10 +63,12 @@ import org.apache.log4j.Logger;
  * @author david
  */
 public class Parser {
-	private static Logger log = Logger.getLogger(Sanitize.class);
-
+	private static Logger log = Logger.getLogger(Parser.class);
+	private String encoding;
+    private String defaultEncoding = "utf-8";
 	private Map headers;
-
+    private DetectEncoding de = new DetectEncoding();
+    boolean error  = false;
 	/**
 	 * Inform the parser of any external HTTP headers. The parser currently
 	 * understands Content-Location and Content-Language which are used to set
@@ -70,6 +79,29 @@ public class Parser {
 	 */
 	public void setHeaders(Map headers) {
 		this.headers = headers;
+        if (headers.containsKey("Content-type")) {
+            String contenttype = (String) headers.get("Content-type");
+            Pattern pattern = Pattern.compile("([^;]*)(;\\s*charset\\s*=\\s*[\"']?([^\"']+)[\"']?)?.*?");
+            Matcher matcher = pattern.matcher(contenttype);
+            if (matcher.matches()) {  
+                encoding = matcher.group(3);
+                String type = matcher.group(1);
+                if ("text/atom+xml".equals(type) 
+                        || "text/rss+xml".equals(type)
+                        || "text/xml-external-parsed-entity".equals(type)
+                        ) {
+                    defaultEncoding = "us-ascii";
+                    encoding = "us-ascii";
+                } else if ("text/xml".equals(type) && encoding == null) {
+                    defaultEncoding = "us-ascii";
+                    encoding = "us-ascii";
+                    //if (!contenttype.contains(";")) {
+                    //    error = true;
+                    //}
+                }
+                log.debug("detected '"+encoding+"' from contenttype header ct="+type);
+            } 
+        }
 	}
 
 	/**
@@ -80,23 +112,57 @@ public class Parser {
 	 */
 	public FeedData parse(String filename) throws SAXException {
 		try {
-			return parse(new FileInputStream(filename));
+
+            if (encoding == null) {
+                encoding = de.detect(filename, defaultEncoding);
+            }
+ 
+            
+            //if(true) { throw new RuntimeException(); }
+            FileInputStream is = new FileInputStream(filename);
+            de.stripBOM(is);
+            Charset charset = Charset.forName(de.alias(encoding));
+            CharsetDecoder csd = charset.newDecoder();
+            csd.onMalformedInput(CodingErrorAction.REPORT);
+
+
+            
+			return parse(is, csd );
 		} catch (java.io.FileNotFoundException e) {
 			log.info("FileNotFoundException", e);
-		}
+		} catch (UnsupportedEncodingException e) {
+            log.warn(de.alias(encoding), e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 		return new FeedData();
 	}
 
 	public FeedData parse(byte[] data) {
-		return parse(new ByteArrayInputStream(data));
+        if (encoding == null) {
+            encoding = de.detect(data, defaultEncoding);
+        }
+		try {
+            return parse(new ByteArrayInputStream(data), de.alias(encoding));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return new FeedData();
 	}
 
 	public FeedData parse(InputStream istream) {
 		return parse(new InputStreamReader(istream));
 	}
-	
-	public FeedData parse(Reader in)  {
+    public FeedData parse(InputStream istream, String encoding) throws UnsupportedEncodingException {
+        return parse(new InputStreamReader(istream, encoding));
+    }
+    public FeedData parse(InputStream istream, CharsetDecoder encoding) throws UnsupportedEncodingException {
+        return parse(new InputStreamReader(istream, encoding));
+    }
+	public FeedData parse(InputStreamReader in)  {
+           
 		FeedData ret = new FeedData();
+        
 		try {
 			SAXParser xr = new SAXParser();
 			FeedSAXParser handler = new FeedSAXParser();
@@ -116,16 +182,23 @@ public class Parser {
 							.get("Content-Language"));
 				}
 			}
-
+			
 			xr.parse(new InputSource(in));
 			ret = handler.getFeed();
+            ret.set("encoding", encoding);
+
 		} catch (SAXException e) {
 			log.info("SAXException: failed to parse", e);
-		} catch (java.io.IOException e) {
-			log.info("IOException", e);
+        } catch (MalformedInputException e) {
+            log.info(e);
+            ret.error = true;
+        } catch (java.io.IOException e) {
+            log.info("IOException", e);
+
 		} catch (NullPointerException e) {
 		    log.info("got NullPointerException:", e);
 		}
+
 		return ret;
 	}
 }
