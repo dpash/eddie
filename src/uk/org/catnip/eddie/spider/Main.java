@@ -5,7 +5,7 @@ package uk.org.catnip.eddie.spider;
 
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Logger;
+
 
 /**
  * @author David Pashley <david@davidpashley.com>
