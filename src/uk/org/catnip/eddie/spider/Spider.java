@@ -9,6 +9,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.FeedData;
+import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.parser.Parser;
 import java.util.*;
 import java.io.*;
@@ -49,24 +50,39 @@ public class Spider {
 	db.connect();
 
 	try {
-		//while(true) {
+		while(true) {
 			
 	
-			//List<SQLObject> feeds = Feed.retrieveWhere("next_check <= ?", new Timestamp((new Date()).getTime()));
-			List<SQLObject> feeds = Feed.retrieveWhere("feed_id = ?", "1");
-			Iterator it = feeds.iterator();
-			while (it.hasNext()) {
-				Feed feed = (Feed)it.next();
-				try {
-					fetch_feed(feed);
-				} catch (NullPointerException e){
-					log.warn("what the fuck?", e);
+			List<SQLObject> feeds = Feed.retrieveWhere("next_check <= ?", new Timestamp((new Date()).getTime()));
+			// List<SQLObject> feeds = Feed.retrieveWhere("feed_id = ?", "1");
+				int queue_size = feeds.size();
+				if (queue_size > 0) {
+					log.info("Adding " + queue_size
+							+ " feeds to the work queue");
+
+					Date startdate = new Date();
+					Iterator it = feeds.iterator();
+					while (it.hasNext()) {
+						Feed feed = (Feed) it.next();
+						try {
+							fetch_feed(feed);
+						} catch (NullPointerException e) {
+							log.warn("what the fuck?", e);
+						}
+					}
+					Date enddate = new Date();
+					long elapsed_time = (enddate.getTime() - startdate
+							.getTime()) / 1000;
+					float fetch_rate = (float)queue_size / (float)elapsed_time;
+					log.info("fetched " + queue_size + " feeds in "
+							+ elapsed_time + "seconds at " + fetch_rate + " feeds/second (" + fetch_rate *3600 + " per hour)");
 				}
-			}
-		//	Thread.sleep(next_run_in());
-		//}
-	//} catch (InterruptedException e) {
-//		log.info("Interrupted:", e);
+				long sleeptime = next_run_in();
+				log.info("Sleeping for " + sleeptime / 1000 + " seconds");
+				Thread.sleep(sleeptime);
+		}
+	} catch (InterruptedException e) {
+		log.info("Interrupted:", e);
 	} finally {
 		db.disconnect();
 	}
@@ -80,53 +96,70 @@ public class Spider {
 
 
 public void fetch_feed(Feed feed) {
-	log.info(feed);
+
 		String url = feed.getFeed_url();
 		log.info("starting download of " + url);
 
 		GetMethod method = new GetMethod(url);
-		log.info("feed currently has " + feed.getEntries().size()+" entries");
+		//log.info("feed currently has " + feed.getEntries().size()+" entries");
 		try {
 			if(feed.getLast_checked() != null) {
 				
 				String last_modified = httpDateFormat.format(feed.getLast_checked());
-				log.info("If-Modified-Since: " +last_modified);
+
 				method.setRequestHeader("If-Modified-Since",last_modified);
 			}
 			int statusCode = client.executeMethod(method);
 
-			if (statusCode != HttpStatus.SC_OK) {
+			if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
+				log.debug("Not modified: " + method.getStatusLine());
+			} else if (statusCode != HttpStatus.SC_OK) {
 				log.warn("Method failed: " + method.getStatusLine());
 			} else {
 				String contentType = method.getResponseHeader("content-type").getValue().replaceAll(";.*$", "");
 				
 				if (feed_contenttypes.contains(contentType)) {
 					String charset = method.getResponseCharSet();
-					InputStreamReader reader = 
-						new InputStreamReader(method.getResponseBodyAsStream(), charset);
+					//InputStreamReader reader = 
+					//	new InputStreamReader(method.getResponseBodyAsStream(), charset);
 
 					log.info("fetched feed. Starting parsing");
-
+					byte[] data = method.getResponseBody();
 					Parser parser = new Parser();
 
-					FeedData feeddata = parser.parse(reader);
+					FeedData feeddata = parser.parse(data);
 					Iterator it = feeddata.entries();
 					while (it.hasNext()) {
 						uk.org.catnip.eddie.Entry entrydata = (uk.org.catnip.eddie.Entry)it.next();
-						uk.org.catnip.eddie.spider.Entry entry = Entry.find_or_create("guid = ?", entrydata.get("id"));
-						entry.setGuid(entrydata.get("id"));
-						//Content content = (Content)entrydata.contents().next();
-						//entry.setContent(content.getValue());
+						String guid = entrydata.get("id");
+						if (guid == null) {
+							guid = entrydata.get("link");
+						}
+						uk.org.catnip.eddie.spider.Entry entry = Entry.find_or_create("guid = ?", guid);
+						entry.setGuid(guid);
+						
+						// Add content
+						//StringBuilder sb = new StringBuilder();
+						//
+						//Iterator contents = entrydata.contents();
+				        //while (contents.hasNext()) { 
+				        //    Detail content = ((Detail)contents.next());
+				        //    sb.append(content.getValue());
+				        //}
+						entry.setContent(entrydata.get("description"));
 						if (entrydata.getAuthor() != null) {
 							entry.setAuthor_email(entrydata.getAuthor().getEmail());
 							entry.setAuthor_name(entrydata.getAuthor().getName());
 							entry.setAuthor_url(entrydata.getAuthor().getHref());
 						}
-						//entry.setCreated(entrydata.getCreated());
+						entry.setCreated(entrydata.getCreated());
+						entry.setIssued(entrydata.getIssued());
+						entry.setModified(entrydata.getModified());
 						entry.setTitle(entrydata.get("title"));
+						entry.setLink(entrydata.get("link"));
 						entry.setFeed(feed);
-						log.info(entrydata);
-						log.info(entry);
+						log.debug(entrydata);
+						log.debug(entry);
 						entry.update();
 					}
 					//log.info(feeddata);
