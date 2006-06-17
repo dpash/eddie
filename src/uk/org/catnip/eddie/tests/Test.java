@@ -46,6 +46,7 @@ import org.apache.log4j.Logger;
 
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Category;
+import uk.org.catnip.eddie.Cloud;
 import uk.org.catnip.eddie.Detail;
 import uk.org.catnip.eddie.Enclosure;
 import uk.org.catnip.eddie.Entry;
@@ -271,6 +272,9 @@ public class Test {
         }
         if (feed.getTextinput() != null) {
             feed_dict.__setitem__("textinput",convertTextInput(feed.getTextinput()));
+        }
+        if (feed.getCloud() != null) {
+            feed_dict.__setitem__("cloud",convertCloud(feed.getCloud()));
         }
         PyList contributors_list = new PyList();
         Iterator contributors = feed.contributors();
@@ -677,6 +681,28 @@ public class Test {
         }
 
         return enclosure_dict;
+    }
+    public static PyDictionary convertCloud(Cloud cloud) {
+        PyDictionary cloud_dict = new PyDictionary();
+
+        if (cloud.getDomain() != null) {
+            cloud_dict.__setitem__("domain", new PyString(cloud.getDomain()));
+        }
+        if (cloud.getPort() != null) {
+            cloud_dict.__setitem__("port", new PyString(cloud.getPort()));
+        }
+        if (cloud.getPath() != null) {
+            cloud_dict.__setitem__("path", new PyString(cloud.getPath()));
+        }
+        if (cloud.getRegisterProcedure() != null) {
+            cloud_dict.__setitem__("registerprocedure", new PyString(cloud.getRegisterProcedure()));
+        }
+        if (cloud.getProtocol() != null) {
+            cloud_dict.__setitem__("protocol", new PyString(cloud.getProtocol()));
+        }
+
+
+        return cloud_dict;
     }
     static public int normaliseDayOfWeek(int day) {
         if (day == Calendar.MONDAY) { return 0; }

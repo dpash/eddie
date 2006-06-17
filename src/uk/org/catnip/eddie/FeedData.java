@@ -45,6 +45,7 @@ public class FeedData extends FeedContext {
     private Detail subtitle;
     private Generator generator;
     private TextInput textinput;
+    private Cloud cloud;
     List<Entry> entries = new LinkedList<Entry>();
     public TextInput getTextinput() {
         return textinput;
@@ -122,6 +123,14 @@ public class FeedData extends FeedContext {
 
     public void setSubtitle(Detail subtitle) {
         this.subtitle = subtitle;
+    }
+
+    public Cloud getCloud() {
+        return cloud;
+    }
+
+    public void setCloud(Cloud cloud) {
+        this.cloud = cloud;
     }
     
 }
