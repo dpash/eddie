@@ -171,7 +171,7 @@ public class Parser {
 			xr.setProperty("http://xml.org/sax/properties/lexical-handler",	handler);
 			xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error",true);
 			xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",	false);
-
+            xr.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
 			if (headers != null) {
 				if (headers.containsKey("Content-Location")) {
 					handler.setContentLocation((String) headers
