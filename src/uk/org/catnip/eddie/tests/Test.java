@@ -57,6 +57,7 @@ import uk.org.catnip.eddie.Source;
 import uk.org.catnip.eddie.TextInput;
 
 import uk.org.catnip.eddie.parser.Parser;
+import uk.org.catnip.eddie.parser.DetectEncoding;
 import org.python.util.PythonInterpreter;
 import org.python.core.*;
 
@@ -131,8 +132,8 @@ public class Test {
         boolean ok = false;
 
         try {
-
-            BufferedReader in = new BufferedReader(new FileReader(filename));
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), new DetectEncoding().detect(filename, "utf-8")));
             String line;
             String description = "";
             String test = "";
@@ -163,6 +164,7 @@ public class Test {
             }
             Parser parser = new Parser();
             parser.setHeaders(headers);
+
             FeedData feed = parser.parse(filename);
             if (log.isDebugEnabled()) {
                 log.debug(feed);
@@ -207,6 +209,9 @@ public class Test {
         if (feed.get("format") != null) {
         interp.set("version", new PyString(feed.get("format")));
         }
+        if (feed.get("encoding") != null) {
+            interp.set("encoding", new PyString(feed.get("encoding")));
+            }
         interp.set("feed", convertFeed(feed));
         interp.set("entries", entries_list);
         interp.exec("ret ="+ test);
@@ -683,4 +688,5 @@ public class Test {
         if (day == Calendar.SUNDAY) { return 6; }
         return 0;
     }
+  
 }
