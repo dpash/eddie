@@ -90,6 +90,7 @@ public class State {
         aliases.put("pubdate", "modified");
         aliases.put("published", "dcterms_created");
         aliases.put("rights", "copyright");
+        aliases.put("rdf:rdf", "rdf");
         aliases.put("tagline", "subtitle");
         aliases.put("uri", "url");
         aliases.put("webmaster", "publisher");
@@ -102,9 +103,10 @@ public class State {
 
     private static Map<String,String> createNamespaceAliases() {
         Map<String,String> aliases = new HashMap<String,String>();
-        // aliases.put("http://backend.userland.com/rss", "");
+        aliases.put("http://backend.userland.com/rss", "");
+        aliases.put("http://backend.userland.com/rss2", "");
         // aliases.put("http://blogs.law.harvard.edu/tech/rss", "");
-        // aliases.put("http://purl.org/rss/1.0/", "");
+        aliases.put("http://purl.org/rss/1.0/", "");
         // aliases.put("http://my.netscape.com/rdf/simple/0.9/", "");
         // aliases.put("http://example.com/newformat#", "");
         // aliases.put("http://example.com/necho", "");
@@ -196,11 +198,17 @@ public class State {
     public State(String uri, String localName, String qName) {
         this.uri = uri;
         this.localName = localName.toLowerCase();
+        this.qName = qName.toLowerCase();
         if (namespace_aliases.containsKey(this.uri.toLowerCase())) {
             this.namespace = (String) namespace_aliases.get(this.uri.toLowerCase());
+            this.element = aliasElement(this.namespace, this.localName);
+        } else {
+            // We don't know what this namespace is, so we'll just assume it's right
+            this.element = aliasElement(this.namespace, this.qName);
         }
-        this.element = aliasElement(this.namespace, this.localName);
-        this.qName = qName;
+        
+        
+        
     }
 
     public State(String uri, String localName, String qName, Attributes atts,
@@ -228,7 +236,7 @@ public class State {
     }
 
     private String aliasElement(String namespace, String element) {
-        if (this.namespace != null && !this.namespace.equals("xhtml")) {
+        if (this.namespace != null && !"".equals(this.namespace) && !this.namespace.equals("xhtml")) {
             element = namespace + ":" + element;
         }
         if (element_aliases.containsKey(element)) {
@@ -250,7 +258,7 @@ public class State {
         } else {
             ret = default_value;
         }
-        log.debug("getAttr("+key+") = "+ ret);
+
         return ret;
     }
 
