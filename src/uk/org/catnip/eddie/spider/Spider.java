@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.FeedData;
@@ -122,12 +123,20 @@ public void fetch_feed(Feed feed) {
 					String charset = method.getResponseCharSet();
 					//InputStreamReader reader = 
 					//	new InputStreamReader(method.getResponseBodyAsStream(), charset);
-
+					Map<String,String> headers = new HashMap<String,String>();
+                    for (Header header: method.getResponseHeaders()) {
+                        headers.put(header.getName(), header.getValue());
+                    }
+                    if (!headers.containsKey("Content-Location")) {
+                        headers.put("Content-Location", url);
+                    }
+                    log.info(headers);
 					log.info("fetched feed. Starting parsing");
-					byte[] data = method.getResponseBody();
+					//byte[] data = method.getResponseBody();
 					Parser parser = new Parser();
+                    parser.setHeaders(headers);
 
-					FeedData feeddata = parser.parse(data);
+					FeedData feeddata = parser.parse(method.getResponseBodyAsStream());
 					Iterator it = feeddata.entries();
 					while (it.hasNext()) {
 						uk.org.catnip.eddie.Entry entrydata = (uk.org.catnip.eddie.Entry)it.next();
