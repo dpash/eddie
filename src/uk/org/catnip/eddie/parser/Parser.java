@@ -150,13 +150,27 @@ public class Parser {
         return new FeedData();
 	}
 
-	public FeedData parse(InputStream istream) {
+	public FeedData parse(InputStream istream) throws IOException {
+        if (!istream.markSupported()) {
+            istream = new MarkableInputStream(istream);
+        }
+        if (encoding == null) {
+            istream.mark(0);
+            encoding = de.detect(istream);
+            istream.reset();
+        }
 		return parse(new InputStreamReader(istream));
 	}
     public FeedData parse(InputStream istream, String encoding) throws UnsupportedEncodingException {
+        if (!istream.markSupported()) {
+            istream = new MarkableInputStream(istream);
+        }
         return parse(new InputStreamReader(istream, encoding));
     }
     public FeedData parse(InputStream istream, CharsetDecoder encoding) throws UnsupportedEncodingException {
+        if (!istream.markSupported()) {
+            istream = new MarkableInputStream(istream);
+        }
         return parse(new InputStreamReader(istream, encoding));
     }
 	public FeedData parse(InputStreamReader in)  {
@@ -185,7 +199,7 @@ public class Parser {
 			
 			xr.parse(new InputSource(in));
 			ret = handler.getFeed();
-            ret.set("encoding", encoding);
+            //ret.set("encoding", encoding);
 
 		} catch (SAXException e) {
 			log.info("SAXException: failed to parse", e);
