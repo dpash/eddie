@@ -33,7 +33,10 @@
  */
 package uk.org.catnip.eddie;
 
+import org.apache.log4j.*;
+
 public class Author {
+    static Logger log = Logger.getLogger(FeedContext.class);
     private String name = "";
     private String email = "";
     private String href = "";
@@ -64,4 +67,50 @@ public class Author {
         sb.append("}");
         return sb.toString();
     }
+    
+    public String getAuthor() {
+        log.debug(this);
+        String ret = "";
+        if (name != null && !"".equals(email)) {
+            ret = name + " (" + email + ")";
+        } else if (!"".equals(name)) {
+            ret = name;
+        } 
+        return ret;
+    }
+    
+    public void setAuthor(String content) {
+        log.debug(this);
+        log.debug("sync_author: " + content);
+        content = content.trim();
+        // TODO: This should be a regex.
+        if (content.contains("(")) {
+            String part1 = content.substring(0, content.indexOf("("))
+            .trim();
+            String part2 = content.substring(content.lastIndexOf("(") + 1,
+                    content.lastIndexOf(")")).trim();
+            if (part1.contains("@")) {
+                name = part2;
+                email = part1;
+            } else {
+                name = part1;
+                email = part2;
+            }
+        } else if (content.contains("<")) {
+            String part1 = content.substring(0, content.indexOf("<")).trim();
+            String part2 = content.substring(content.lastIndexOf("<") + 1,
+                        content.lastIndexOf(">")).trim();
+            if (part1.contains("@")) {
+                name = part2;
+                email = part1;
+            } else {
+                name = part1;
+                email = part2;
+            }  
+        } else if(name == null || "".equals(name.trim())){
+            name = content;
+        }
+        log.debug(this);
+    }
 }
+

@@ -75,7 +75,8 @@ public class FeedSAXParser extends BaseSAXParser {
     public void endElement_author() throws SAXException {
         String content = pop("author");
         
-        sync_author(content, "author");
+        author.setAuthor(content);
+        getCurrentContext().set("author", author.getAuthor());
         getCurrentContext().setAuthor(author);
         author = null;
     }
@@ -119,7 +120,8 @@ public class FeedSAXParser extends BaseSAXParser {
     }
 
     public void endElement_contributor() throws SAXException {
-        sync_author(pop("contributor"), "contributor");
+        author.setAuthor(pop("contributor"));
+        getCurrentContext().set("contributor", author.getAuthor());
         getCurrentContext().addContributor(author);
         author = null;
     }
@@ -347,7 +349,8 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
     public void endElement_publisher() throws SAXException {
-        sync_author(pop("publisher"), "publisher");
+        author.setAuthor(pop("publisher"));
+        getCurrentContext().set("publisher", author.getAuthor());
         getCurrentContext().setPublisher(author);
         author = null;
     }
@@ -739,36 +742,7 @@ public class FeedSAXParser extends BaseSAXParser {
         state.setExpectingText(true);
         push(state);
     }
-    private void sync_author(String content, String option) {
-        log.debug(author);
-        String name = author.getName();
-        String email = author.getEmail();
-        
-        if (name != null && !"".equals(email)) {
-            getCurrentContext().set(option,  name + " (" + email + ")");
-        } else if (!"".equals(name)) {
-            getCurrentContext().set(option, name);
-        } else {
-            getCurrentContext().set(option, content);
-            log.debug("sync_author: " + content);
-            if (content.contains("(")) {
-                String part1 = content.substring(0, content.indexOf("("))
-                        .trim();
-                String part2 = content.substring(content.lastIndexOf("(") + 1,
-                        content.lastIndexOf(")")).trim();
-                if (part1.contains("@")) {
-                    author.setName(part2);
-                    author.setEmail(part1);
-                } else {
-                    author.setName(part1);
-                    author.setEmail(part2);
-                }
-            } else {
-                author.setName(content);
-            }
-            log.debug(author);
-        }
-    }
+
     
     public void startDTD(String name, String publicId, String systemId)
             throws SAXException {
