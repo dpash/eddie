@@ -199,7 +199,9 @@ public class Parser {
 			
 			xr.parse(new InputSource(in));
 			ret = handler.getFeed();
-            //ret.set("encoding", encoding);
+            if (encoding != null) {
+                ret.set("encoding", encoding);
+            }
 
 		} catch (SAXException e) {
 			log.info("SAXException: failed to parse", e);
