@@ -35,6 +35,8 @@ package uk.org.catnip.eddie.parser;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Stack;
+
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -87,6 +89,7 @@ public class Sanitize {
         private int errors = 0;
         private boolean started_document = false;
         private State state;
+        private Stack<String> stack = new Stack<String>();
         private boolean unsafe_content = false;
         private static final int MAX_ERRORS=2000;
         private StringBuilder sb = new StringBuilder();
@@ -108,6 +111,7 @@ public class Sanitize {
         public void startElement(String uri, String localName, String qName,
                 Attributes atts) throws SAXException {
             started_document = true;
+            stack.push(localName);
             log.trace("startElement: "+ localName);
             if (!acceptable_elements.contains(localName)) { 
                 if (unsafe_content_elements.contains(localName)) {
@@ -117,6 +121,7 @@ public class Sanitize {
             }
             sb.append("<");
             sb.append(localName);
+            
             
             for (int i = 0; i < atts.getLength(); i++) {
                 if (!acceptable_attributes.contains(atts.getLocalName(i))) {
@@ -140,6 +145,9 @@ public class Sanitize {
         }
         public void endElement(String uri, String localName, String qName)
         throws SAXException {
+            if (localName.equals(stack.peek())) {
+                stack.pop();
+            }
             log.trace("endElement: "+ localName);
             if (!acceptable_elements.contains(localName)) {
                 if (unsafe_content_elements.contains(localName)) {
@@ -157,6 +165,17 @@ public class Sanitize {
             String data =  new String(ch, start,length);
             log.trace("comment: '"+ data+"'");            
             sb.append("<!--"+data+"-->");
+        }
+        public void endDocument()
+        throws SAXException {
+            log.trace("endDocument()");
+            while (!stack.isEmpty()) {
+                sb.append("</");
+                String element = stack.pop();
+                log.debug("adding " + element);
+                sb.append(element);
+                sb.append(">");
+            }
         }
         // ErrorHandler
         public void warning(SAXParseException exception) throws SAXException {
