@@ -28,14 +28,11 @@ public class MarkableInputStream extends InputStream {
     public int read() throws IOException {
         int data;
         if(curpos == maxpos) {
-            // No data to be read
             data = inputstream.read();
             buffer.add(data); maxpos++;curpos++;
         } else {
             data = buffer.get(curpos++);
         }
-        //log.debug(data);
-        //log.debug(buffer);
         return data;
     }
     /* (non-Javadoc)
@@ -43,6 +40,7 @@ public class MarkableInputStream extends InputStream {
      */
     @Override
     public synchronized void mark(int readlimit) {
+        log.debug("marking stream");
         mark = curpos;
     }
     /* (non-Javadoc)
@@ -57,8 +55,7 @@ public class MarkableInputStream extends InputStream {
      */
     @Override
     public synchronized void reset() throws IOException {
+        log.debug("resetting stream");
         curpos = mark;
     }
-
-    
 }
