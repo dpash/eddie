@@ -45,6 +45,8 @@ import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
+import org.xml.sax.XMLReader;
+
 import java.io.StringReader;
 public class Sanitize {
     static Logger log = Logger.getLogger(Sanitize.class);
@@ -79,6 +81,8 @@ public class Sanitize {
     static List url_attributes = Arrays.asList(url_attributes_array);
     static List unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
     static List elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
+
+    static XMLReader xr;
     
     /**
      * Class to parse html and remove unsafe elements and attributes
@@ -89,13 +93,18 @@ public class Sanitize {
         private int errors = 0;
         private boolean started_document = false;
         private State state;
-        private Stack<String> stack = new Stack<String>();
+
         private boolean unsafe_content = false;
         private static final int MAX_ERRORS=2000;
         private StringBuilder sb = new StringBuilder();
         protected Locator locator;
         public void setDocumentLocator(final Locator locator) {
             this.locator = locator;
+        }
+        public void ignorableWhitespace(char[] ch, int start, int length) {
+            String data =  new String(ch, start,length);
+            log.trace("ignorableWhitespace: '"+ data+"'");
+            sb.append(data);
         }
         public void characters(char[] ch, int start, int length) {
             if (unsafe_content) { return;}
@@ -111,7 +120,7 @@ public class Sanitize {
         public void startElement(String uri, String localName, String qName,
                 Attributes atts) throws SAXException {
             started_document = true;
-            stack.push(localName);
+            
             log.trace("startElement: "+ localName);
             if (!acceptable_elements.contains(localName)) { 
                 if (unsafe_content_elements.contains(localName)) {
@@ -145,9 +154,7 @@ public class Sanitize {
         }
         public void endElement(String uri, String localName, String qName)
         throws SAXException {
-            if (localName.equals(stack.peek())) {
-                stack.pop();
-            }
+
             log.trace("endElement: "+ localName);
             if (!acceptable_elements.contains(localName)) {
                 if (unsafe_content_elements.contains(localName)) {
@@ -169,13 +176,7 @@ public class Sanitize {
         public void endDocument()
         throws SAXException {
             log.trace("endDocument()");
-            while (!stack.isEmpty()) {
-                sb.append("</");
-                String element = stack.pop();
-                log.debug("adding " + element);
-                sb.append(element);
-                sb.append(">");
-            }
+
         }
         // ErrorHandler
         public void warning(SAXParseException exception) throws SAXException {
@@ -235,23 +236,33 @@ public class Sanitize {
      * @param state current state information
      * @return cleaned string
      */
-    public String real_clean(String data, State state) {
+     public String real_clean(String data, State state) {
         String ret = data;
         if (!data.trim().startsWith("<!DOCTYPE")) {
             data = "<html>"+data+"</html>";
         }
         try {
-        SAXParser xr = new SAXParser();
-        HTMLSAXParser handler = new HTMLSAXParser();
-        xr.setContentHandler(handler);
-        xr.setErrorHandler(handler);
-        xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-        xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-        xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-        StringReader r = new StringReader(data);
-        handler.setState(state);
-        xr.parse(new InputSource(r));
-        ret = handler.getResult();
+            
+            if (xr == null) {
+                try {
+                    xr = (XMLReader)Class.forName("org.ccil.cowan.tagsoup.Parser").newInstance();
+                    xr.setFeature("http://www.ccil.org/~cowan/tagsoup/features/default-attributes", false);
+                } catch (ClassNotFoundException ex) {
+                    log.warn("couldn't load tagsoup. Using standard sax parser " + ex);
+                    xr = new SAXParser();
+                    xr.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+                    xr.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+                }
+            }
+            HTMLSAXParser handler = new HTMLSAXParser();
+            xr.setContentHandler(handler);
+            xr.setErrorHandler(handler);
+            xr.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+            
+            StringReader r = new StringReader(data);
+            handler.setState(state);
+            xr.parse(new InputSource(r));
+            ret = handler.getResult();
         } catch (SAXParseException e) {
             log.info("error", e);
         } catch (SAXException e) {
@@ -260,9 +271,9 @@ public class Sanitize {
             log.error("error", e);
         }
         
-       
-        //log.debug("Cleaned: '"+data+"'");
-        //log.debug("     to: '"+ret+"'");
+        
+        log.debug("Cleaned: '"+data+"'");
+        log.debug("     to: '"+ret+"'");
         return ret;
     }
     
@@ -279,7 +290,7 @@ public class Sanitize {
         sb.append("<");
         sb.append(state.getElement());
         for (int i = 0; i < state.getAttributes().getLength(); i++) {
-            String attribute = state.getAttributes().getLocalName(i);
+            String attribute = state.getAttributes().getQName(i);
             String value = state.getAttributes().getValue(i);
             sb.append(" ");
             sb.append(attribute);
