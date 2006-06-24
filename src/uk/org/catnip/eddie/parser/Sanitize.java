@@ -120,6 +120,9 @@ public class Sanitize {
         public void startElement(String uri, String localName, String qName,
                 Attributes atts) throws SAXException {
             started_document = true;
+            // This is currently a hack. Should we find any more, 
+            // we'll need to create a hash
+            if ("image".equals(localName)) { localName = "img"; }
             
             log.trace("startElement: "+ localName);
             if (!acceptable_elements.contains(localName)) { 
