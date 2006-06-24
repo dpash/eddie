@@ -342,8 +342,13 @@ public class State {
                 if (this.base != null) {
                     this.base = this.base.resolve(base);
                 } else {
-                    
                     this.base = new URI(base);
+                }
+                // Sadly some given "http://example.com" and "test.xml" java will resolve 
+                // them as http://example.comtest.xml, so we need to check for an empty path 
+                // when we set the base and add a path component.  
+                if (this.base.getPath() == null || "".equals(this.base.getPath())) {
+                    this.base = new URI(this.base + "/"); 
                 }
             } catch (URISyntaxException e) {
                 log.warn(e);
