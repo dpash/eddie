@@ -11,10 +11,10 @@ log4j.appender.console=org.apache.log4j.ConsoleAppender
 
 # Sends messages to a file.  Uncomment this block & the alternate
 # 'log4j.rootCategory' line above.
-#log4j.appender.file.layout=org.apache.log4j.PatternLayout
-#log4j.appender.file.layout.ConversionPattern=%d{ISO8601} [%5.5t] %-5p %c{2} - %m%n
-#log4j.appender.file=org.apache.log4j.RollingFileAppender
-#log4j.appender.file.File=/var/log/ccm/system.log
+log4j.appender.file.layout=org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern=%d{ISO8601} [%5.5t] %-5p %c{2} - %m%n
+log4j.appender.file=org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=/home/david/workspace/eddie/info.log
 
 # Sends messages to a remote server via syslog. 
 # Uncomment this block & the alternate log4j.rootCategory line above

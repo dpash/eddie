@@ -13,6 +13,10 @@
       <pathelement location='${lib.log4j.path}'/>
       <pathelement location='${lib.xerces.path}'/>
       <pathelement location='${lib.commons-codec.path}'/>
+      <pathelement location='${lib.commons-httpclient.path}'/>
+      <pathelement location='${lib.commons-logging.path}'/>
+      <pathelement location='${lib.postgresql.path}'/>
+      <pathelement location='${lib.tagsoup.path}'/>
    </path>
    <target name='init'>
       <mkdir dir='build'/>
@@ -26,9 +30,10 @@
     </target>
    <target name='build' depends='init'>
       <echo message='${ant.project.name}: ${ant.file}'/>
-      <javac destdir='build'>
+      <javac destdir='build' debug="true" debuglevel="lines,vars,source">
          <src path='src'/>
          <classpath refid='project.classpath'/>
+      
       </javac>
    </target>
    <target name='Main' depends="build">
@@ -43,9 +48,21 @@
          <classpath refid='project.classpath'/>
       </java>
    </target>
+   <target name='atom' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/atom'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
    <target name='base' depends="build">
       <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
          <arg value='test/wellformed/base'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='date' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/date'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
@@ -55,10 +72,64 @@
          <classpath refid='project.classpath'/>
       </java>
    </target>
+   <target name='namespace' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/namespace'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='realworld' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/realworld'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='sanitize' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/sanitize'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='cdf' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/cdf'/>
+         <classpath refid='project.classpath'/>
+      </java>
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/illformed/cdf'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='rdf' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/rdf'/>
+         <classpath refid='project.classpath'/>
+      </java>
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/illformed/rdf'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='encoding' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/wellformed/encoding'/>
+         <classpath refid='project.classpath'/>
+      </java>
+      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+         <arg value='test/illformed/encoding'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
    <target name='profile' depends="build">
       <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
          <jvmarg value='-Xrunjmp:nomonitors,filter=uk.org.catnip'/>
          <arg value='test/'/>
+         <classpath refid='project.classpath'/>
+      </java>
+   </target>
+   <target name='spider' depends="build">
+      <java fork='yes' classname='uk.org.catnip.eddie.spider.Main' failonerror='true'>
+         <jvmarg value="-Djava.compiler=NONE"/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
