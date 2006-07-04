@@ -65,6 +65,7 @@ public class State {
         aliases.put("dc:subject", "category");
         aliases.put("dc:title", "title");
         aliases.put("dcterms:modified", "modified");
+        aliases.put("feedburner:browserfriendly", "info");
         aliases.put("item", "entry");
         aliases.put("itunes:author", "author");
         aliases.put("itunes:block", "itunes_block");
@@ -120,11 +121,9 @@ public class State {
         aliases.put("http://purl.org/rss/1.0/modules/aggregation/", "ag");
         aliases.put("http://purl.org/rss/1.0/modules/annotate/", "annotate");
         aliases.put("http://media.tangent.org/rss/1.0/", "audio");
-        aliases.put("http://backend.userland.com/blogChannelModule",
-                "blogChannel");
+        aliases.put("http://backend.userland.com/blogChannelModule", "blogChannel");
         aliases.put("http://web.resource.org/cc/", "cc");
-        aliases.put("http://backend.userland.com/creativeCommonsRssModule",
-                "creativeCommons");
+        aliases.put("http://backend.userland.com/creativeCommonsRssModule", "creativeCommons");
         aliases.put("http://purl.org/rss/1.0/modules/company", "co");
         aliases.put("http://purl.org/rss/1.0/modules/content/", "content");
         aliases.put("http://my.theinfo.org/changed/1.0/rss/", "cp");
@@ -134,13 +133,13 @@ public class State {
         aliases.put("http://purl.org/rss/1.0/modules/event/", "ev");
         aliases.put("http://postneo.com/icbm/", "icbm");
         aliases.put("http://purl.org/rss/1.0/modules/image/", "image");
+        aliases.put("http://rssnamespace.org/feedburner/ext/1.0", "feedburner");
         aliases.put("http://xmlns.com/foaf/0.1/", "foaf");
         aliases.put("http://freshmeat.net/rss/fm/", "fm");
         aliases.put("http://www.itunes.com/dtds/podcast-1.0.dtd", "itunes");
         aliases.put("http://example.com/dtds/podcast-1.0.dtd", "itunes");
         aliases.put("http://purl.org/rss/1.0/modules/link/", "l");
-        aliases.put("http://madskills.com/public/xml/rss/module/pingback/",
-                "pingback");
+        aliases.put("http://madskills.com/public/xml/rss/module/pingback/", "pingback");
         aliases.put("http://prismstandard.org/namespaces/1.2/basic/", "prism");
         aliases.put("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdf");
         aliases.put("http://www.w3.org/2000/01/rdf-schema#", "rdfs");
@@ -155,8 +154,7 @@ public class State {
         aliases.put("http://purl.org/rss/1.0/modules/taxonomy/", "taxo");
         aliases.put("http://purl.org/rss/1.0/modules/threading/", "thr");
         aliases.put("http://purl.org/rss/1.0/modules/textinput/", "ti");
-        aliases.put("http://madskills.com/public/xml/rss/module/trackback/",
-                "trackback");
+        aliases.put("http://madskills.com/public/xml/rss/module/trackback/", "trackback");
         aliases.put("http://wellformedweb.org/commentapi/", "wfw");
         aliases.put("http://purl.org/rss/1.0/modules/wiki/", "wiki");
         aliases.put("http://schemas.xmlsoap.org/soap/envelope/", "soap");
