@@ -35,7 +35,6 @@ package uk.org.catnip.eddie.parser;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.Stack;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
