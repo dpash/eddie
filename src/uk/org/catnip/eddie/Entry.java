@@ -96,6 +96,11 @@ public class Entry extends FeedContext {
             ret.append(categories);
             ret.append("',\n");
         }
+        if (!enclosures.isEmpty()) {
+            ret.append("\tenclosures = ");
+            ret.append(enclosures);
+            ret.append("',\n");
+        }
         if (getCreated() != null) {
             ret.append("\tcreated = '");
             ret.append(getCreated());
