@@ -17,6 +17,8 @@
       <pathelement location='${lib.commons-logging.path}'/>
       <pathelement location='${lib.postgresql.path}'/>
       <pathelement location='${lib.tagsoup.path}'/>
+      <pathelement location='eddie.jar'/>
+      <pathelement location='eddie-test.jar'/>
    </path>
    <target name='init'>
       <mkdir dir='build'/>
@@ -25,8 +27,11 @@
       <delete dir='build'/>
       <delete file='eddie.jar'/>
    </target>
-   <target name='jar'>
+   <target name='jar' depends="build">
        <jar destfile="eddie.jar" basedir="build"/>
+    </target>
+   <target name='testjar' depends='build-test,jar'>
+       <jar destfile="eddie-test.jar" basedir="build-test"/>
     </target>
    <target name='build' depends='init'>
       <echo message='${ant.project.name}: ${ant.file}'/>
@@ -36,92 +41,100 @@
       
       </javac>
    </target>
+   <target name='build-test' depends='init'>
+      <echo message='${ant.project.name}: ${ant.file}'/>
+      <javac destdir='build-test' debug="true" debuglevel="lines,vars,source">
+         <src path='tests'/>
+         <classpath refid='project.classpath'/>
+      
+      </javac>
+   </target>
    <target name='Main' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='cache' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='cache'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='atom' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/atom'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='base' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/base'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='date' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/date'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='rss' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/rss'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='namespace' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/namespace'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='realworld' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/realworld'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='sanitize' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/sanitize'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='cdf' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/cdf'/>
          <classpath refid='project.classpath'/>
       </java>
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/illformed/cdf'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='rdf' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/rdf'/>
          <classpath refid='project.classpath'/>
       </java>
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/illformed/rdf'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='encoding' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/wellformed/encoding'/>
          <classpath refid='project.classpath'/>
       </java>
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <arg value='test/illformed/encoding'/>
          <classpath refid='project.classpath'/>
       </java>
    </target>
    <target name='profile' depends="build">
-      <java fork='yes' classname='uk.org.catnip.eddie.tests.Main' failonerror='true'>
+      <java fork='yes' classname='uk.org.catnip.eddie.parser.Main' failonerror='true'>
          <jvmarg value='-Xrunjmp:nomonitors,filter=uk.org.catnip'/>
          <arg value='test/'/>
          <classpath refid='project.classpath'/>
