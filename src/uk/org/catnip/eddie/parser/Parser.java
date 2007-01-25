@@ -159,7 +159,7 @@ public class Parser {
             encoding = de.detect(istream);
             istream.reset();
         }
-		return parse(new InputStreamReader(istream));
+		return parse(new InputStreamReader(istream, encoding));
 	}
     public FeedData parse(InputStream istream, String encoding) throws UnsupportedEncodingException {
         if (!istream.markSupported()) {
