@@ -85,7 +85,16 @@ public class Test {
         @Override
 		public PyObject __findattr__(String arg0) {
 			// TODO Auto-generated method stub
-			return super.__finditem__(arg0);
+			PyObject object = null;
+			
+			object = super.__finditem__(arg0);
+				log.debug("found item: " + object);
+			if (object == null){
+				object = super.__findattr__(arg0);
+				log.debug("found attr: " + object);
+			}
+			
+			return object;
 		}
 
 		public void __setitem__(PyObject key, PyObject value) {
