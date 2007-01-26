@@ -194,7 +194,11 @@ public class FeedSAXParser extends BaseSAXParser {
         feed.addEntry(current_entry);
         current_entry = null;
     }
-
+    public void endElement_expirationdate() throws SAXException {
+        String content = pop("expirationdate");
+        getCurrentContext().set("expired", content);
+        getCurrentContext().setExpired(DateParser.parse(content));
+    }
     public void endElement_generator() throws SAXException {
         String content = pop("generator");
         generator.setDetails(detail);
@@ -446,6 +450,9 @@ public class FeedSAXParser extends BaseSAXParser {
         if (null != state.getAttr("base")) {
             state.setBase(state.getAttr("base"));
         }
+        if (null != state.getAttr("lastmod")) {
+            feed.set("date",state.getAttr("lastmod"));
+        }
         if (null != state.getAttr("href")) {
             feed.set("link",state.resolveUri(state.getAttr("href")));
             link = new Link();
@@ -532,7 +539,10 @@ public class FeedSAXParser extends BaseSAXParser {
         }
         push(state);
     }
-
+    public void startElement_expirationdate(State state) throws SAXException {
+        state.setExpectingText(true);
+        push(state);
+    }
     public void startElement_feed(State state) throws SAXException {
 
         this.in_feed = true;
