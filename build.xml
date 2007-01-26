@@ -25,7 +25,9 @@
    </target>
    <target name='clean'>
       <delete dir='build'/>
+      <delete dir='build-test'/>
       <delete file='eddie.jar'/>
+      <delete file='eddie-test.jar'/>
    </target>
    <target name='jar' depends="build">
        <jar destfile="eddie.jar" basedir="build"/>
@@ -41,8 +43,9 @@
       
       </javac>
    </target>
-   <target name='build-test' depends='init'>
+   <target name='build-test' depends='init,build'>
       <echo message='${ant.project.name}: ${ant.file}'/>
+      <mkdir dir='build-test'/>
       <javac destdir='build-test' debug="true" debuglevel="lines,vars,source">
          <src path='tests'/>
          <classpath refid='project.classpath'/>
