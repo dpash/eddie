@@ -452,6 +452,8 @@ public class FeedSAXParser extends BaseSAXParser {
         }
         if (null != state.getAttr("lastmod")) {
             feed.set("date",state.getAttr("lastmod"));
+            feed.set("modified",state.getAttr("lastmod"));
+            feed.setModified(DateParser.parse(state.getAttr("lastmod")));
         }
         if (null != state.getAttr("href")) {
             feed.set("link",state.resolveUri(state.getAttr("href")));
@@ -536,6 +538,11 @@ public class FeedSAXParser extends BaseSAXParser {
         }
         if (null != state.getAttr("rdf:about")) {
             current_entry.set("id", state.getAttr("rdf:about"));
+        }
+        if (null != state.getAttr("lastmod")) {
+            current_entry.set("date",state.getAttr("lastmod"));
+            current_entry.set("modified",state.getAttr("lastmod"));
+            current_entry.setModified(DateParser.parse(state.getAttr("lastmod")));
         }
         push(state);
     }
