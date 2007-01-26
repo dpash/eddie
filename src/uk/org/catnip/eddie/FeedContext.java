@@ -50,6 +50,7 @@ public class FeedContext {
     private Date issued;
     private Date modified;
     private Date created;
+    private Date expired;
     protected List<Author> contributors = new LinkedList<Author>();
     protected List<Link> links = new LinkedList<Link>();
     protected List<Category> categories = new LinkedList<Category>();
@@ -155,5 +156,11 @@ public class FeedContext {
     public void setImage(Image image) {
         this.image = image;
     }
+	public void setExpired(Date date) {
+		this.expired = date;
+	}
+	public Date getExpired() {
+		return expired;
+	}
 
 }

@@ -69,25 +69,31 @@ public class Test {
 		 * 
 		 */
 		private static final long serialVersionUID = 3828710848664039712L;
-        //Logger log = Logger.getLogger(EddieDict.class);
-        //private PyObject map(PyObject key) {
-           // PyString str_key = (PyString) key;
-           // if (str_key.__cmp__(new PyString("url")) == 0) {
-           //     key = new PyString("href");
-           // }
-            //log.debug("key = '"+key+"'");
-        //   return key;
-        //}
+        Logger log = Logger.getLogger(EddieDict.class);
+        private PyObject map(PyObject key) {
+            PyString str_key = (PyString) key;
+            if (str_key.__cmp__(new PyString("url")) == 0) {
+                key = new PyString("href");
+            }
+            log.debug("key = '"+key+"'");
+           return key;
+        }
         
-        //public PyObject __finditem__(PyObject key) {
-        //    return super.__finditem__(map(key));
-        //}
-        //public void __setitem__(PyObject key, PyObject value) {
-        //    super.__setitem__(map(key),value);
-        //}
-        //public void __delitem__(PyObject key) {
-        //    super.__delitem__(map(key));
-        //}
+        public PyObject __finditem__(PyObject key) {
+            return super.__finditem__(map(key));
+        }
+        @Override
+		public PyObject __findattr__(String arg0) {
+			// TODO Auto-generated method stub
+			return super.__finditem__(arg0);
+		}
+
+		public void __setitem__(PyObject key, PyObject value) {
+            super.__setitem__(map(key),value);
+        }
+        public void __delitem__(PyObject key) {
+            super.__delitem__(map(key));
+        }
     }
     
     static Logger log = Logger.getLogger(Test.class);
@@ -134,7 +140,7 @@ public class Test {
 
         try {
             
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), new DetectEncoding().detect(filename, "utf-8")));
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), new DetectEncoding("utf-8").detect(filename)));
             String line;
             String description = "";
             String test = "";
@@ -224,13 +230,14 @@ public class Test {
 
     }
     public static PyDictionary convertFeed(FeedData feed) {
-        PyDictionary feed_dict = new PyDictionary();
+        PyDictionary feed_dict = new Test().new EddieDict();
         Iterator it = feed.keys();
         while (it.hasNext()) {
             String key = (String) it.next();
             if (key.equals("itunes_block") || key.equals("itunes_explicit")) {
                 feed_dict.__setitem__(key, new PyInteger(Integer.parseInt(feed.get(key))));
             } else {
+            	log.debug(key + " = "+ feed.get(key));
                 feed_dict.__setitem__(key, new PyString(feed.get(key)));
             }
         }
@@ -306,7 +313,7 @@ public class Test {
         }
         feed_dict.__setitem__("tags",category_list);
         
-        //log.debug(feed_dict);
+        log.debug(feed_dict);
         
         return feed_dict;
         
@@ -352,6 +359,9 @@ public class Test {
         }
         if (entry.getIssued() != null) {
             entry_dict.__setitem__("issued_parsed",convertDate(entry.getIssued()));
+        }
+        if (entry.getExpired() != null) {
+            entry_dict.__setitem__("expired_parsed",convertDate(entry.getExpired()));
         }
         if (entry.getCopyright() != null) {
             entry_dict.__setitem__("rights_detail",convertDetail(entry.getCopyright()));

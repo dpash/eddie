@@ -111,6 +111,11 @@ public class Entry extends FeedContext {
             ret.append(getIssued());
             ret.append("'\n");
         }
+        if (getExpired() != null) {
+            ret.append("\texpired = '");
+            ret.append(getExpired());
+            ret.append("'\n");
+        }
         if (getModified() != null) {
             ret.append("\tmodifed = '");
             ret.append(getModified());
