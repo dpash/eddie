@@ -67,7 +67,7 @@ public class Parser {
 	private String encoding;
     private String defaultEncoding = "utf-8";
 	private Map headers;
-    private DetectEncoding de = new DetectEncoding();
+    private DetectEncoding de = new DetectEncoding(defaultEncoding);
     boolean error  = false;
 	/**
 	 * Inform the parser of any external HTTP headers. The parser currently
@@ -114,7 +114,7 @@ public class Parser {
 		try {
 
             if (encoding == null) {
-                encoding = de.detect(filename, defaultEncoding);
+                encoding = de.detect(filename);
             }
  
             
@@ -140,7 +140,7 @@ public class Parser {
 
 	public FeedData parse(byte[] data) {
         if (encoding == null) {
-            encoding = de.detect(data, defaultEncoding);
+            encoding = de.detect(data);
         }
 		try {
             return parse(new ByteArrayInputStream(data), de.alias(encoding));
@@ -180,6 +180,9 @@ public class Parser {
 		try {
 			SAXParser xr = new SAXParser();
 			FeedSAXParser handler = new FeedSAXParser();
+			if (de.isError()) {
+				handler.error = true;
+			}
 			xr.setContentHandler(handler);
 			xr.setErrorHandler(handler);
 			xr.setProperty("http://xml.org/sax/properties/lexical-handler",	handler);
