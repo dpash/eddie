@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.*;
@@ -52,10 +54,10 @@ public class DetectEncoding {
     }
     final Magic[] magics = { 
             // UCS-4, big-endian machine (1234 order)
-            new Magic("USC-4be",    true, (byte) 0x00, (byte) 0x00, (byte) 0xFE, (byte) 0xFF),
+            new Magic("utf-32be",    true, (byte) 0x00, (byte) 0x00, (byte) 0xFE, (byte) 0xFF),
             
             // UCS-4, little-endian machine (4321 order)
-            new Magic("USC-4le",    true, (byte) 0xFF, (byte) 0xFE, (byte) 0x00, (byte) 0x00),
+            new Magic("utf-32le",    true, (byte) 0xFF, (byte) 0xFE, (byte) 0x00, (byte) 0x00),
             
             // UCS-4, unusual octet order (2143)
             new Magic("USC-4odd",   true, (byte) 0x00, (byte) 0x00, (byte) 0xFF, (byte) 0xFE),
@@ -77,8 +79,8 @@ public class DetectEncoding {
             // (1234), little-endian (4321) and two unusual byte orders (2143
             // and 3412). The encoding declaration must be read to determine
             // which of UCS-4 or other supported 32-bit encodings applies.
-            new Magic("USC-4 ASCII 1234", false, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x3C ), 
-            new Magic("USC-4 ASCII 4321", false, (byte) 0x3C, (byte) 0x00, (byte) 0x00, (byte) 0x00 ),
+            new Magic("utf-32be", false, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x3C ), 
+            new Magic("utf-32le", false, (byte) 0x3C, (byte) 0x00, (byte) 0x00, (byte) 0x00 ),
             new Magic("USC-4 ASCII 2143", false, (byte) 0x00, (byte) 0x00, (byte) 0x3C, (byte) 0x00 ), 
             new Magic("USC-4 ASCII 3412", false, (byte) 0x00, (byte) 0x3C, (byte) 0x00, (byte) 0x00 ),
             
@@ -118,18 +120,19 @@ public class DetectEncoding {
     
     static Map<String, String> encoding_map = getEncodingMap();
     
+    String defaultEncoding;
+    private boolean error = false;
+    
     private int bomLength = 0;
     
-    public String detect(String filename) throws FileNotFoundException {
+    public DetectEncoding(String defaultEncoding) {
+		this.defaultEncoding = defaultEncoding;
+	}
+
+	public String detect(String filename) throws FileNotFoundException {
            return detect(new FileInputStream(filename));
     }
-    public String detect(String filename, String defaultEncoding) throws FileNotFoundException {
-        String encoding = detect(filename);
-        if (encoding == null) {
-            encoding = defaultEncoding;
-        }
-        return encoding;
-    }
+
     private static Map<String, String> getEncodingMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("windows_1250", "windows-1250");
@@ -161,10 +164,10 @@ public class DetectEncoding {
         
         
         map.put("ebcdic_cp_be", "CP500");
-        map.put("ebcdic_cp_us",    "CP037");
-        map.put("ebcdic_cp_ca",    "CP037");
-        map.put("ebcdic_cp_nl",    "CP037");
-        map.put("ebcdic_cp_wt",    "CP037");
+        map.put("ebcdic_cp_us",    "IBM037");
+        map.put("ebcdic_cp_ca",    "IBM037");
+        map.put("ebcdic_cp_nl",    "IBM037");
+        map.put("ebcdic_cp_wt",    "IBM037");
         map.put("ebcdic_cp_dk",    "CP277");
         map.put("ebcdic_cp_no",    "CP277");
         map.put("ebcdic_cp_fi",    "CP278");
@@ -177,10 +180,10 @@ public class DetectEncoding {
         map.put("ebcdic_cp_be",    "CP500"); 
         
         map.put("ebcdic-cp-be", "CP500");
-        map.put("ebcdic-cp-us",    "CP037");
-        map.put("ebcdic-cp-ca",    "CP037");
-        map.put("ebcdic-cp-nl",    "CP037");
-        map.put("ebcdic-cp-wt",    "CP037");
+        map.put("ebcdic-cp-us",    "IBM037");
+        map.put("ebcdic-cp-ca",    "IBM037");
+        map.put("ebcdic-cp-nl",    "IBM037");
+        map.put("ebcdic-cp-wt",    "IBM037");
         map.put("ebcdic-cp-dk",    "CP277");
         map.put("ebcdic-cp-no",    "CP277");
         map.put("ebcdic-cp-fi",    "CP278");
@@ -191,9 +194,9 @@ public class DetectEncoding {
         map.put("ebcdic-cp-fr",    "CP297");
         map.put("ebcdic-cp-ch",    "CP500");
         map.put("ebcdic-cp-be",    "CP500"); 
-        map.put("ibm039", "cp037");
-        map.put("ibm1140", "cp037");
-        map.put("dbcs", "JISAutoDetect");
+        map.put("ibm039", "IBM037");
+        map.put("ibm1140", "IBM037");
+        map.put("dbcs", "CP1252");
         
         // This isn't really true, but it's as close as we're going to get
         // http://www.haible.de/bruno/charsets/conversion-tables/CP1125.html
@@ -283,13 +286,7 @@ public class DetectEncoding {
         }
         return detect(data);
     }
-    public String detect(byte[] data, String defaultEncoding) {
-        String encoding = detect(data);
-        if (encoding == null) {
-            encoding = defaultEncoding;
-        }
-        return encoding;
-    }
+
     public String detect(byte[] data) {
         String encoding = null;
         
@@ -302,8 +299,20 @@ public class DetectEncoding {
                 encoding = detectEBCDIC(data);
             }
         }
+        encoding = alias(encoding);
+        if (encoding == null) {
+            encoding = defaultEncoding;
+        }
+        try {
+        	Charset charset = Charset.forName(encoding);
+        } catch (UnsupportedCharsetException ex) {
+        	log.info("bogus encoding: " + encoding +". Using default");
+        	encoding = defaultEncoding;
+        	error = true;
+        }
+
         log.debug("detected: '" + encoding +"'");
-        return alias(encoding);
+        return encoding;
     }
     
     private String detectEBCDIC(byte[] data) {
@@ -411,5 +420,9 @@ public class DetectEncoding {
             is.read();
         }
     }
+
+	public boolean isError() {
+		return error;
+	}
     
 }
