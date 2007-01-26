@@ -57,7 +57,7 @@ public class EddieTestBase extends TestCase {
     private PythonInterpreter interp = new PythonInterpreter();
 
     public boolean test(String filename) throws Exception {
-        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), new DetectEncoding().detect(filename, "utf-8")));
+        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), new DetectEncoding("utf-8").detect(filename)));
 		String line;
 		String test = "";
 		Pattern test_pattern = Pattern.compile("^Expect:\\s+(.*)$");
