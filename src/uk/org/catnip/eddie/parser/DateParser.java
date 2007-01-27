@@ -78,6 +78,7 @@ public class DateParser extends Detail {
 			"EEE, d MMM yy kk:mm:ss z", // RFC822
 			"EEE, d MMM yyyy kk:mm:ss z", // RFC2882
 			"EEE MMM  d kk:mm:ss zzz yyyy", // ASC
+			"EEE, dd MMMM yy kk:mm:ss", 
 			"EEE, dd MMMM yyyy kk:mm:ss", // Disney Mon, 26 January 2004
 											// 16:31:00 ET
 			"yyyy-MM-dd kk:mm:ss.0", "-yy-MM", "-yyMM", "yy-MM-dd",
