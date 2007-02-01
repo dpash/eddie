@@ -173,7 +173,7 @@ public class Parser {
         }
         return parse(new InputStreamReader(istream, encoding));
     }
-	public FeedData parse(InputStreamReader in)  {
+	public FeedData parse(Reader in)  {
            
 		FeedData ret = new FeedData();
         
