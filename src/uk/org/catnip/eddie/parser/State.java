@@ -89,7 +89,7 @@ public class State {
         aliases.put("product", "item");
         aliases.put("producturl", "link");
         aliases.put("pubdate", "modified");
-        aliases.put("published", "dcterms_created");
+        aliases.put("published", "created");
         aliases.put("rights", "copyright");
         aliases.put("rdf:rdf", "rdf");
         aliases.put("tagline", "subtitle");
