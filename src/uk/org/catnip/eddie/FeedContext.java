@@ -98,12 +98,15 @@ public class FeedContext {
         }
         categories.add(category);
     }
+    @Deprecated
     public Iterator contributors() {
         return contributors.iterator();
     }
+    @Deprecated
     public Iterator links() {
         return links.iterator();
     }
+    @Deprecated
     public Iterator categories() {
         return categories.iterator();
     }
@@ -161,6 +164,12 @@ public class FeedContext {
 	}
 	public Date getExpired() {
 		return expired;
+	}
+	public List<Category> getCategories() {
+		return categories;
+	}
+	public List<Link> getLinks() {
+		return links;
 	}
 
 }

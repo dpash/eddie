@@ -129,7 +129,7 @@ public class Entry extends FeedContext {
         content.add(c);
     }
  
-    
+    @Deprecated
     public Iterator contents() {
         return content.iterator();
     }
@@ -138,6 +138,7 @@ public class Entry extends FeedContext {
         enclosures.add(e);
     }
  
+    @Deprecated
     public Iterator enclosures() {
         return enclosures.iterator();
     }
@@ -152,4 +153,12 @@ public class Entry extends FeedContext {
     public void setSource(Source source) {
         this.source = source;
     }
+
+	public List<Detail> getContents() {
+		return this.content;
+	}
+
+	public List<Enclosure> getEnclosures() {
+		return this.enclosures;
+	}
 }

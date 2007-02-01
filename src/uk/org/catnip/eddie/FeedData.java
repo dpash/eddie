@@ -105,6 +105,7 @@ public class FeedData extends FeedContext {
         entries.add(entry);
     }
     
+    @Deprecated
     public Iterator entries() {
         return entries.iterator();
     }
@@ -132,5 +133,9 @@ public class FeedData extends FeedContext {
     public void setCloud(Cloud cloud) {
         this.cloud = cloud;
     }
+
+	public List<Entry> getEntries() {
+		return entries;
+	}
     
 }
