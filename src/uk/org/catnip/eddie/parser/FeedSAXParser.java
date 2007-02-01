@@ -656,14 +656,15 @@ public class FeedSAXParser extends BaseSAXParser {
             Image image = new Image();
             image.setUrl(state.getAttr("href"));
             getCurrentContext().setImage(image);
+        } else if ("self".equals(state.getAttr("rel"))) {
+        	this.getCurrentState().setBase(state.resolveUri(state.getAttr("href")));
         }
-            link = new Link();
-            link.setHref(state.resolveUri(state.getAttr("href")));
-            link.setTitle(state.getAttr("title"));
-            link.setRel(state.getAttr("rel", "alternate"));
-            link.setHreflang(state.getAttr("hreflang"));
-            link.setLength(state.getAttr("length"));
-
+        link = new Link();
+        link.setHref(state.resolveUri(state.getAttr("href")));
+        link.setTitle(state.getAttr("title"));
+        link.setRel(state.getAttr("rel", "alternate"));
+        link.setHreflang(state.getAttr("hreflang"));
+        link.setLength(state.getAttr("length"));    
         
         push(state);
     }
