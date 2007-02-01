@@ -51,7 +51,8 @@ public class Main {
 		if (args.length > 0) {
 			test.parse_dir(args[0]);
 		} else {
-			test.parse_dir("test");
+			test.parse_dir("data/wellformed");
+			test.parse_dir("data/illformed");
 		}
 		System.out.println("   Ran " + test.total_tests + " tests");
 		System.out.println("Passed " + test.passed_tests + " tests");
