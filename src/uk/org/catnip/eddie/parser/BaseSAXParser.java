@@ -301,10 +301,16 @@ public class BaseSAXParser extends DefaultHandler2 {
         return data;
     }
    
+    public void skippedEntity(java.lang.String name)
+    throws SAXException {
+        log.trace("skippedEntity: " + name);
+        getCurrentState().addText(Entities.resolveEntity(name));
+    }
    
     
     public void startEntity(java.lang.String name)
     throws SAXException {
+        log.trace("startEntity: " + name);
         getCurrentState().addText(Entities.resolveEntity(name));
     }
     
