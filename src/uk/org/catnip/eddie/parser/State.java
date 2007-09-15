@@ -104,6 +104,7 @@ public class State {
 
     private static Map<String,String> createNamespaceAliases() {
         Map<String,String> aliases = new HashMap<String,String>();
+        aliases.put("http://www.w3.org/2005/atom", "");
         aliases.put("http://backend.userland.com/rss", "");
         aliases.put("http://backend.userland.com/rss2", "");
         // aliases.put("http://blogs.law.harvard.edu/tech/rss", "");
