@@ -81,6 +81,11 @@ public class Entry extends FeedContext {
             ret.append(this.getTitle());
             ret.append("',\n");
         }
+        if (this.getSummary() != null) {
+            ret.append("\tsummary_detail = '");
+            ret.append(this.getSummary());
+            ret.append("',\n");
+        }
         if (!contributors.isEmpty()) {
             ret.append("\tcontributors = ");
             ret.append(contributors);
