@@ -82,6 +82,9 @@ public class FeedData extends FeedContext {
        if (generator != null) {
            ret.append("generator = " + generator + ", ");
        }
+       if (subtitle != null) {
+           ret.append("subtitle = " + subtitle + ", ");
+       }
        if (!contributors.isEmpty()) {
            ret.append("contributors = " + contributors + ", ");
        }
