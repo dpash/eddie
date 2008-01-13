@@ -188,7 +188,7 @@ public class FeedSAXParser extends BaseSAXParser {
             current_entry.set("description", current_entry.get("summary"));
         }
         if (current_entry.get("id") == null && current_entry.hasEnclosures()) {
-            Enclosure enclosure = (Enclosure)current_entry.enclosures().next();
+            Enclosure enclosure = (Enclosure)current_entry.getEnclosures().get(0);
             current_entry.set("id", enclosure.getUrl());
         }
         if (current_entry.getAuthor() == null) {

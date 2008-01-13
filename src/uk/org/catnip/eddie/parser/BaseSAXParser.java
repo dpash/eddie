@@ -141,7 +141,8 @@ public class BaseSAXParser extends DefaultHandler2 {
      * We default to not expecting content
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
-    public void startElement(final String uri, final String localName, final String qName,
+	@SuppressWarnings("unchecked")
+	public void startElement(final String uri, final String localName, final String qName,
            final Attributes atts) throws SAXException {
         
         State state = new State(uri, localName, qName, atts, getCurrentState());

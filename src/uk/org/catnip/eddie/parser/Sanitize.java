@@ -75,11 +75,11 @@ public class Sanitize {
             "hr", "img", "input", "isindex", "link", "meta", "param" };
     static String[] url_attributes_array = {"href", "src"};
     static String[] unsafe_content_elements_array = {"script", "applet"};
-    static List acceptable_elements = Arrays.asList(acceptable_elements_array);
-    static List acceptable_attributes = Arrays.asList(acceptable_attributes_array);
-    static List url_attributes = Arrays.asList(url_attributes_array);
-    static List unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
-    static List elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
+    static List<String> acceptable_elements = Arrays.asList(acceptable_elements_array);
+    static List<String> acceptable_attributes = Arrays.asList(acceptable_attributes_array);
+    static List<String> url_attributes = Arrays.asList(url_attributes_array);
+    static List<String> unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
+    static List<String> elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
 
     static XMLReader xr;
     

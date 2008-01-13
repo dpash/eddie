@@ -67,11 +67,11 @@ public class FeedContext {
     public boolean has(String key) {
         return property_map.containsKey(key);
     }
-    public Iterator keys() {
+    public Iterator<String> keys() {
         return property_map.keySet().iterator();
     }
     
-    public Hashtable getHashtable() {
+    public Hashtable<String, String> getHashtable() {
         return property_map;
     }
     public Author getAuthor() {
@@ -89,7 +89,7 @@ public class FeedContext {
         links.add(link);
     }
     public void addCategory(Category category) {
-        Iterator it = categories.iterator();
+        Iterator<Category> it = categories.iterator();
         while (it.hasNext()) {
             Category cur_cat = (Category)it.next();
             if (category.getTerm().equals(cur_cat.getTerm())) {
@@ -99,15 +99,15 @@ public class FeedContext {
         categories.add(category);
     }
     @Deprecated
-    public Iterator contributors() {
+    public Iterator<Author> contributors() {
         return contributors.iterator();
     }
     @Deprecated
-    public Iterator links() {
+    public Iterator<Link> links() {
         return links.iterator();
     }
     @Deprecated
-    public Iterator categories() {
+    public Iterator<Category> categories() {
         return categories.iterator();
     }
     public Detail getTitle() {

@@ -109,7 +109,7 @@ public class FeedData extends FeedContext {
     }
     
     @Deprecated
-    public Iterator entries() {
+    public Iterator<Entry> entries() {
         return entries.iterator();
     }
 

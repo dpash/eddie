@@ -55,7 +55,7 @@ public class Entry extends FeedContext {
     public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append("{\n");
-        Iterator it = property_map.keySet().iterator();
+        Iterator<String> it = property_map.keySet().iterator();
         while (it.hasNext()){
             String key = (String)it.next();
             String value = property_map.get(key);
@@ -135,7 +135,7 @@ public class Entry extends FeedContext {
     }
  
     @Deprecated
-    public Iterator contents() {
+    public Iterator<Detail> contents() {
         return content.iterator();
     }
 
@@ -144,7 +144,7 @@ public class Entry extends FeedContext {
     }
  
     @Deprecated
-    public Iterator enclosures() {
+    public Iterator<Enclosure> enclosures() {
         return enclosures.iterator();
     }
     public boolean hasEnclosures() {

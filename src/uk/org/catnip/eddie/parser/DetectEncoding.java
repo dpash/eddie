@@ -304,7 +304,8 @@ public class DetectEncoding {
             encoding = defaultEncoding;
         }
         try {
-        	Charset charset = Charset.forName(encoding);
+        	@SuppressWarnings("unused")
+			Charset charset = Charset.forName(encoding);
         } catch (UnsupportedCharsetException ex) {
         	log.info("bogus encoding: " + encoding +". Using default");
         	encoding = defaultEncoding;
