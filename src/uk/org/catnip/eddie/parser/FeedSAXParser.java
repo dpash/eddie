@@ -191,6 +191,9 @@ public class FeedSAXParser extends BaseSAXParser {
             Enclosure enclosure = (Enclosure)current_entry.enclosures().next();
             current_entry.set("id", enclosure.getUrl());
         }
+        if (current_entry.getAuthor() == null) {
+        	current_entry.setAuthor(feed.getAuthor());
+        }
         feed.addEntry(current_entry);
         current_entry = null;
     }
@@ -455,6 +458,13 @@ public class FeedSAXParser extends BaseSAXParser {
             feed.set("modified",state.getAttr("lastmod"));
             feed.setModified(DateParser.parse(state.getAttr("lastmod")));
         }
+        if (null != state.getAttr("rdf:about")) {
+            feed.set("uri",state.resolveUri(state.getAttr("rdf:about")));
+            link = new Link();
+            link.setHref(state.resolveUri(state.getAttr("rdf:about")));
+            feed.addLink(link);
+            link = null;
+        }
         if (null != state.getAttr("href")) {
             feed.set("link",state.resolveUri(state.getAttr("href")));
             link = new Link();
@@ -514,7 +524,7 @@ public class FeedSAXParser extends BaseSAXParser {
     public void startElement_description(State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
-        state.setType("text/html");
+        state.setType(state.getAttr("type","text/html"));
         state.setExpectingText(true);       
         push(state);
     }
