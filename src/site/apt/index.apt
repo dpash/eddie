@@ -1,0 +1,128 @@
+   ---
+   Eddie RSS and Atom Parser for Java
+   ---
+   David Pashley
+   ---
+
+What is Eddie?
+
+  Eddie is a liberal RSS and Atom feed parsing library for Java. It is a SAX
+  based parser and as a result is capable of parsing a significant number of
+  broken feeds. It was written after discovering that the well-known ROME feed
+  parser is implemented using DOM and therefore incapable of dealing with ill
+  formed XML. It also failed to parse some well formed feeds too.
+
+  Eddie is written from scratch and is developed using my experiences of porting
+  Mark Pilgrim's Feedparser to perl. With that knowledge in hand Eddie is
+  designed to be as cleanly designed as is possible. The parser has been
+  developed using Feedparser's excellent documentation and their extensive test
+  cases.
+
+Features
+
+  * 100% Java
+
+  * Parses RSS 0.90, Netscape RSS 0.91, Userland RSS 0.91, RSS 0.92, RSS 0.93,
+    RSS 0.94, RSS 1.0, RSS 2.0, Atom 0.3, Atom 1.0 feeds.
+
+  * Passes 97% of the 3502 FeedParser unit tests.
+
+  * Parses non-wellformed feeds
+
+  * Open Source
+
+  The intention is to add support for improved date parsing support in the very
+  near future. The library should be able to pass 100% of the FeedParser unit
+  tests. In the medium term I intend to add a ROME compatibility layer to allow
+  you to use it as a drop in replacement for ROME.
+
+News
+
+* July 12 2008
+
+   Releases 0.3. Major changes includes:
+   
+   * an initial ROME compatibility layer
+
+   * license changed to GNU Affero General Public License 3.0
+
+   * now built using Maven
+
+* January 26 2007
+
+   Released 0.2, which has massively improved character encoding support, support for CDF, numerous bug fixes, support for input other than files and support for using TagSoup to sanitize the input. You can download the new release in the Download section.
+
+License
+
+ Eddie is licensed under the GNU Public License (GPL) with the following exception:
+
++------------------------------------------------------------------------------+
+Linking this library statically or dynamically with other modules is making a
+combined work based on this library. Thus, the terms and conditions of the GNU
+Affero General Public License 3.0 cover the whole combination.
+
+As a special exception, the copyright holders of this library give you
+permission to link this library with independent modules to produce an
+executable, regardless of the license terms of these independent modules, and to
+copy and distribute the resulting executable under a license certified by the
+Open Source Initative (http://www.opensource.org), provided that you also meet,
+for each linked independent module, the terms and conditions of the license of
+that module. An independent module is a module which is not derived from or
+based on this library. If you modify this library, you may extend this exception
+to your version of the library, but you are not obligated to do so.  If you do
+not wish to do so, delete this exception statement from your version.
++------------------------------------------------------------------------------+
+            
+
+ Basically, if your program is Open Source, you may use Eddie. If you wish to use Eddie in a commercial application, contact me
+
+Download
+
+   You can find downloads on the
+   {{{http://eddie.catnip.org.uk/eddie/download.html}download page}}
+
+Dependencies
+
+ Eddie has very few dependencies. It relies on features of Java 1.5. It
+ also uses a number of external projects. It uses Xerces
+ (http://xerces.apache.org/xerces2-j/) for XML parsing, Log4J
+ (http://logging.apache.org/log4j/docs/index.html) for logging, Apache
+ Commons-Codecs (http://jakarta.apache.org/commons/codec/) for Base64
+ decoding and Jython (http://www.jython as part of the testing
+ framework. There is also optional support for TagSoup
+ (http://home.ccil.org/~cowan/XML/tagsoup/) to sanitize entries.
+
+ You can find full details on the
+ {{{http://eddie.catnip.org.uk/eddie/dependencies.html}dependencies
+ page}}
+
+Usage
+
+ To parse a feed, create a Parser object, optionally pass it some HTTP headers and then call parse().
+
++------------------------------------------------------------------------------+
+import uk.org.catnip.eddie.parser.Parser;
+import uk.org.catnip.eddie.Feed;
+
+public class Main {
+
+   public static void main(String[] args) {
+
+      Parser parser = new Parser();
+
+      Feed feed = parser.parse(args[0]);
+
+      System.out.println(feed);
+   }
+} 
++------------------------------------------------------------------------------+
+
+Further Reading
+
+ * {{{http://www.feedparser.org/}FeedParser}}
+
+ * {{{http://wiki.java.net/bin/view/Javawsxml/Rome}ROME Parser}}
+
+ * {{{http://www.atomenabled.org/}ATOM feed format}}
+
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="eddie">
+   <bannerLeft>
+      <name>Maven</name>
+      <src>http://eddie.catnip.org.uk/images/logo.png</src>
+      <href>http://eddie.catnip.org.uk/</href>
+   </bannerLeft>
+   <body>
+      <links>
+         <item name="Eddie" href="http://eddie.catnip.org.uk/" />
+         <item name="Eddie Core" href="http://eddie.catnip.org.uk/eddie/"/>
+         <item name="Eddie ROME Compatibility" href="http://eddie.catnip.org.uk/eddie-rome/"/>
+      </links>
+
+      <menu name="Eddie">
+         <item name="Introduction" href="index.html"/>
+         <item name="Download" href="download.html"/>
+      </menu>
+      <menu name="Modules" inherit="top">
+         <item name="Eddie Core" href="http://eddie.catnip.org.uk/eddie/"/>
+         <item name="Eddie ROME Compatibility" href="http://eddie.catnip.org.uk/eddie-rome/"/>
+      </menu>
+
+      <menu ref="reports"/>
+
+   </body>
+</project>

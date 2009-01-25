@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="eddie/target/classes" path="eddie/src/main/java"/>
+	<classpathentry kind="src" output="eddie/target/test-classes" path="eddie/src/test/java"/>
+	<classpathentry excluding="**" kind="src" output="eddie/target/test-classes" path="eddie/src/test/resources"/>
+	<classpathentry kind="src" output="eddie-rome/target/classes" path="eddie-rome/src/main/java"/>
+	<classpathentry kind="src" output="eddie-rome/target/test-classes" path="eddie-rome/src/test/java"/>
+	<classpathentry excluding="**" kind="src" output="eddie-rome/target/test-classes" path="eddie-rome/src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="JAVA_LIB/commons-codec.jar"/>
-	<classpathentry kind="var" path="JAVA_LIB/log4j-1.2.jar"/>
-	<classpathentry kind="var" path="JAVA_LIB/xercesImpl.jar"/>
-	<classpathentry kind="var" path="JAVA_LIB/commons-lang.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+   http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>uk.org.catnip</groupId>
+   <version>0.3</version>
+   <artifactId>eddie-parent</artifactId>
+   <packaging>pom</packaging>
+   <url>http://eddie.catnip.org.uk/</url>
+   <name>Eddie RSS and Atom Parser</name>
+   <description>Eddie is a liberal RSS and Atom feed parsing library for Java.</description>
+
+   <licenses>
+      <license>
+         <name>GNU Affero General Public License 3.0</name>
+         <url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
+         <distribution>repo</distribution>
+         <comments>
+         Linking this library statically or dynamically with other
+         modules is making a combined work based on this library. Thus,
+         the terms and conditions of the GNU Affero General Public
+         License cover the whole combination.
+
+         As a special exception, the copyright holders of this library
+         give you permission to link this library with independent
+         modules to produce an executable, regardless of the license
+         terms of these independent modules, and to copy and distribute
+         the resulting executable under a license certified by the Open
+         Source Initative (http://www.opensource.org), provided that you
+         also meet, for each linked independent module, the terms and
+         conditions of the license of that module. An independent module
+         is a module which is not derived from or based on this library.
+         If you modify this library, you may extend this exception to
+         your version of the library, but you are not obligated to do
+         so.  If you do not wish to do so, delete this exception
+         statement from your version.
+         </comments>
+      </license>
+   </licenses>
+
+
+   <developers>
+      <developer>
+         <id>david</id>
+         <name>David Pashley</name>
+         <email>david@davidpashley.com</email>
+         <url>http://www.davidpashley.com</url>
+         <roles>
+            <role>architect</role>
+            <role>developer</role>
+         </roles>
+         <timezone>0</timezone>
+         <properties>
+            <picUrl>http://www.davidpashley.com/about/profile.jpg</picUrl>
+         </properties>
+      </developer>
+   </developers>
+
+
+   <modules>
+      <module>eddie</module>
+      <module>eddie-rome</module>
+   </modules>
+   <distributionManagement>
+      <site>
+         <id>eddie.website</id>
+         <url>scp://femme.catnip.org.uk/home/david/webs/eddie.catnip.org.uk</url>
+      </site>
+   </distributionManagement>
+
+</project>
