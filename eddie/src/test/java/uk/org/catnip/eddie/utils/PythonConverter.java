@@ -31,7 +31,7 @@
  * exception to your version of the library, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  */
-package uk.org.catnip.eddie.parser;
+package uk.org.catnip.eddie.utils;
 
 import java.util.Iterator;
 import java.util.Calendar;
@@ -77,9 +77,9 @@ public class PythonConverter {
         public PyObject __finditem__(PyObject key) {
             return super.__finditem__(map(key));
         }
+		/*
         @Override
 		public PyObject __findattr__(String arg0) {
-			// TODO Auto-generated method stub
 			PyObject object = null;
 			
 			object = super.__finditem__(arg0);
@@ -90,7 +90,7 @@ public class PythonConverter {
 			}
 			
 			return object;
-		}
+		}*/
 
 		public void __setitem__(PyObject key, PyObject value) {
             super.__setitem__(map(key),value);
@@ -133,12 +133,9 @@ public class PythonConverter {
         interp.set("entries", entries_list);
         interp.exec("ret ="+ test);
         PyInteger ret = (PyInteger)interp.get("ret");
-        if (ret.getValue() == 0) { 
-            return false;
-        } 
-        return true;
+		return ret.getValue() != 0;
 
-    }
+	}
     public static PyDictionary convertFeed(FeedData feed) {
         PyDictionary feed_dict = new PythonConverter().new EddieDict();
         Iterator<String> it = feed.keys();
@@ -337,7 +334,7 @@ public class PythonConverter {
         PyDictionary source_dict = new PyDictionary();
         Iterator<String> source_it = source.keys();
         while (source_it.hasNext()) {
-            String key = (String) source_it.next();
+            String key = source_it.next();
             source_dict.__setitem__(key, new PyString(source.get(key)));
         }
         if (source.getAuthor() != null) {
@@ -469,7 +466,7 @@ public class PythonConverter {
         return link_dict;
     }
     public static  PyTuple convertDate(Date date) {
-        PyTuple date_tuple;;
+        PyTuple date_tuple;
     
     if (date != null) {
         Calendar cal = new GregorianCalendar();

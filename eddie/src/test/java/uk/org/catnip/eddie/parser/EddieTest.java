@@ -33,39 +33,40 @@
  */
 package uk.org.catnip.eddie.parser;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import uk.org.catnip.eddie.FeedData;
+import uk.org.catnip.eddie.utils.LabelledParameterized;
+import uk.org.catnip.eddie.utils.PythonConverter;
+
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.regex.*;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Hashtable;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import static org.junit.Assert.assertTrue;
 
-import uk.org.catnip.eddie.FeedData;
 
-import uk.org.catnip.eddie.parser.DetectEncoding;
-import uk.org.catnip.eddie.parser.Parser;
-
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-
+@RunWith(LabelledParameterized.class)
 public class EddieTest {
 
-	static final String test_dir = "tests";
-	static Logger log = Logger.getLogger(EddieTest.class);
+	private static final String test_dir = "tests";
 
-	@DataProvider(name = "feedparser")
-	public Iterator<Object[]> findTests() throws IOException {
-		List<Object[]> files = new LinkedList<Object[]>();
-		for (Enumeration<URL> e = getClass().getClassLoader().getResources(
+	private String filename;
+
+	public EddieTest(String label, String filename) {
+		this.filename = filename;
+	}
+
+	@Parameterized.Parameters
+	public static Collection<String[]> findTests() throws IOException {
+		List<String[]> files = new LinkedList<String[]>();
+		for (Enumeration<URL> e = EddieTest.class.getClassLoader().getResources(
 				test_dir); e.hasMoreElements();) {
-			URL url = (URL) e.nextElement();
+			URL url = e.nextElement();
 			List<File> fl = getFileList(new File(url.getFile()));
 			for (File f : fl) {
 				String file = null;
@@ -74,14 +75,15 @@ public class EddieTest {
 				} catch (URISyntaxException e1) {
 					e1.printStackTrace();
 				}
-				files.add(new Object[] { test_dir + "/" + file });
+				files.add(new String[]{file, test_dir + "/" + file});
 			}
 
 		}
-		return files.iterator();
+		return files;
 	}
 
-	protected List<File> getFileList(File file) {
+
+	protected static List<File> getFileList(File file) {
 		List<File> files = new LinkedList<File>();
 		if (file.isDirectory()) {
 			File filelist[] = file.listFiles();
@@ -94,8 +96,8 @@ public class EddieTest {
 		return files;
 	}
 
-	@Test(dataProvider = "feedparser")
-	public void test(String filename) throws Exception {
+	@Test
+	public void test() throws Exception {
 		
 		InputStream input = getClass().getClassLoader().getResourceAsStream(
 				filename);
