@@ -33,10 +33,10 @@
  */
 package uk.org.catnip.eddie;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 public class Author {
-    static Logger log = Logger.getLogger(FeedContext.class);
+    private static final Logger log = Logger.getLogger(Author.class);
     private String name = "";
     private String email = "";
     private String href = "";
@@ -60,11 +60,11 @@ public class Author {
     }
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("name: '" + this.name+ "', ");
-        sb.append("email: '" + this.email+ "', ");
-        sb.append("url: '" + this.href +"'");
-        sb.append("}");
+        sb.append('{');
+		sb.append("name: '").append(name).append("', ");
+		sb.append("email: '").append(email).append("', ");
+		sb.append("url: '").append(href).append('\'');
+        sb.append('}');
         return sb.toString();
     }
     
@@ -72,7 +72,7 @@ public class Author {
         log.debug(this);
         String ret = "";
         if (name != null && !"".equals(email)) {
-            ret = name + " (" + email + ")";
+            ret = name + " (" + email + ')';
         } else if (!"".equals(name)) {
             ret = name;
         } 
@@ -85,10 +85,10 @@ public class Author {
         content = content.trim();
         // TODO: This should be a regex.
         if (content.contains("(")) {
-            String part1 = content.substring(0, content.indexOf("("))
+            String part1 = content.substring(0, content.indexOf('('))
             .trim();
-            String part2 = content.substring(content.lastIndexOf("(") + 1,
-                    content.lastIndexOf(")")).trim();
+            String part2 = content.substring(content.lastIndexOf('(') + 1,
+                    content.lastIndexOf(')')).trim();
             if (part1.contains("@")) {
                 name = part2;
                 email = part1;
@@ -97,9 +97,9 @@ public class Author {
                 email = part2;
             }
         } else if (content.contains("<")) {
-            String part1 = content.substring(0, content.indexOf("<")).trim();
-            String part2 = content.substring(content.lastIndexOf("<") + 1,
-                        content.lastIndexOf(">")).trim();
+            String part1 = content.substring(0, content.indexOf('<')).trim();
+            String part2 = content.substring(content.lastIndexOf('<') + 1,
+                        content.lastIndexOf('>')).trim();
             if (part1.contains("@")) {
                 name = part2;
                 email = part1;
