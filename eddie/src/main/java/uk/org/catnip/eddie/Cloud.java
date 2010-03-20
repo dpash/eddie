@@ -47,11 +47,11 @@ public class Cloud {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("domain: '" + this.domain + "', ");
-        sb.append("port: '" + this.port + "', ");
-        sb.append("registerProcedure: '" + this.registerProcedure + "', ");
-        sb.append("path: '" + this.path + "', ");
-        sb.append("protocol: '" + this.protocol + "'");
+		sb.append("domain: '").append(this.domain).append("', ");
+		sb.append("port: '").append(this.port).append("', ");
+		sb.append("registerProcedure: '").append(this.registerProcedure).append("', ");
+		sb.append("path: '").append(this.path).append("', ");
+		sb.append("protocol: '").append(this.protocol).append("'");
         sb.append("}");
         return sb.toString();
     }
