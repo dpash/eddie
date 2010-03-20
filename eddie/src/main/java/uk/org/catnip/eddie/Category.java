@@ -40,9 +40,9 @@ private String label;
 public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
-    sb.append("term: '" + this.term+ "', ");
-    sb.append("schedule: '" + this.schedule+ "', ");
-    sb.append("label: '" + this.label +"'");
+	sb.append("term: '").append(this.term).append("', ");
+	sb.append("schedule: '").append(this.schedule).append("', ");
+	sb.append("label: '").append(this.label).append("'");
     sb.append("}");
     return sb.toString();
 }
