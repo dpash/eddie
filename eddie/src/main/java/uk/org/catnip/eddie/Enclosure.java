@@ -41,9 +41,9 @@ public class Enclosure {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("url: '" + this.url+ "', ");
-        sb.append("length: '" + this.length+ "', ");
-        sb.append("type: '" + this.type +"'");
+		sb.append("url: '").append(this.url).append("', ");
+		sb.append("length: '").append(this.length).append("', ");
+		sb.append("type: '").append(this.type).append("'");
         sb.append("}");
         return sb.toString();
     }
