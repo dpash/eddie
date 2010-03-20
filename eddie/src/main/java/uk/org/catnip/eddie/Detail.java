@@ -33,7 +33,7 @@
  */
 package uk.org.catnip.eddie;
 
-import java.lang.StringBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Detail {
     private String language;
@@ -78,41 +78,6 @@ public class Detail {
     public void setValue(String value) {
         this.value = value.trim();
     }
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        if (type != null){
-            sb.append("type: '");
-            sb.append(this.type);
-            sb.append("', ");
-        }
-        if (language != null){
-            sb.append("language: '");
-            sb.append(this.language);
-            sb.append("', ");
-        }
-        if (src != null){
-            sb.append("src: '");
-            sb.append(this.src);
-            sb.append("', ");
-        }
-        if (base != null){
-            sb.append("base: '");
-            sb.append(this.base);
-            sb.append("', ");
-        }
-        if (value != null){
-            sb.append("value: '");
-            if (value.length() > 100) {
-                sb.append(this.value.substring(0,100));
-            } else {
-                sb.append(this.value);
-            }
-            sb.append("'");
-        }
-        sb.append("}");
-        return sb.toString();
-    }
 
     public String getBase() {
         return base;
@@ -121,4 +86,15 @@ public class Detail {
     public void setBase(String base) {
         this.base = base;
     }
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).
+				append("language", language).
+				append("type", type).
+				append("value", value).
+				append("src", src).
+				append("base", base).
+				toString();
+	}
 }
