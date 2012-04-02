@@ -3,22 +3,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>eddie - Eddie RSS and Atom Parser for Java</title>
+    <title>Eddie - Core - About</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
       @import url("./css/site.css");
     </style>
     <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
-      <meta name="author" content="David Pashley" />
     <meta name="Date-Revision-yyyymmdd" content="20120402" />
     <meta http-equiv="Content-Language" content="en" />
         
   </head>
   <body class="composite">
     <div id="banner">
-                  <a href="" id="bannerLeft">
-                                                <img src="images/logo.png" alt="Maven" />
+                  <a href="../" id="bannerLeft">
+                                                <img src="../images/logo.png" alt="Maven" />
                 </a>
                     <div class="clear">
         <hr/>
@@ -31,11 +30,11 @@
         <span id="publishDate">Last Published: 2012-04-02</span>
                   &nbsp;| <span id="projectVersion">Version: 0.3</span>
                       </div>
-            <div class="xright">                    <a href="http://eddie.catnip.org.uk/" class="externalLink" title="Eddie">Eddie</a>
+            <div class="xright">                    <a href="../" title="Eddie">Eddie</a>
             |
-                        <a href="eddie/" title="Eddie Core">Eddie Core</a>
+                        <a href="http://eddie.catnip.org.uk/eddie/" class="externalLink" title="Eddie Core">Eddie Core</a>
             |
-                        <a href="eddie-rome/" title="Eddie ROME Compatibility">Eddie ROME Compatibility</a>
+                        <a href="../eddie-rome/" title="Eddie ROME Compatibility">Eddie ROME Compatibility</a>
               
         
       </div>
@@ -47,70 +46,14 @@
       <div id="navcolumn">
              
         
-                                <h5>Eddie</h5>
+                                <h5>Modules</h5>
                   <ul>
                   <li class="none">
-            <strong>Introduction</strong>
-          </li>
-                  <li class="none">
-                          <a href="download.html" title="Download">Download</a>
-            </li>
-          </ul>
-                       <h5>Modules</h5>
-                  <ul>
-                  <li class="none">
-                          <a href="eddie/" title="Eddie Core">Eddie Core</a>
+                          <a href="http://eddie.catnip.org.uk/eddie/" class="externalLink" title="Eddie Core">Eddie Core</a>
             </li>
                   <li class="none">
-                          <a href="eddie-rome/" title="Eddie ROME Compatibility">Eddie ROME Compatibility</a>
+                          <a href="../eddie-rome/" title="Eddie ROME Compatibility">Eddie ROME Compatibility</a>
             </li>
-          </ul>
-                       <h5>Project Documentation</h5>
-                  <ul>
-                                                                                                                                                                                                                                                                                                      <li class="expanded">
-                          <a href="project-info.html" title="Project Information">Project Information</a>
-                    <ul>
-                      <li class="none">
-            <strong>About</strong>
-          </li>
-                      <li class="none">
-                          <a href="integration.html" title="Continuous Integration">Continuous Integration</a>
-            </li>
-                      <li class="none">
-                          <a href="dependencies.html" title="Dependencies">Dependencies</a>
-            </li>
-                      <li class="none">
-                          <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
-            </li>
-                      <li class="none">
-                          <a href="dependency-management.html" title="Dependency Management">Dependency Management</a>
-            </li>
-                      <li class="none">
-                          <a href="issue-tracking.html" title="Issue Tracking">Issue Tracking</a>
-            </li>
-                      <li class="none">
-                          <a href="mail-lists.html" title="Mailing Lists">Mailing Lists</a>
-            </li>
-                      <li class="none">
-                          <a href="plugin-management.html" title="Plugin Management">Plugin Management</a>
-            </li>
-                      <li class="none">
-                          <a href="license.html" title="Project License">Project License</a>
-            </li>
-                      <li class="none">
-                          <a href="plugins.html" title="Project Plugins">Project Plugins</a>
-            </li>
-                      <li class="none">
-                          <a href="project-summary.html" title="Project Summary">Project Summary</a>
-            </li>
-                      <li class="none">
-                          <a href="team-list.html" title="Project Team">Project Team</a>
-            </li>
-                      <li class="none">
-                          <a href="source-repository.html" title="Source Repository">Source Repository</a>
-            </li>
-              </ul>
-        </li>
           </ul>
                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
         <img class="poweredBy" alt="Built by Maven" src="./images/logos/maven-feather.png" />
@@ -121,33 +64,7 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section"><h2>What is Eddie?<a name="What_is_Eddie"></a></h2><p>Eddie is a liberal RSS and Atom feed parsing library for Java. It is a SAX based parser and as a result is capable of parsing a significant number of broken feeds. It was written after discovering that the well-known ROME feed parser is implemented using DOM and therefore incapable of dealing with ill formed XML. It also failed to parse some well formed feeds too.</p><p>Eddie is written from scratch and is developed using my experiences of porting Mark Pilgrim's Feedparser to perl. With that knowledge in hand Eddie is designed to be as cleanly designed as is possible. The parser has been developed using Feedparser's excellent documentation and their extensive test cases.</p></div><div class="section"><h2>Features<a name="Features"></a></h2><ul><li>100% Java</li><li>Parses RSS 0.90, Netscape RSS 0.91, Userland RSS 0.91, RSS 0.92, RSS 0.93, RSS 0.94, RSS 1.0, RSS 2.0, Atom 0.3, Atom 1.0 feeds.</li><li>Passes 97% of the 3502 FeedParser unit tests.</li><li>Parses non-wellformed feeds</li><li>Open Source<p>The intention is to add support for improved date parsing support in the very near future. The library should be able to pass 100% of the FeedParser unit tests. In the medium term I intend to add a ROME compatibility layer to allow you to use it as a drop in replacement for ROME.</p></li></ul></div><div class="section"><h2>News<a name="News"></a></h2><div class="section"><h3>July 12 2008<a name="July_12_2008"></a></h3><p>Releases 0.3. Major changes includes:</p><ul><li>an initial ROME compatibility layer</li><li>license changed to GNU Affero General Public License 3.0</li><li>now built using Maven</li></ul></div><div class="section"><h3>January 26 2007<a name="January_26_2007"></a></h3><p>Released 0.2, which has massively improved character encoding support, support for CDF, numerous bug fixes, support for input other than files and support for using TagSoup to sanitize the input. You can download the new release in the Download section.</p></div></div><div class="section"><h2>License<a name="License"></a></h2><p>Eddie is licensed under the GNU Public License (GPL) with the following exception:</p><div class="source"><pre>Linking this library statically or dynamically with other modules is making a
-combined work based on this library. Thus, the terms and conditions of the GNU
-Affero General Public License 3.0 cover the whole combination.
-
-As a special exception, the copyright holders of this library give you
-permission to link this library with independent modules to produce an
-executable, regardless of the license terms of these independent modules, and to
-copy and distribute the resulting executable under a license certified by the
-Open Source Initative (http://www.opensource.org), provided that you also meet,
-for each linked independent module, the terms and conditions of the license of
-that module. An independent module is a module which is not derived from or
-based on this library. If you modify this library, you may extend this exception
-to your version of the library, but you are not obligated to do so.  If you do
-not wish to do so, delete this exception statement from your version.</pre></div><p>Basically, if your program is Open Source, you may use Eddie. If you wish to use Eddie in a commercial application, contact me</p></div><div class="section"><h2>Download<a name="Download"></a></h2><p>You can find downloads on the <a class="externalLink" href="http://eddie.catnip.org.uk/eddie/download.html">download page</a></p></div><div class="section"><h2>Dependencies<a name="Dependencies"></a></h2><p>Eddie has very few dependencies. It relies on features of Java 1.5. It also uses a number of external projects. It uses Xerces (http://xerces.apache.org/xerces2-j/) for XML parsing, Log4J (http://logging.apache.org/log4j/docs/index.html) for logging, Apache Commons-Codecs (http://jakarta.apache.org/commons/codec/) for Base64 decoding and Jython (http://www.jython as part of the testing framework. There is also optional support for TagSoup (http://home.ccil.org/~cowan/XML/tagsoup/) to sanitize entries.</p><p>You can find full details on the <a class="externalLink" href="http://eddie.catnip.org.uk/eddie/dependencies.html">dependencies page</a></p></div><div class="section"><h2>Usage<a name="Usage"></a></h2><p>To parse a feed, create a Parser object, optionally pass it some HTTP headers and then call parse().</p><div class="source"><pre>import uk.org.catnip.eddie.parser.Parser;
-import uk.org.catnip.eddie.Feed;
-
-public class Main {
-
-   public static void main(String[] args) {
-
-      Parser parser = new Parser();
-
-      Feed feed = parser.parse(args[0]);
-
-      System.out.println(feed);
-   }
-} </pre></div></div><div class="section"><h2>Further Reading<a name="Further_Reading"></a></h2><ul><li><a class="externalLink" href="http://www.feedparser.org/">FeedParser</a></li><li><a class="externalLink" href="http://wiki.java.net/bin/view/Javawsxml/Rome">ROME Parser</a></li><li><a class="externalLink" href="http://www.atomenabled.org/">ATOM feed format</a></li></ul></div>
+        <div class="section"><h2>About Eddie - Core<a name="About_Eddie_-_Core"></a></h2><p>Eddie is a liberal RSS and Atom feed parsing library for Java.</p></div>
       </div>
     </div>
     <div class="clear">
