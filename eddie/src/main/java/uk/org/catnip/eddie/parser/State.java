@@ -33,6 +33,8 @@
  */
 package uk.org.catnip.eddie.parser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 import java.lang.StringBuilder;
@@ -43,12 +45,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class State {
+    @NotNull
     private static Map<String,String> element_aliases = createElementAliases();
-    private Map<String, String> attributes = null;
+    @NotNull
+    private Map<String, String> attributes = new HashMap<String, String>();
     private static Logger log = Logger.getLogger(State.class);
 
+    @NotNull
     private static Map<String,String> namespace_aliases = createNamespaceAliases();
 
+    @NotNull
     private static Map<String,String> createElementAliases() {
         Map<String,String> aliases = new HashMap<String,String>();
         aliases.put("abstract", "description");
@@ -102,6 +108,7 @@ public class State {
         return aliases;
     }
 
+    @NotNull
     private static Map<String,String> createNamespaceAliases() {
         Map<String,String> aliases = new HashMap<String,String>();
         aliases.put("http://www.w3.org/2005/atom", "");
@@ -164,8 +171,10 @@ public class State {
         return aliases;
     }
 
+    @NotNull
     private Attributes atts = new AttributesImpl();
 
+    @Nullable
     private URI base;
 
     public boolean content = false;
@@ -184,8 +193,10 @@ public class State {
 
     private String qName;
 
+    @NotNull
     private StringBuilder text = new StringBuilder();
 
+    @Nullable
     private String type;
 
     private String uri;
@@ -194,12 +205,12 @@ public class State {
     }
 
     
-    public State(String uri, String localName, String qName) {
+    public State(String uri, @NotNull String localName, @NotNull String qName) {
         this.uri = uri;
         this.localName = localName.toLowerCase();
         this.qName = qName.toLowerCase();
         if (namespace_aliases.containsKey(this.uri.toLowerCase())) {
-            this.namespace = (String) namespace_aliases.get(this.uri.toLowerCase());
+            this.namespace = namespace_aliases.get(this.uri.toLowerCase());
             this.element = aliasElement(this.namespace, this.localName);
         } else {
             // We don't know what this namespace is, so we'll just assume it's right
@@ -210,8 +221,8 @@ public class State {
         
     }
 
-    public State(String uri, String localName, String qName, Attributes atts,
-            State prev) {
+    public State(String uri, @NotNull String localName, @NotNull String qName, Attributes atts,
+            @NotNull State prev) {
         this(uri,localName,qName);
         this.atts = atts;
         
@@ -239,7 +250,7 @@ public class State {
             element = namespace + ":" + element;
         }
         if (element_aliases.containsKey(element)) {
-            return (String) element_aliases.get(element);
+            return element_aliases.get(element);
         }
         return element;
     }
@@ -248,7 +259,7 @@ public class State {
         return this.getAttr(key, null);
     }
 
-    public String getAttr(String key, String default_value) {
+    public String getAttr(String key, @Nullable String default_value) {
         genAttributes();
         key = key.toLowerCase();
         String ret;
@@ -262,8 +273,8 @@ public class State {
     }
 
     private void genAttributes() {
-        if (attributes != null) { return; }
-        attributes = new HashMap<String, String>();
+        if (!attributes.isEmpty()) { return; }
+        attributes.clear();
         for (int i = 0; i < atts.getLength(); i++) {
             String key = atts.getQName(i).toLowerCase();
             String value = atts.getValue(i);
@@ -271,6 +282,7 @@ public class State {
         }
     }
     
+    @Nullable
     public String getBase() {
         if (base != null) {
             return base.toString();
@@ -293,6 +305,7 @@ public class State {
     }
 
     
+    @Nullable
     public String getType() {
         return type;
     }
@@ -301,7 +314,8 @@ public class State {
         return uri;
     }
 
-    public String resolveUri(String uri) {
+    @Nullable
+    public String resolveUri(@Nullable String uri) {
         if (base == null) {
             return uri;
         }
@@ -319,11 +333,10 @@ public class State {
         }
     }
     public boolean isBaseRelative() {
-        if (this.base == null) { return false; }
-        return !this.base.isAbsolute();
+        return this.base != null && !this.base.isAbsolute();
     }
     
-    public void resolveBaseWith(String uri) {
+    public void resolveBaseWith(@Nullable String uri) {
         try {
             if (this.base != null && uri != null) {
                 URI real_base = new URI(uri);
@@ -334,7 +347,7 @@ public class State {
         }
     }
     
-    public void setBase(String base) {
+    public void setBase(@Nullable String base) {
         if (base != null) {
             base = base.replaceAll("^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)", "$1$3");
             try {
@@ -368,7 +381,7 @@ public class State {
         this.language = language;
     }
 
-    public void setType(String type) {
+    public void setType(@Nullable String type) {
         if (type != null) {
             if (type.equals("text")) {
                 this.type = "text/plain";
@@ -424,6 +437,7 @@ public class State {
         this.expectingText = expectingText;
     }
 
+    @NotNull
     public Attributes getAttributes() {
         return atts;
     }

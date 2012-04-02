@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
@@ -50,6 +51,7 @@ import java.io.StringReader;
 public class Sanitize {
     static Logger log = Logger.getLogger(Sanitize.class);
 
+    @NotNull
     static String[] acceptable_elements_array = {"a", "abbr", "acronym", "address", "area", "b", "big",
         "blockquote", "br", "button", "caption", "center", "cite", "code", "col",
         "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "fieldset",
@@ -58,6 +60,7 @@ public class Sanitize {
         "option", "p", "pre", "q", "s", "samp", "select", "small", "span", "strike",
         "strong", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
         "thead", "tr", "tt", "u", "ul", "var"};
+    @NotNull
     static String[] acceptable_attributes_array = { "abbr", "accept", "accept-charset",
             "accesskey", "action", "align", "alt", "axis", "border",
             "cellpadding", "cellspacing", "char", "charoff", "charset",
@@ -71,9 +74,12 @@ public class Sanitize {
             "shape", "size", "span", "src", "start", "summary", "tabindex",
             "target", "title", "type", "usemap", "valign", "value",
             "vspace", "width" };
+    @NotNull
     static String[] elements_no_end_tag_array = { "area", "base", "basefont", "br", "col", "frame",
             "hr", "img", "input", "isindex", "link", "meta", "param" };
+    @NotNull
     static String[] url_attributes_array = {"href", "src"};
+    @NotNull
     static String[] unsafe_content_elements_array = {"script", "applet"};
     static List<String> acceptable_elements = Arrays.asList(acceptable_elements_array);
     static List<String> acceptable_attributes = Arrays.asList(acceptable_attributes_array);
@@ -95,6 +101,7 @@ public class Sanitize {
 
         private boolean unsafe_content = false;
         private static final int MAX_ERRORS=2000;
+        @NotNull
         private StringBuilder sb = new StringBuilder();
         protected Locator locator;
         public void setDocumentLocator(final Locator locator) {
@@ -117,7 +124,7 @@ public class Sanitize {
             
         }
         public void startElement(String uri, String localName, String qName,
-                Attributes atts) throws SAXException {
+                @NotNull Attributes atts) throws SAXException {
             started_document = true;
             // This is currently a hack. Should we find any more, 
             // we'll need to create a hash
@@ -181,12 +188,12 @@ public class Sanitize {
 
         }
         // ErrorHandler
-        public void warning(SAXParseException exception) throws SAXException {
+        public void warning(@NotNull SAXParseException exception) throws SAXException {
             log.debug("warning: " + exception.getMessage());
             // throw new SAXException(exception);
         }
 
-        public void error(SAXParseException exception) throws SAXException {
+        public void error(@NotNull SAXParseException exception) throws SAXException {
             //errors++;
             log.debug("error: " + exception.getMessage());
             if (errors > MAX_ERRORS) {
@@ -194,7 +201,7 @@ public class Sanitize {
             }
         }
 
-        public void fatalError(SAXParseException exception) throws SAXException {
+        public void fatalError(@NotNull SAXParseException exception) throws SAXException {
             errors++;
             log.debug("fatalError: " + exception.getMessage());
             if (errors > MAX_ERRORS) {
@@ -219,7 +226,7 @@ public class Sanitize {
      * @param state current state information
      * @return cleaned string
      */
-    static public String clean(String data, State state) {
+    static public String clean(String data, @NotNull State state) {
         Sanitize s = new Sanitize();
         data = data.replace("&", "&amp;");
         if (state.getType().equals("text/plain") && (!"base64".equals(state.getMode()))) {
@@ -238,7 +245,7 @@ public class Sanitize {
      * @param state current state information
      * @return cleaned string
      */
-     public String real_clean(String data, State state) {
+     public String real_clean(@NotNull String data, State state) {
         String ret = data;
         if (!data.trim().startsWith("<!DOCTYPE")) {
             data = "<html>"+data+"</html>";
@@ -287,7 +294,7 @@ public class Sanitize {
      * @param state current sax event
      * @return text representation of the SAX event
      */
-    static public String clean_html_start(State state) {
+    static public String clean_html_start(@NotNull State state) {
         StringBuilder sb = new StringBuilder();    
         sb.append("<");
         sb.append(state.getElement());
@@ -312,6 +319,7 @@ public class Sanitize {
      * @param tag end tag
      * @return text representation of the SAX event
      */
+    @NotNull
     static public String clean_html_end(String tag) {
         if (elements_no_end_tag.contains(tag)) {
             return "";

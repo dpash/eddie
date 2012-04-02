@@ -33,6 +33,8 @@
  */
 package uk.org.catnip.eddie.parser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
 import org.apache.log4j.Logger;
 import uk.org.catnip.eddie.Cloud;
@@ -59,13 +61,21 @@ import uk.org.catnip.eddie.Source;
  */
 public class FeedSAXParser extends BaseSAXParser {
     static Logger log = Logger.getLogger(FeedSAXParser.class);
+    @Nullable
     private Author author;
+    @Nullable
     private Category category;
+    @Nullable
     private Generator generator;
+    @Nullable
     private Image image;
+    @Nullable
     private Link link;
+    @Nullable
     private TextInput textinput;
+    @NotNull
     protected FeedData feed = new FeedData();
+    @Nullable
     protected Entry current_entry;
     protected boolean in_feed = false;
     protected boolean in_textinput = false;
@@ -436,19 +446,19 @@ public class FeedSAXParser extends BaseSAXParser {
         image.setWidth(pop("width"));
     }
         
-    public void startElement_author(State state) throws SAXException {
+    public void startElement_author(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         author = new Author();
         push(state);
     }
-    public void startElement_category(State state) throws SAXException {
+    public void startElement_category(@NotNull State state) throws SAXException {
         category = new Category();
         category.setSchedule(state.getAttr("domain", state.getAttr("scheme")));
         category.setLabel(state.getAttr("label"));
         log.debug(state.getAttr("term"));
         category.setTerm(state.getAttr("term"));
     }
-    public void startElement_channel(State state) throws SAXException {
+    public void startElement_channel(@NotNull State state) throws SAXException {
         in_feed = true;
         if (null != state.getAttr("base")) {
             state.setBase(state.getAttr("base"));
@@ -475,7 +485,7 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
 
-    public void startElement_cloud(State state) throws SAXException {
+    public void startElement_cloud(@NotNull State state) throws SAXException {
         Cloud cloud = new Cloud();
         cloud.setDomain(state.getAttr("domain"));
         cloud.setPort(state.getAttr("port"));
@@ -487,14 +497,14 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
     
-    public void startElement_content(State state) throws SAXException {
+    public void startElement_content(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "xml"));
         state.setExpectingText(true);
         push(state);
 
     }
-    public void startElement_content_encoded(State state) throws SAXException {
+    public void startElement_content_encoded(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode("escaped");
         state.setType("text/html");
@@ -502,13 +512,13 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
 
     }
-    public void startElement_contributor(State state) throws SAXException {
+    public void startElement_contributor(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         author = new Author();
         push(state);
     }
     
-    public void startElement_copyright(State state) throws SAXException {
+    public void startElement_copyright(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
         state.setType(state.getAttr("type", "text/plain"));
@@ -517,11 +527,11 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
 
-    public void startElement_created(State state) throws SAXException {
+    public void startElement_created(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_description(State state) throws SAXException {
+    public void startElement_description(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
         state.setType(state.getAttr("type","text/html"));
@@ -529,7 +539,7 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
 
-    public void startElement_enclosure(State state) throws SAXException {
+    public void startElement_enclosure(@NotNull State state) throws SAXException {
         Enclosure enclosure = new Enclosure();
         enclosure.setUrl(state.getAttr("url"));
         enclosure.setLength(state.getAttr("length"));
@@ -537,7 +547,7 @@ public class FeedSAXParser extends BaseSAXParser {
         current_entry.addEnclosure(enclosure);
     }
     
-    public void startElement_entry(State state) throws SAXException {
+    public void startElement_entry(@NotNull State state) throws SAXException {
         current_entry = new Entry();
         if (null != state.getAttr("href")) {
             current_entry.set("link",state.resolveUri(state.getAttr("href")));
@@ -556,11 +566,11 @@ public class FeedSAXParser extends BaseSAXParser {
         }
         push(state);
     }
-    public void startElement_expirationdate(State state) throws SAXException {
+    public void startElement_expirationdate(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_feed(State state) throws SAXException {
+    public void startElement_feed(@NotNull State state) throws SAXException {
 
         this.in_feed = true;
         String attr_version = state.getAttr("version");
@@ -592,7 +602,7 @@ public class FeedSAXParser extends BaseSAXParser {
         
     }
 
-    public void startElement_generator(State state) throws SAXException {
+    public void startElement_generator(@NotNull State state) throws SAXException {
         generator = new Generator();
         generator.setName(state.getAttr("name"));
         generator.setUrl(state.resolveUri(state.getAttr("url", state.getAttr("uri"))));
@@ -600,16 +610,16 @@ public class FeedSAXParser extends BaseSAXParser {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_guid(State state) throws SAXException {
+    public void startElement_guid(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         current_entry.setGuidIsLink(state.getAttr("isPermaLink", "true").equals("true"));
         push(state);
     }
-    public void startElement_icon(State state) throws SAXException {
+    public void startElement_icon(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_image(State state) throws SAXException {
+    public void startElement_image(@NotNull State state) throws SAXException {
         in_image = true;
         image = new Image();
         image.setUrl(state.getAttr("href"));
@@ -617,7 +627,7 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
     
-    public void startElement_info(State state) throws SAXException {
+    public void startElement_info(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
         state.setType(state.getAttr("type", "text/plain"));
@@ -626,34 +636,34 @@ public class FeedSAXParser extends BaseSAXParser {
 
     }
 
-    public void startElement_issued(State state) throws SAXException {
+    public void startElement_issued(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_itunes_block(State state) throws SAXException {
+    public void startElement_itunes_block(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_itunes_category(State state) throws SAXException {
+    public void startElement_itunes_category(@NotNull State state) throws SAXException {
         Category cat = new Category();
         cat.setTerm(state.getAttr("text"));
         cat.setSchedule("http://www.itunes.com/");
         getCurrentContext().addCategory(cat);
         push(state);
     }
-    public void startElement_itunes_duration(State state) throws SAXException {
+    public void startElement_itunes_duration(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_itunes_explicit(State state) throws SAXException {
+    public void startElement_itunes_explicit(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_itunes_keywords(State state) throws SAXException {
+    public void startElement_itunes_keywords(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_link(State state) throws SAXException {
+    public void startElement_link(@NotNull State state) throws SAXException {
         if ("enclosure".equals(state.getAttr("rel"))) {
             Enclosure enclosure = new Enclosure();
             enclosure.setUrl(state.resolveUri(state.getAttr("href")));
@@ -678,21 +688,21 @@ public class FeedSAXParser extends BaseSAXParser {
         
         push(state);
     }
-    public void startElement_logo(State state) throws SAXException {
+    public void startElement_logo(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_modified(State state) throws SAXException {
+    public void startElement_modified(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_publisher(State state) throws SAXException {
+    public void startElement_publisher(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         author = new Author();
         push(state);
     }
     
-    public void startElement_rdf(State state) throws SAXException {
+    public void startElement_rdf(@NotNull State state) throws SAXException {
         if ("http://my.netscape.com/rdf/simple/0.9/"
                 .equals(state.getAttr("xmlns"))) {
             feed.set("format", "rss090");
@@ -701,7 +711,7 @@ public class FeedSAXParser extends BaseSAXParser {
         }
     }
     
-    public void startElement_rss(State state) throws SAXException {
+    public void startElement_rss(@NotNull State state) throws SAXException {
         in_feed = true;
         String version = state.getAttr("version");
         if (version != null) {
@@ -728,7 +738,7 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
 
     }
-    public void startElement_subtitle(State state) throws SAXException {
+    public void startElement_subtitle(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
         state.setType(state.getAttr("type", "text/plain"));
@@ -736,7 +746,7 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
 
     }
-    public void startElement_summary(State state) throws SAXException {
+    public void startElement_summary(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
         state.setType(state.getAttr("type", "text/plain"));
@@ -750,7 +760,7 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
     }
 
-    public void startElement_title(State state) throws SAXException {
+    public void startElement_title(@NotNull State state) throws SAXException {
         in_content++;
         state.setMode(state.getAttr("mode", "escaped"));
         state.setType(state.getAttr("type", "text/plain"));
@@ -758,15 +768,15 @@ public class FeedSAXParser extends BaseSAXParser {
         push(state);
 
     }
-    public void startElement_url(State state) throws SAXException {
+    public void startElement_url(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_wfw_comment(State state) throws SAXException {
+    public void startElement_wfw_comment(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
-    public void startElement_wfw_commentrss(State state) throws SAXException {
+    public void startElement_wfw_commentrss(@NotNull State state) throws SAXException {
         state.setExpectingText(true);
         push(state);
     }
@@ -783,10 +793,12 @@ public class FeedSAXParser extends BaseSAXParser {
 
 
     
+    @NotNull
     public FeedData getFeed() {
         feed.error = this.error;
         return feed;
     }
+    @Nullable
     protected FeedContext getCurrentContext() {
         if (current_entry != null) {
             if (in_source) {

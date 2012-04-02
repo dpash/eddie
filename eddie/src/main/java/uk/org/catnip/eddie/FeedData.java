@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.lang.StringBuilder;
 import java.util.Iterator;
+
+import org.jetbrains.annotations.NotNull;
 import uk.org.catnip.eddie.Detail;
 
 public class FeedData extends FeedContext {
@@ -46,6 +48,7 @@ public class FeedData extends FeedContext {
     private Generator generator;
     private TextInput textinput;
     private Cloud cloud;
+    @NotNull
     List<Entry> entries = new LinkedList<Entry>();
     public TextInput getTextinput() {
         return textinput;
@@ -137,7 +140,8 @@ public class FeedData extends FeedContext {
         this.cloud = cloud;
     }
 
-	public List<Entry> getEntries() {
+	@NotNull
+    public List<Entry> getEntries() {
 		return entries;
 	}
     

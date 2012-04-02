@@ -41,6 +41,8 @@ import java.util.GregorianCalendar;
 import java.util.Date;
 import org.apache.log4j.Logger;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import uk.org.catnip.eddie.Author;
 import uk.org.catnip.eddie.Category;
 import uk.org.catnip.eddie.Cloud;
@@ -102,6 +104,7 @@ public class PythonConverter {
     
     static Logger log = Logger.getLogger(PythonConverter.class);
 
+    @NotNull
     private static PythonInterpreter interp = new PythonInterpreter();
 
     public int total_tests = 0;
@@ -110,7 +113,7 @@ public class PythonConverter {
 
     public int passed_tests = 0;
 
-    public static boolean runPython(FeedData feed, String test) throws Exception {
+    public static boolean runPython(@NotNull FeedData feed, String test) throws Exception {
 
         if (feed.error) {
             interp.set("bozo", new PyInteger(1));
@@ -136,7 +139,8 @@ public class PythonConverter {
 		return ret.getValue() != 0;
 
 	}
-    public static PyDictionary convertFeed(FeedData feed) {
+    @NotNull
+    public static PyDictionary convertFeed(@NotNull FeedData feed) {
         PyDictionary feed_dict = new PythonConverter().new EddieDict();
         Iterator<String> it = feed.keys();
         while (it.hasNext()) {
@@ -223,7 +227,8 @@ public class PythonConverter {
         
         
     }
-    public static PyDictionary convertAuthor(Author author) {
+    @NotNull
+    public static PyDictionary convertAuthor(@NotNull Author author) {
         PyDictionary author_detail = new PyDictionary();
         author_detail.__setitem__("name", new PyString(author.getName()));
         author_detail.__setitem__("email", new PyString(author.getEmail()));
@@ -234,7 +239,8 @@ public class PythonConverter {
 
     
     
-    public static PyDictionary convertEntry(Entry entry) {
+    @NotNull
+    public static PyDictionary convertEntry(@NotNull Entry entry) {
         PyDictionary entry_dict = new PyDictionary();
         Iterator<String> entry_it = entry.keys();
         while (entry_it.hasNext()) {
@@ -330,7 +336,8 @@ public class PythonConverter {
         return entry_dict;
     }
 
-    public static PyDictionary convertSource(Source source) {
+    @NotNull
+    public static PyDictionary convertSource(@NotNull Source source) {
         PyDictionary source_dict = new PyDictionary();
         Iterator<String> source_it = source.keys();
         while (source_it.hasNext()) {
@@ -402,7 +409,8 @@ public class PythonConverter {
         return source_dict;
     }
     
-    public static PyDictionary convertDetail(Detail detail) {
+    @NotNull
+    public static PyDictionary convertDetail(@Nullable Detail detail) {
 
         PyDictionary detail_dict = new PyDictionary();
         if (detail != null) {
@@ -431,7 +439,8 @@ public class PythonConverter {
         }
         return detail_dict;
     }
-    public static PyDictionary convertLink(Link link) {
+    @NotNull
+    public static PyDictionary convertLink(@NotNull Link link) {
         PyDictionary link_dict =  convertDetail(link);
         if (link.getHref() != null) {
         link_dict.__setitem__("href", new PyString(link.getHref()));
@@ -450,7 +459,8 @@ public class PythonConverter {
             }
         return link_dict;
     }
-    public static PyDictionary convertGenerator(Generator generator) {
+    @NotNull
+    public static PyDictionary convertGenerator(@NotNull Generator generator) {
         PyDictionary link_dict = convertDetail(generator);
     
     if (generator.getName() != null) {
@@ -465,7 +475,7 @@ public class PythonConverter {
     }
         return link_dict;
     }
-    public static  PyTuple convertDate(Date date) {
+    public static  PyTuple convertDate(@Nullable Date date) {
         PyTuple date_tuple;
     
     if (date != null) {
@@ -491,7 +501,8 @@ public class PythonConverter {
 
         return date_tuple;
     }
-    public static PyDictionary convertCategory(Category category) {
+    @NotNull
+    public static PyDictionary convertCategory(@NotNull Category category) {
         PyDictionary tags_dict = new PyDictionary();
 
         if (category.getTerm() != null) {
@@ -507,7 +518,8 @@ public class PythonConverter {
         return tags_dict;
 
     }
-    public static PyTuple convertCategoryTuple(Category category) {
+    @NotNull
+    public static PyTuple convertCategoryTuple(@NotNull Category category) {
         String term = category.getTerm();
         String schedule = category.getSchedule();
         String label = category.getLabel();
@@ -523,7 +535,8 @@ public class PythonConverter {
 
     }
     
-    public static PyDictionary convertImage(Image image) {
+    @NotNull
+    public static PyDictionary convertImage(@NotNull Image image) {
         PyDictionary image_dict = new PyDictionary();
 
         if (image.getTitle() != null) {
@@ -549,7 +562,8 @@ public class PythonConverter {
 
         return image_dict;
     }
-    public static PyDictionary convertTextInput(TextInput textinput) {
+    @NotNull
+    public static PyDictionary convertTextInput(@NotNull TextInput textinput) {
         PyDictionary textinput_dict = new PyDictionary();
 
         if (textinput.getTitle() != null) {
@@ -569,7 +583,8 @@ public class PythonConverter {
         return textinput_dict;
     }
     
-    public static PyDictionary convertEnclosure(Enclosure enclosure) {
+    @NotNull
+    public static PyDictionary convertEnclosure(@NotNull Enclosure enclosure) {
         PyDictionary enclosure_dict = new PyDictionary();
 
         if (enclosure.getUrl() != null) {
@@ -585,7 +600,8 @@ public class PythonConverter {
 
         return enclosure_dict;
     }
-    public static PyDictionary convertCloud(Cloud cloud) {
+    @NotNull
+    public static PyDictionary convertCloud(@NotNull Cloud cloud) {
         PyDictionary cloud_dict = new PyDictionary();
 
         if (cloud.getDomain() != null) {

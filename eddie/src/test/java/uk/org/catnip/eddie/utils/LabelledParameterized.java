@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.runner.Description;
 import org.junit.runners.Parameterized;
 
@@ -30,6 +31,7 @@ public class LabelledParameterized extends Parameterized {
 
     }
 
+    @NotNull
     private Collection<Object[]> getParameterArrays() throws Exception {
 	Method testClassMethod = getDeclaredMethod(this.getClass(),
 		"getTestClass");
@@ -40,6 +42,7 @@ public class LabelledParameterized extends Parameterized {
 	    return getParameterArrays4_4();
     }
 
+    @NotNull
     @SuppressWarnings("unchecked")
     private Collection<Object[]> getParameterArrays4_3() throws Exception {
 	Object[][] methodCalls = new Object[][] { new Object[] { "getTestClass" } };
@@ -69,6 +72,7 @@ public class LabelledParameterized extends Parameterized {
 
     }
 
+    @NotNull
     private Collection<Object[]> getParameterArrays4_4() throws Exception {
 	Object[][] methodCalls = new Object[][] {
 		new Object[] { "getTestClass" },
@@ -83,8 +87,9 @@ public class LabelledParameterized extends Parameterized {
 	return parameterArrays;
     }
 
+    @NotNull
     @SuppressWarnings("unchecked")
-    private <T> T invokeMethodChain(Object object, Object[][] methodCalls)
+    private <T> T invokeMethodChain(@NotNull Object object, @NotNull Object[][] methodCalls)
 	    throws Exception {
 	for (Object[] methodCall : methodCalls) {
 	    String methodName = (String) methodCall[0];
@@ -107,7 +112,7 @@ public class LabelledParameterized extends Parameterized {
 
     // iterates through super-classes until found. Throws NoSuchMethodException
     // if not
-    private Method getDeclaredMethod(Class<?> cl, String methodName,
+    private Method getDeclaredMethod(@NotNull Class<?> cl, String methodName,
 	    Class<?>... parameterTypes) throws NoSuchMethodException {
 	do {
 	    try {

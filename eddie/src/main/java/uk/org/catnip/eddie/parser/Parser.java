@@ -39,6 +39,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.MalformedInputException;
 
+import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xerces.parsers.SAXParser;
@@ -65,8 +66,10 @@ import org.apache.log4j.Logger;
 public class Parser {
 	private static Logger log = Logger.getLogger(Parser.class);
 	private String encoding;
+    @NotNull
     private String defaultEncoding = "utf-8";
 	private Map<String, String> headers;
+    @NotNull
     private DetectEncoding de = new DetectEncoding(defaultEncoding);
     boolean error  = false;
 	/**
@@ -77,7 +80,7 @@ public class Parser {
 	 * @param headers
 	 *            set of HTTP headers
 	 */
-	public void setHeaders(Map<String, String> headers) {
+	public void setHeaders(@NotNull Map<String, String> headers) {
 		this.headers = headers;
         if (headers.containsKey("Content-type")) {
             String contenttype = (String) headers.get("Content-type");
@@ -150,7 +153,7 @@ public class Parser {
         return new FeedData();
 	}
 
-	public FeedData parse(InputStream istream) throws IOException {
+	public FeedData parse(@NotNull InputStream istream) throws IOException {
         if (!istream.markSupported()) {
             istream = new MarkableInputStream(istream);
         }
@@ -161,13 +164,13 @@ public class Parser {
         }
 		return parse(new InputStreamReader(istream, encoding));
 	}
-    public FeedData parse(InputStream istream, String encoding) throws UnsupportedEncodingException {
+    public FeedData parse(@NotNull InputStream istream, String encoding) throws UnsupportedEncodingException {
         if (!istream.markSupported()) {
             istream = new MarkableInputStream(istream);
         }
         return parse(new InputStreamReader(istream, encoding));
     }
-    public FeedData parse(InputStream istream, CharsetDecoder encoding) throws UnsupportedEncodingException {
+    public FeedData parse(@NotNull InputStream istream, CharsetDecoder encoding) throws UnsupportedEncodingException {
         if (!istream.markSupported()) {
             istream = new MarkableInputStream(istream);
         }

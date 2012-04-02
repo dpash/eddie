@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.*;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class to detect the encoding of the input
@@ -52,7 +54,8 @@ public class DetectEncoding {
             this.name = name;
         }
     }
-    final Magic[] magics = { 
+    @NotNull
+    final Magic[] magics = {
             // UCS-4, big-endian machine (1234 order)
             new Magic("utf-32be",    true, (byte) 0x00, (byte) 0x00, (byte) 0xFE, (byte) 0xFF),
             
@@ -118,6 +121,7 @@ public class DetectEncoding {
     };
 
     
+    @NotNull
     static Map<String, String> encoding_map = getEncodingMap();
     
     String defaultEncoding;
@@ -129,10 +133,12 @@ public class DetectEncoding {
 		this.defaultEncoding = defaultEncoding;
 	}
 
-	public String detect(String filename) throws FileNotFoundException {
+	@Nullable
+    public String detect(String filename) throws FileNotFoundException {
            return detect(new FileInputStream(filename));
     }
 
+    @NotNull
     private static Map<String, String> getEncodingMap() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("windows_1250", "windows-1250");
@@ -276,7 +282,8 @@ public class DetectEncoding {
         return map;
     }
 
-    public String detect(InputStream in) {
+    @Nullable
+    public String detect(@NotNull InputStream in) {
         byte[] data = new byte[100];
         try {
 
@@ -287,6 +294,7 @@ public class DetectEncoding {
         return detect(data);
     }
 
+    @Nullable
     public String detect(byte[] data) {
         String encoding = null;
         
@@ -316,6 +324,7 @@ public class DetectEncoding {
         return encoding;
     }
     
+    @Nullable
     private String detectEBCDIC(byte[] data) {
         data = asciiToEbcdic(data);
         return detectUsingXML(data);
@@ -328,6 +337,7 @@ public class DetectEncoding {
         return new_encoding;
     }
     
+    @Nullable
     private String detectUsingXML(byte[] data) {
         String encoding = null;
         try {
@@ -348,6 +358,7 @@ public class DetectEncoding {
         return encoding;
     }
 
+    @Nullable
     private String detectUsingMagic(byte[] data) {
         String encoding = null;
         int index = 0;
@@ -364,7 +375,7 @@ public class DetectEncoding {
         return encoding;
     }
 
-    private boolean checkArray(byte[] a, byte[] b) {
+    private boolean checkArray(byte[] a, @NotNull byte[] b) {
         boolean equals = true;
         for (int i = 0; i < b.length; ++i) {
             if (a[i] != b[i]) {
@@ -374,7 +385,8 @@ public class DetectEncoding {
         }
         return equals;
     }
-    private byte[] asciiToEbcdic(byte [] data) {
+    @NotNull
+    private byte[] asciiToEbcdic(@NotNull byte [] data) {
         int[] map = { 
                    0,   1,   2,   3, 156,   9, 134, 127, 
                  151, 141, 142,  11,  12,  13,  14,  15,
@@ -416,7 +428,7 @@ public class DetectEncoding {
         return data;
     }
     
-    public void stripBOM(InputStream is) throws IOException {
+    public void stripBOM(@NotNull InputStream is) throws IOException {
         for (int i =0; i < bomLength; i++) {
             is.read();
         }

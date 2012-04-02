@@ -34,6 +34,7 @@
 package uk.org.catnip.eddie;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class Detail {
     private String language;
@@ -53,7 +54,7 @@ public class Detail {
         return language;
     }
 
-    public void setDetails(Detail detail) {
+    public void setDetails(@NotNull Detail detail) {
         this.language = detail.getLanguage();
         this.type = detail.getType();
         this.value = detail.getValue();
@@ -75,7 +76,7 @@ public class Detail {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(@NotNull String value) {
         this.value = value.trim();
     }
 

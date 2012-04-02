@@ -33,6 +33,7 @@
  */
 package uk.org.catnip.eddie.parser;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,7 +54,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(LabelledParameterized.class)
 public class EddieTest {
 
-	private static final String test_dir = "tests";
+	@NotNull
+    private static final String test_dir = "tests";
 
 	private String filename;
 
@@ -61,7 +63,8 @@ public class EddieTest {
 		this.filename = filename;
 	}
 
-	@Parameterized.Parameters
+	@NotNull
+    @Parameterized.Parameters
 	public static Collection<String[]> findTests() throws IOException {
 		List<String[]> files = new LinkedList<String[]>();
 		for (Enumeration<URL> e = EddieTest.class.getClassLoader().getResources(
@@ -83,7 +86,8 @@ public class EddieTest {
 	}
 
 
-	protected static List<File> getFileList(File file) {
+	@NotNull
+    protected static List<File> getFileList(@NotNull File file) {
 		List<File> files = new LinkedList<File>();
 		if (file.isDirectory()) {
 			File filelist[] = file.listFiles();

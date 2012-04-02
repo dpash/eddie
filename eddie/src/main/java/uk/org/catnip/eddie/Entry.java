@@ -33,12 +33,16 @@
  */
 package uk.org.catnip.eddie;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
 
 public class Entry extends FeedContext {
+    @NotNull
     private List<Detail> content = new LinkedList<Detail>();
+    @NotNull
     private List<Enclosure> enclosures = new LinkedList<Enclosure>();
     private Source source;
     private boolean guidIsLink = false;
@@ -159,11 +163,13 @@ public class Entry extends FeedContext {
         this.source = source;
     }
 
-	public List<Detail> getContents() {
+	@NotNull
+    public List<Detail> getContents() {
 		return this.content;
 	}
 
-	public List<Enclosure> getEnclosures() {
+	@NotNull
+    public List<Enclosure> getEnclosures() {
 		return this.enclosures;
 	}
 }

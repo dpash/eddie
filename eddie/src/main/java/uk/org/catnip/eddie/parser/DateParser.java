@@ -37,6 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.log4j.Logger;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import uk.org.catnip.eddie.Detail;
 
 import java.util.TimeZone;
@@ -72,7 +74,8 @@ public class DateParser extends Detail {
 	// 2003-12-31
 	// 20031231
 
-	static String[] date_formats = { "yyyy-MM-dd'T'kk:mm:ss'Z'", // ISO
+	@NotNull
+    static String[] date_formats = { "yyyy-MM-dd'T'kk:mm:ss'Z'", // ISO
 			"yyyy-MM-dd'T'kk:mm:ssz", // ISO
 			"yyyy-MM-dd'T'kk:mm:ss", // ISO
 			"EEE, d MMM yy kk:mm:ss z", // RFC822
@@ -87,27 +90,28 @@ public class DateParser extends Detail {
 
 	};
 
-	public static Date parse(String d) {
+	@Nullable
+    public static Date parse(String d) {
 		Date date = null;
 		SimpleDateFormat formatter = new SimpleDateFormat();
 		formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 		d = d.replaceAll("([-+]\\d\\d:\\d\\d)", "GMT$1"); // Correct W3C times
 		d = d.replaceAll(" ([ACEMP])T$", " $1ST"); // Correct Disney times
-		for (int i = 0; i < date_formats.length; i++) {
-			try {
-				if (log.isTraceEnabled()) {
-					log.debug("trying '" + date_formats[i] + "'");
-				}
-				formatter.applyPattern(date_formats[i]);
-				date = formatter.parse(d);
-				break;
-			} catch (Exception e) {
-				if (log.isTraceEnabled()) {
-					log.debug("parsing of date failed");
-				}
-				// Oh well. We tried
-			}
-		}
+        for (String date_format : date_formats) {
+            try {
+                if (log.isTraceEnabled()) {
+                    log.debug("trying '" + date_format + "'");
+                }
+                formatter.applyPattern(date_format);
+                date = formatter.parse(d);
+                break;
+            } catch (Exception e) {
+                if (log.isTraceEnabled()) {
+                    log.debug("parsing of date failed");
+                }
+                // Oh well. We tried
+            }
+        }
 
 		return date;
 

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author david
  *
@@ -17,6 +19,7 @@ public class MarkableInputStream extends InputStream {
     private int maxpos = 0;
     private int curpos = 0;
     private int mark = 0;
+    @NotNull
     private ArrayList<Integer> buffer = new ArrayList<Integer>();
     public MarkableInputStream(InputStream is) {
         inputstream = is;

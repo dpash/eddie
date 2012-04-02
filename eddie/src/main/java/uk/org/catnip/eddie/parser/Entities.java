@@ -36,10 +36,13 @@ package uk.org.catnip.eddie.parser;
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class Entities {
+    @NotNull
     static private Map<String, String> entity_map = createEntities();
     private static Logger log = Logger.getLogger(Entities.class);
+    @NotNull
     private static Map<String, String> createEntities() {
         Map<String, String> entities = new HashMap<String, String>();
         entities.put("amp", "");
@@ -301,6 +304,7 @@ public class Entities {
         return entities;
     }
     
+    @NotNull
     static public String resolveEntity(String entity) {
         if(log.isTraceEnabled()) {
             log.trace("resolving '"+entity+"'");
@@ -311,7 +315,7 @@ public class Entities {
             return "&"+entity+";";
         }
     }
-    static public String decodeEntities(String str) {
+    static public String decodeEntities(@NotNull String str) {
         StringBuilder sb = new StringBuilder();
         int len = str.length();
         for (int index = 0; index < len; ++index) {

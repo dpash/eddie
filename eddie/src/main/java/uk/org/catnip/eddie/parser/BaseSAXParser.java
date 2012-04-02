@@ -33,6 +33,8 @@
  */
 package uk.org.catnip.eddie.parser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
@@ -63,7 +65,9 @@ public class BaseSAXParser extends DefaultHandler2 {
     protected Detail detail;
 
     protected int in_content = 0;
+    @NotNull
     private Stack<State> stack = new Stack<State>();
+    @Nullable
     private State current_state;
     public void setFilename(final String file) {
         this.filename = file;
@@ -82,13 +86,14 @@ public class BaseSAXParser extends DefaultHandler2 {
      * throughout the document 
      * @return the current state
      */
+    @NotNull
     protected State getCurrentState() {
         if (current_state != null) { 
             return current_state;
         }
         
         if (!stack.empty()){
-            current_state = (State)stack.peek();
+            current_state = stack.peek();
             return current_state;
         } 
         State current_state = new State();
@@ -141,7 +146,6 @@ public class BaseSAXParser extends DefaultHandler2 {
      * We default to not expecting content
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
-	@SuppressWarnings("unchecked")
 	public void startElement(final String uri, final String localName, final String qName,
            final Attributes atts) throws SAXException {
         
@@ -226,7 +230,7 @@ public class BaseSAXParser extends DefaultHandler2 {
         if (stack.empty()) { return ""; }
    
         if (!getCurrentState().getElement().equals(element)) { return "";}
-        State state = (State)stack.pop();
+        State state = stack.pop();
         current_state = null;
         if (log.isTraceEnabled()) {
             log.trace("popping " + state);
@@ -286,7 +290,7 @@ public class BaseSAXParser extends DefaultHandler2 {
     }
 
     
-    public void handle_data(State state, String data, boolean escape) {
+    public void handle_data(@NotNull State state, String data, boolean escape) {
         if (stack.empty()) { return; }
         if (escape && state.getType().equals("application/xhtml+xml")) {
            data = xmlescape(data);
@@ -295,7 +299,8 @@ public class BaseSAXParser extends DefaultHandler2 {
         getCurrentState().addText(data);
     }
     
-    public String xmlescape(String data) {
+    @NotNull
+    public String xmlescape(@NotNull String data) {
         data.replace("&", "&amp;");
         data.replace("<", "&lt;");
         data.replace(">", "&gt;");
@@ -316,18 +321,18 @@ public class BaseSAXParser extends DefaultHandler2 {
     }
     
     // ErrorHandler
-    public void warning(SAXParseException exception) throws SAXException {
+    public void warning(@NotNull SAXParseException exception) throws SAXException {
         log.debug("warning: " + filename + ": " + exception.getMessage());
         // throw new SAXException(exception);
     }
 
-    public void error(SAXParseException exception) throws SAXException {
+    public void error(@NotNull SAXParseException exception) throws SAXException {
         this.error = true;
         log.debug("error: " + filename + ": " + exception.getMessage());
         // throw new SAXException(exception);
     }
 
-    public void fatalError(SAXParseException exception) throws SAXException {
+    public void fatalError(@NotNull SAXParseException exception) throws SAXException {
         this.error = true;
         log.debug("fatalError: " + filename + ": " + exception.getMessage());
         // throw new SAXException(exception);

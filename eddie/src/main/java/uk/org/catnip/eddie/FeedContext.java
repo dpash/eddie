@@ -37,12 +37,15 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
+
+import org.jetbrains.annotations.NotNull;
 import uk.org.catnip.eddie.Link;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
 public class FeedContext {
     static Logger log = Logger.getLogger(FeedContext.class);
+    @NotNull
     protected Hashtable<String, String> property_map = new Hashtable<String, String>();
     protected Author author;
     protected Author publisher;
@@ -51,8 +54,11 @@ public class FeedContext {
     private Date modified;
     private Date created;
     private Date expired;
+    @NotNull
     protected List<Author> contributors = new LinkedList<Author>();
+    @NotNull
     protected List<Link> links = new LinkedList<Link>();
+    @NotNull
     protected List<Category> categories = new LinkedList<Category>();
     private Detail summary;
     private Detail copyright;
@@ -61,6 +67,7 @@ public class FeedContext {
         property_map.put(key,value);
         return value;
     }
+    @NotNull
     public String get(String key){
         return (String)property_map.get(key);
     }
@@ -71,6 +78,7 @@ public class FeedContext {
         return property_map.keySet().iterator();
     }
     
+    @NotNull
     public Hashtable<String, String> getHashtable() {
         return property_map;
     }
@@ -88,7 +96,7 @@ public class FeedContext {
         log.trace("adding link: " + link);
         links.add(link);
     }
-    public void addCategory(Category category) {
+    public void addCategory(@NotNull Category category) {
         Iterator<Category> it = categories.iterator();
         while (it.hasNext()) {
             Category cur_cat = (Category)it.next();
@@ -166,13 +174,16 @@ public class FeedContext {
 	public Date getExpired() {
 		return expired;
 	}
-	public List<Category> getCategories() {
+	@NotNull
+    public List<Category> getCategories() {
 		return categories;
 	}
-	public List<Link> getLinks() {
+	@NotNull
+    public List<Link> getLinks() {
 		return links;
 	}
-	public List<Author> getContributors() {
+	@NotNull
+    public List<Author> getContributors() {
 		return contributors;
 	}
 }
