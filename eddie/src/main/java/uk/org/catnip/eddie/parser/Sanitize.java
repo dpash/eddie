@@ -87,7 +87,7 @@ public class Sanitize {
     static List<String> unsafe_content_elements = Arrays.asList(unsafe_content_elements_array);
     static List<String> elements_no_end_tag = Arrays.asList(elements_no_end_tag_array);
 
-    static XMLReader xr;
+    XMLReader xr;
     
     /**
      * Class to parse html and remove unsafe elements and attributes
